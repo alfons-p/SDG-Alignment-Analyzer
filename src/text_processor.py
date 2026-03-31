@@ -14,24 +14,26 @@ from src.exceptions import DependencyError
 class TextProcessor:
     """Process and clean extracted text for NLP analysis."""
 
-    def __init__(self, min_activity_length: int = 20, max_activity_length: int = 500):
+    def __init__(self, min_activity_length: int = 20, max_activity_length: int = 500, spacy_model: str = "en_core_web_sm"):
         """
         Initialize the text processor.
 
         Args:
             min_activity_length: Minimum word count for an activity
             max_activity_length: Maximum word count for an activity
+            spacy_model: Name of spaCy model to load (default: en_core_web_sm)
         """
         self.min_activity_length = min_activity_length
         self.max_activity_length = max_activity_length
+        self.spacy_model_name = spacy_model
 
         # Load spaCy model for sentence structure analysis
         try:
-            self.nlp = spacy.load("en_core_web_sm")
+            self.nlp = spacy.load(spacy_model)
         except OSError:
             # Fallback if model not installed
             self.nlp = None
-            print("Warning: spaCy model not found. Install with: python -m spacy download en_core_web_sm")
+            print(f"Warning: spaCy model '{spacy_model}' not found. Install with: python -m spacy download {spacy_model}")
 
         # Enhanced action verbs with priority levels
         self.priority_verbs = {
