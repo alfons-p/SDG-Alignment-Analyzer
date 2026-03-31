@@ -1,0 +1,12 @@
+# Streamlit Configuration
+# Force light theme to ensure consistent visibility
+
+[theme]
+base = "light"
+primaryColor = "#E03C31"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F8FAFC"
+textColor = "#1E293B"
+
+[server]
+headless = true
