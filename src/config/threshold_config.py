@@ -166,11 +166,9 @@ def get_threshold(mode: str, sdg: Optional[int] = None) -> float:
     """
     mode = mode.lower()
 
-    # Normalize mode name
+    # Normalize mode name - accept both 'st' and 'sentence_transformer'
     if mode == 'st':
         mode = 'sentence_transformer'
-    elif mode == 'sentence_transformer':
-        mode = 'st'
 
     if mode not in THRESHOLD_CONFIG:
         raise ValueError(f"Unknown mode: {mode}. Must be 'st' or 'hybrid'")
