@@ -35,6 +35,14 @@ class TextProcessor:
             self.nlp = None
             print(f"Warning: spaCy model '{spacy_model}' not found. Install with: python -m spacy download {spacy_model}")
 
+    def is_model_loaded(self) -> bool:
+        """Check if spaCy model was successfully loaded.
+
+        Returns:
+            True if spaCy model is loaded, False otherwise
+        """
+        return self.nlp is not None
+
         # Enhanced action verbs with priority levels
         self.priority_verbs = {
             # High priority - clear implementation actions (base forms)
