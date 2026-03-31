@@ -196,10 +196,9 @@ def get_all_thresholds(mode: str) -> Dict[int, float]:
     """
     mode = mode.lower()
 
+    # Normalize mode name - accept both 'st' and 'sentence_transformer'
     if mode == 'st':
         mode = 'sentence_transformer'
-    elif mode == 'sentence_transformer':
-        mode = 'st'
 
     if mode not in THRESHOLD_CONFIG:
         raise ValueError(f"Unknown mode: {mode}. Must be 'st' or 'hybrid'")
