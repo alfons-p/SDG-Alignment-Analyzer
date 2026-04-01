@@ -4,6 +4,7 @@ pypdfium2>=4.30.0
 spacy>=3.7.0
 sentence-transformers>=2.2.0
 torch>=2.0.0
+torchvision>=0.15.0
 transformers>=4.30.0
 accelerate>=0.26.0
 pandas>=2.0.0
