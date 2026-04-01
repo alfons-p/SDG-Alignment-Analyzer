@@ -337,8 +337,7 @@ def render_heatmap(results: Dict[str, Any]):
         zmin=0,
         zmax=1,
         colorbar=dict(
-            title="Score",
-            title=dict(font=dict(color=c['text'])),
+            title=dict(text="Score", font=dict(color=c['text'])),
             tickfont=dict(color=c['text'])
         ),
         hovertemplate='%{x}<br>%{y}<br>Score: %{z:.3f}<extra></extra>'

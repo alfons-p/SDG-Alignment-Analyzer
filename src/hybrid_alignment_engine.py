@@ -219,11 +219,13 @@ class HybridAlignmentEngine(AlignmentEngine):
             sdg17_correction_method=sdg17_correction_method,
             enable_sdg11_correction=enable_sdg11_correction,
             sdg11_correction_method=sdg11_correction_method,
-            enable_sdg14_correction=enable_sdg14_correction,
-            sdg14_correction_method=sdg14_correction_method,
             custom_sdg_thresholds=custom_sdg_thresholds,
             use_custom_thresholds=use_custom_thresholds
         )
+
+        # Store additional correction settings (not passed to parent)
+        self.enable_sdg14_correction = enable_sdg14_correction
+        self.sdg14_correction_method = sdg14_correction_method
 
         # Set default threshold using optimized configuration (if not provided)
         if similarity_threshold is None:
