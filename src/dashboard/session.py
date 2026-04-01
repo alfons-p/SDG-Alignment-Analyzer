@@ -19,6 +19,7 @@ class CacheKey(Enum):
     CURRENT_VIEW = "current_view"
     PROCESSING_STATE = "processing_state"
     SELECTED_REPORT_INDEX = "selected_report_index"
+    SDG_MENTION_RESULTS = "sdg_mention_results"
 
 
 @dataclass
@@ -66,6 +67,7 @@ class SessionManager:
         CacheKey.CURRENT_VIEW: "landing",
         CacheKey.PROCESSING_STATE: ProcessingState(),
         CacheKey.SELECTED_REPORT_INDEX: 0,
+        CacheKey.SDG_MENTION_RESULTS: {},
     }
 
     @classmethod
