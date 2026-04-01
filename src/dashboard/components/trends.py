@@ -183,14 +183,14 @@ def render_trend_analysis():
                 title="SDG Trends Comparison Across States",
                 xaxis=dict(
                     title="Year",
-                    titlefont=dict(color=c['text']),
+                    title=dict(font=dict(color=c['text'])),
                     tickfont=dict(color=c['text']),
                     gridcolor=c['grid']
                 ),
                 yaxis=dict(
                     title="Mean Alignment Score",
                     range=[0, 1],
-                    titlefont=dict(color=c['text']),
+                    title=dict(font=dict(color=c['text'])),
                     tickfont=dict(color=c['text']),
                     gridcolor=c['grid']
                 ),
@@ -236,12 +236,12 @@ def render_trend_analysis():
                     plot_bgcolor=c['paper_bg'],
                     title_font=dict(color=c['text']),
                     xaxis=dict(
-                        titlefont=dict(color=c['text']),
+                        title=dict(font=dict(color=c['text'])),
                         tickfont=dict(color=c['text']),
                         gridcolor=c['grid']
                     ),
                     yaxis=dict(
-                        titlefont=dict(color=c['text']),
+                        title=dict(font=dict(color=c['text'])),
                         tickfont=dict(color=c['text']),
                         gridcolor=c['grid']
                     ),
@@ -258,12 +258,12 @@ def render_trend_analysis():
                     plot_bgcolor=c['paper_bg'],
                     title_font=dict(color=c['text']),
                     xaxis=dict(
-                        titlefont=dict(color=c['text']),
+                        title=dict(font=dict(color=c['text'])),
                         tickfont=dict(color=c['text']),
                         gridcolor=c['grid']
                     ),
                     yaxis=dict(
-                        titlefont=dict(color=c['text']),
+                        title=dict(font=dict(color=c['text'])),
                         tickfont=dict(color=c['text']),
                         gridcolor=c['grid']
                     ),
@@ -296,12 +296,12 @@ def render_trend_analysis():
                 plot_bgcolor=c['paper_bg'],
                 title_font=dict(color=c['text']),
                 xaxis=dict(
-                    titlefont=dict(color=c['text']),
+                    title=dict(font=dict(color=c['text'])),
                     tickfont=dict(color=c['text']),
                     gridcolor=c['grid']
                 ),
                 yaxis=dict(
-                    titlefont=dict(color=c['text']),
+                    title=dict(font=dict(color=c['text'])),
                     tickfont=dict(color=c['text']),
                     gridcolor=c['grid']
                 ),

@@ -85,13 +85,13 @@ def render_sdg_keyword_analysis(results_list: List[Dict[str, Any]]):
                                     title=f"Top Keywords for SDG {sdg_num}",
                                     xaxis=dict(
                                         title="Frequency",
-                                        titlefont=dict(color=c['text']),
+                                        title=dict(font=dict(color=c['text'])),
                                         tickfont=dict(color=c['text']),
                                         gridcolor=c['grid']
                                     ),
                                     yaxis=dict(
                                         title="Keyword",
-                                        titlefont=dict(color=c['text']),
+                                        title=dict(font=dict(color=c['text'])),
                                         tickfont=dict(color=c['text']),
                                         gridcolor=c['grid']
                                     ),

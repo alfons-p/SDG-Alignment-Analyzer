@@ -67,7 +67,7 @@ def render_top_sdgs(results: Dict[str, Any]):
             plot_bgcolor=c['paper_bg'],
             title_font=dict(color=c['text'], size=18, family="Inter"),
             xaxis=dict(
-                titlefont=dict(color=c['text']),
+                title=dict(font=dict(color=c['text'])),
                 tickfont=dict(color=c['text']),
                 gridcolor=c['grid']
             ),
@@ -338,7 +338,7 @@ def render_heatmap(results: Dict[str, Any]):
         zmax=1,
         colorbar=dict(
             title="Score",
-            titlefont=dict(color=c['text']),
+            title=dict(font=dict(color=c['text'])),
             tickfont=dict(color=c['text'])
         ),
         hovertemplate='%{x}<br>%{y}<br>Score: %{z:.3f}<extra></extra>'
@@ -347,13 +347,13 @@ def render_heatmap(results: Dict[str, Any]):
     fig.update_layout(
         xaxis=dict(
             title="Sustainable Development Goals",
-            titlefont=dict(color=c['text'], size=12),
+            title=dict(font=dict(color=c['text'], size=12)),
             tickfont=dict(color=c['text']),
             gridcolor=c['grid']
         ),
         yaxis=dict(
             title="Activities",
-            titlefont=dict(color=c['text'], size=14),
+            title=dict(font=dict(color=c['text'], size=14)),
             tickfont=dict(color=c['text'], size=10),
             tickangle=0,
             gridcolor=c['grid']
