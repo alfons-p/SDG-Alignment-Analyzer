@@ -61,7 +61,6 @@ class ProcessingSettings:
     enable_sdg11_correction: bool = True
     use_custom_thresholds: bool = False
     sdg_thresholds: Dict[int, float] = field(default_factory=dict)
-    unit: str = "sentence"
 
 
 # Professional balanced color palette (matches styles.py design tokens)
@@ -245,15 +244,6 @@ def render_sidebar_settings() -> ProcessingSettings:
 
     # Activity filtering
     with st.sidebar.expander("🔍 Activity Filters"):
-        unit = st.radio(
-            "Activity Unit",
-            options=["sentence", "paragraph"],
-            format_func=lambda x: "Sentence" if x == "sentence" else "Paragraph",
-            help="Unit of analysis. 'Sentence' treats each sentence as a potential activity. 'Paragraph' treats each paragraph as a potential activity.",
-            horizontal=True,
-            index=0
-        )
-
         min_words = st.number_input(
             "Min Words",
             min_value=5,
@@ -300,5 +290,4 @@ def render_sidebar_settings() -> ProcessingSettings:
         enable_sdg11_correction=enable_sdg11_correction,
         use_custom_thresholds=False,
         sdg_thresholds=sdg_thresholds,
-        unit=unit,
     )
