@@ -123,15 +123,13 @@ def render_side_by_side_comparison(results_list: List[Dict[str, Any]]):
     fig.update_layout(
         title="SDG Alignment Scores Comparison",
         xaxis=dict(
-            title="Sustainable Development Goals",
-            title=dict(font=dict(color=c['text'])),
+            title=dict(text="Sustainable Development Goals", font=dict(color=c['text'])),
             tickfont=dict(color=c['text']),
             gridcolor=c['grid']
         ),
         yaxis=dict(
-            title="Mean Alignment Score",
+            title=dict(text="Mean Alignment Score", font=dict(color=c['text'])),
             range=[0, 1],
-            title=dict(font=dict(color=c['text'])),
             tickfont=dict(color=c['text']),
             gridcolor=c['grid']
         ),

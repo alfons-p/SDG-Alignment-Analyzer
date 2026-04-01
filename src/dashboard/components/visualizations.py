@@ -346,14 +346,12 @@ def render_heatmap(results: Dict[str, Any]):
 
     fig.update_layout(
         xaxis=dict(
-            title="Sustainable Development Goals",
-            title=dict(font=dict(color=c['text'], size=12)),
+            title=dict(text="Sustainable Development Goals", font=dict(color=c['text'], size=12)),
             tickfont=dict(color=c['text']),
             gridcolor=c['grid']
         ),
         yaxis=dict(
-            title="Activities",
-            title=dict(font=dict(color=c['text'], size=14)),
+            title=dict(text="Activities", font=dict(color=c['text'], size=14)),
             tickfont=dict(color=c['text'], size=10),
             tickangle=0,
             gridcolor=c['grid']

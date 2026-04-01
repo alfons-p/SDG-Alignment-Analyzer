@@ -182,15 +182,13 @@ def render_trend_analysis():
             fig_comp.update_layout(
                 title="SDG Trends Comparison Across States",
                 xaxis=dict(
-                    title="Year",
-                    title=dict(font=dict(color=c['text'])),
+                    title=dict(text="Year", font=dict(color=c['text'])),
                     tickfont=dict(color=c['text']),
                     gridcolor=c['grid']
                 ),
                 yaxis=dict(
-                    title="Mean Alignment Score",
+                    title=dict(text="Mean Alignment Score", font=dict(color=c['text'])),
                     range=[0, 1],
-                    title=dict(font=dict(color=c['text'])),
                     tickfont=dict(color=c['text']),
                     gridcolor=c['grid']
                 ),
