@@ -35,14 +35,6 @@ class TextProcessor:
             self.nlp = None
             print(f"Warning: spaCy model '{spacy_model}' not found. Install with: python -m spacy download {spacy_model}")
 
-    def is_model_loaded(self) -> bool:
-        """Check if spaCy model was successfully loaded.
-
-        Returns:
-            True if spaCy model is loaded, False otherwise
-        """
-        return self.nlp is not None
-
         # Enhanced action verbs with priority levels
         self.priority_verbs = {
             # High priority - clear implementation actions (base forms)
@@ -117,6 +109,38 @@ class TextProcessor:
             "protected", "conserved", "monitored", "evaluated", "assessed",
             "prepared", "produced", "published", "released", "communicated"
         }
+
+    def is_model_loaded(self) -> bool:
+        """Check if spaCy model was successfully loaded.
+
+        Returns:
+            True if spaCy model is loaded, False otherwise
+        """
+        return self.nlp is not None
+
+    def get_model_info(self) -> Dict[str, Any]:
+        """Get information about the loaded spaCy model.
+
+        Returns:
+            Dictionary with model name, type, accuracy level, and loaded status
+        """
+        model_info = {
+            "name": self.spacy_model_name,
+            "loaded": self.nlp is not None,
+            "type": "spacy"
+        }
+
+        # Determine accuracy level based on model name
+        if "trf" in self.spacy_model_name:
+            model_info["accuracy"] = "highest"
+        elif "lg" in self.spacy_model_name:
+            model_info["accuracy"] = "high"
+        elif "md" in self.spacy_model_name:
+            model_info["accuracy"] = "medium"
+        else:
+            model_info["accuracy"] = "standard"
+
+        return model_info
 
     def clean_text(self, text: str, remove_headers: bool = True) -> str:
         """
