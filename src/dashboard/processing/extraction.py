@@ -105,8 +105,8 @@ def scan_sdg_mentions_cached(uploaded_file_bytes: bytes, filename: str) -> Dict[
 
         logger.debug(f"Scanning PDF for SDG mentions: {filename}")
 
-        # Scan for SDG mentions
-        result = scan_pdf_for_sdg_mentions(Path(tmp_path))
+        # Scan for SDG mentions - pass original filename for metadata extraction
+        result = scan_pdf_for_sdg_mentions(Path(tmp_path), original_filename=filename)
         result['source'] = filename
 
         logger.debug(f"SDG mention scan complete for {filename}")

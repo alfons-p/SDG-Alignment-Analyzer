@@ -54,7 +54,7 @@ def _extract_metadata_from_filename(filename: str) -> Dict[str, str]:
     return metadata
 
 
-def scan_pdf_for_sdg_mentions(pdf_path: Path) -> Dict[str, Any]:
+def scan_pdf_for_sdg_mentions(pdf_path: Path, original_filename: str = None) -> Dict[str, Any]:
     """Scan a PDF file for SDG mentions.
 
     Searches for:
@@ -63,6 +63,7 @@ def scan_pdf_for_sdg_mentions(pdf_path: Path) -> Dict[str, Any]:
 
     Args:
         pdf_path: Path to the PDF file to scan
+        original_filename: Optional original filename (if pdf_path is a temp file)
 
     Returns:
         Dictionary with scan results including:
@@ -95,26 +96,30 @@ def scan_pdf_for_sdg_mentions(pdf_path: Path) -> Dict[str, Any]:
         susdev_found = susdev_match is not None
         susdev_text = susdev_match.group(0) if susdev_match else ""
 
+        # Use original filename if provided, otherwise use pdf_path.name
+        filename_for_metadata = original_filename if original_filename else pdf_path.name
+
         # Extract metadata from filename
-        metadata = _extract_metadata_from_filename(pdf_path.name)
+        metadata = _extract_metadata_from_filename(filename_for_metadata)
 
         return {
             "sdg": 1 if sdg_found else 0,
             "sdgtext": sdg_text,
             "susdevgoal": 1 if susdev_found else 0,
             "sdgfulltext": susdev_text,
-            "council_name": metadata.get("source", pdf_path.name),
+            "council_name": metadata.get("source", filename_for_metadata),
             "state": metadata.get("state", ""),
             "year": metadata.get("year", ""),
             "urban_rural": metadata.get("urban_rural", ""),
         }
 
     except Exception as e:
+        filename_for_error = original_filename if original_filename else pdf_path.name
         return {
             "error": str(e),
             "sdg": 0,
             "susdevgoal": 0,
-            "council_name": pdf_path.name,
+            "council_name": filename_for_error,
         }
 
 
