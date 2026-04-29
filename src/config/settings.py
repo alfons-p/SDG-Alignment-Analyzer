@@ -21,14 +21,17 @@ class Config:
     """Application configuration with all settings and parameters."""
 
     # Model settings
-    # Default: finetuned-enhanced model from Hugging Face Hub for best SDG alignment accuracy
-    # Local path also supported for development: models/sdg-finetuned-enhanced/sdg-enhanced-finetuned-20260226_112509
+    # Default: 5-variant fine-tuned ST model (OSDG+AidData, 5 text variants, 307K pairs)
+    # Local path for development: models/sdg-finetuned/sdg-variant-finetuned-20260417_085525
     # Fallback: all-mpnet-base-v2 for general semantic understanding
     default_embedding_model: str = os.getenv(
         "DEFAULT_EMBEDDING_MODEL",
-        "voyager205/sdg-finetuned-enhanced"
+        "voyager205/sdg-variant-finetuned"
     )
-    fallback_embedding_model: str = os.getenv("FALLBACK_EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+    fallback_embedding_model: str = os.getenv(
+        "FALLBACK_EMBEDDING_MODEL",
+        "voyager205/sdg-variant-finetuned"
+    )
 
     # Similarity thresholds - use threshold_config.py as single source of truth
     # Do NOT hardcode values here - always call get_similarity_threshold()
@@ -51,6 +54,10 @@ class Config:
     # Optional OpenAI settings
     use_openai: bool = os.getenv("USE_OPENAI", "false").lower() == "true"
     openai_api_key: Optional[str] = os.getenv("OPENAI_API_KEY")
+
+    # Activity classifier settings
+    use_bert_classifier: bool = os.getenv("USE_BERT_CLASSIFIER", "true").lower() == "true"
+    activity_classifier_model: str = os.getenv("ACTIVITY_CLASSIFIER_MODEL", "models/activity-classifier/latest")
 
     # Streamlit
     streamlit_port: int = int(os.getenv("STREAMLIT_SERVER_PORT", "8501"))

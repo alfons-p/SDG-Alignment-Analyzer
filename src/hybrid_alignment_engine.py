@@ -336,9 +336,8 @@ class HybridAlignmentEngine(AlignmentEngine):
                 # Get SDG-specific weights
                 sdg_bert_weight, st_weight = self._get_sdg_weights(sdg_num)
 
-                # Get ST score and normalize
-                st_score_raw = st_scores[sdg_num]['score']
-                st_score = min(st_score_raw / 0.6, 1.0)
+                # Get ST score (no normalization needed — scores already span 0-1)
+                st_score = st_scores[sdg_num]['score']
 
                 # Get sdgBERT score
                 sdg_bert_score = sdg_bert_pred['all_scores'].get(sdg_num, 0)
@@ -364,7 +363,8 @@ class HybridAlignmentEngine(AlignmentEngine):
         self,
         activity_text: str,
         return_top_n: Optional[int] = None,
-        use_ensemble: bool = True
+        use_ensemble: bool = True,
+        target_boost: bool = False
     ) -> Dict[str, Any]:
         """
         Align a single activity with all SDGs using hybrid approach.
@@ -378,7 +378,7 @@ class HybridAlignmentEngine(AlignmentEngine):
             Dictionary with scores for each SDG and model predictions
         """
         # Get base sentence transformer result
-        st_result = super().align_activity(activity_text, return_top_n=None)
+        st_result = super().align_activity(activity_text, return_top_n=None, target_boost=target_boost)
 
         # Apply keyword boosting for underrepresented SDGs (SDG 3, 12, 13, 14)
         # This happens BEFORE the early return so all paths get the boost
@@ -411,9 +411,7 @@ class HybridAlignmentEngine(AlignmentEngine):
                 sdg_bert_weight, st_weight = self._get_sdg_weights(sdg_num)
 
                 # Get ST score (already calculated)
-                st_score_raw = st_result['sdg_scores'][sdg_num]['score']
-                # Normalize ST score (assume max ~0.6)
-                st_score = min(st_score_raw / 0.6, 1.0)
+                st_score = st_result['sdg_scores'][sdg_num]['score']
 
                 # Get sdgBERT score
                 sdg_bert_score = sdg_bert_result['all_scores'].get(sdg_num, 0)
@@ -592,7 +590,8 @@ class HybridAlignmentEngine(AlignmentEngine):
         show_progress: bool = True,
         use_ensemble: bool = True,
         batch_size: int = 32,
-        use_cache: bool = True
+        use_cache: bool = True,
+        target_boost: bool = False
     ) -> List[Dict[str, Any]]:
         """
         Align multiple activities with SDGs using hybrid approach.
@@ -614,7 +613,7 @@ class HybridAlignmentEngine(AlignmentEngine):
 
         # If not using sdgBERT, use the parent's batch processing
         if not self.use_sdg_bert:
-            return super().align_activities(activities, show_progress, batch_size)
+            return super().align_activities(activities, show_progress, batch_size, target_boost=target_boost)
 
         # When using sdgBERT, process with batching
         results = []
@@ -766,6 +765,31 @@ class HybridAlignmentEngine(AlignmentEngine):
                             correction_method=self.sdg16_correction_method
                         )
 
+                    # Target boost: replace goal score with max(goal, max_target_per_sdg)
+                    if target_boost:
+                        import warnings
+                        warnings.warn(
+                            "target_boost is deprecated. Target descriptions are now "
+                            "included in goal-level embeddings via the targets variant.",
+                            DeprecationWarning,
+                            stacklevel=2
+                        )
+                        self._initialize_target_embeddings()
+                        activity_emb = st_embeddings[i]
+                        target_scores = self._compute_target_scores(activity_emb)
+                        for sdg_num in range(1, 18):
+                            max_target = max(
+                                (t["score"] for t in target_scores.values()
+                                 if t["sdg_num"] == sdg_num),
+                                default=0.0
+                            )
+                            goal_score = combined_scores[sdg_num]["score"]
+                            combined = max(goal_score, max_target)
+                            if combined != goal_score:
+                                combined_scores[sdg_num]["score"] = round(combined, 4)
+                                combined_scores[sdg_num]["is_aligned"] = combined >= combined_scores[sdg_num]["threshold_used"]
+                                combined_scores[sdg_num]["target_boost_applied"] = True
+
                     # Find top SDG
                     top_sdg = max(combined_scores.keys(), key=lambda k: combined_scores[k]["score"])
 
@@ -801,7 +825,7 @@ class HybridAlignmentEngine(AlignmentEngine):
 
         for activity in iterator:
             text = activity.get("text", "")
-            alignment = self.align_activity(text, use_ensemble=use_ensemble)
+            alignment = self.align_activity(text, use_ensemble=use_ensemble, target_boost=target_boost)
             result = {**activity, **alignment}
             results.append(result)
 
@@ -946,3 +970,22 @@ def create_alignment_engine(
             model_name=model_name,
             similarity_threshold=similarity_threshold
         )
+
+
+# Add cleanup and __del__ to HybridAlignmentEngine
+def _hybrid_cleanup(self):
+    """Release MPS resources from sdgBERT and sentence transformer."""
+    if hasattr(self, 'sdg_bert') and self.sdg_bert is not None:
+        self.sdg_bert.cleanup()
+    AlignmentEngine.cleanup(self)
+
+
+def _hybrid_del(self):
+    try:
+        self.cleanup()
+    except Exception:
+        pass
+
+
+HybridAlignmentEngine.cleanup = _hybrid_cleanup
+HybridAlignmentEngine.__del__ = _hybrid_del

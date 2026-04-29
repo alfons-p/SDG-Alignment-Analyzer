@@ -39,6 +39,18 @@ class Reporter:
         self.council_output_dir = self.output_dir / "by_council" if council_subdir else self.output_dir
         self.council_output_dir.mkdir(parents=True, exist_ok=True)
 
+        # Organize output by file type
+        self.csv_dir = self.council_output_dir / "csv"
+        self.json_dir = self.council_output_dir / "json"
+        self.summary_dir = self.council_output_dir / "summary"
+        self.png_dir = self.council_output_dir / "png"
+        self.heatmap_dir = self.png_dir / "heatmap"
+        self.radar_dir = self.png_dir / "radar"
+        self.top_sdgs_dir = self.png_dir / "top_sdgs"
+        for d in [self.csv_dir, self.json_dir, self.summary_dir,
+                  self.heatmap_dir, self.radar_dir, self.top_sdgs_dir]:
+            d.mkdir(parents=True, exist_ok=True)
+
         self.sdg_reference = SDGReference()
 
         # Set default matplotlib style
@@ -139,7 +151,7 @@ class Reporter:
                 source_name = Path(results.get("source", "report")).stem
             filename = f"{source_name}_alignment.csv"
 
-        output_path = self.council_output_dir / filename
+        output_path = self.csv_dir / filename
         df.to_csv(output_path, index=False)
 
         return output_path
@@ -171,7 +183,7 @@ class Reporter:
                 source_name = Path(results.get("source", "report")).stem
             filename = f"{source_name}_alignment.json"
 
-        output_path = self.council_output_dir / filename
+        output_path = self.json_dir / filename
 
         with open(output_path, 'w') as f:
             json.dump(results, f, indent=2, default=str)
@@ -205,7 +217,7 @@ class Reporter:
                 source_name = Path(results.get("source", "report")).stem
             filename = f"{source_name}_summary.txt"
 
-        output_path = self.council_output_dir / filename
+        output_path = self.summary_dir / filename
 
         report = self._create_summary_text(results)
 
@@ -369,6 +381,17 @@ class Reporter:
                 print(f"Could not create bar chart: {e}")
 
         return output_files
+
+    def cleanup(self):
+        """Release MPS resources from sentence transformer model."""
+        if hasattr(self, 'sdg_reference') and self.sdg_reference is not None:
+            self.sdg_reference.cleanup()
+
+    def __del__(self):
+        try:
+            self.cleanup()
+        except Exception:
+            pass
 
     def create_multi_report_comparison(
         self,

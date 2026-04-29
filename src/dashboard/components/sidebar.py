@@ -5,12 +5,12 @@ from typing import Dict, List, Any, Optional
 
 import streamlit as st
 
-# Model paths - using Hugging Face Hub for hosted deployment
-# Local path for development: models/sdg-finetuned-enhanced/sdg-enhanced-finetuned-20260226_112509
+# Model paths - using local 5-variant fine-tuned model for best SDG alignment accuracy
+# Local path for development: models/sdg-finetuned/sdg-variant-finetuned-20260417_085525
 MODEL_PATHS = {
     "default": "all-mpnet-base-v2",
     "fast": "all-MiniLM-L6-v2",
-    "finetuned": "voyager205/sdg-finetuned-enhanced",
+    "finetuned": "models/sdg-finetuned/sdg-variant-finetuned-20260417_085525",
 }
 
 # SDG names for display

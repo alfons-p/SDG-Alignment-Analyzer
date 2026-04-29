@@ -98,9 +98,13 @@ class VisualizationMixin:
             source_name = Path(results.get("source", "report")).stem
             filename = f"{source_name}_heatmap.png"
 
-        # Access the council_output_dir from the parent Reporter class
-        council_output_dir = getattr(self, 'council_output_dir', Path('.'))
-        output_path = council_output_dir / filename
+        # Save to heatmap subdirectory
+        heatmap_dir = getattr(self, 'heatmap_dir', None)
+        if heatmap_dir:
+            output_path = heatmap_dir / filename
+        else:
+            council_output_dir = getattr(self, 'council_output_dir', Path('.'))
+            output_path = council_output_dir / filename
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
 
@@ -164,8 +168,12 @@ class VisualizationMixin:
         if filename is None:
             filename = f"{Path(results.get('source', 'report')).stem}_radar.png"
 
-        council_output_dir = getattr(self, 'council_output_dir', Path('.'))
-        output_path = council_output_dir / filename
+        radar_dir = getattr(self, 'radar_dir', None)
+        if radar_dir:
+            output_path = radar_dir / filename
+        else:
+            council_output_dir = getattr(self, 'council_output_dir', Path('.'))
+            output_path = council_output_dir / filename
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
 
@@ -244,8 +252,12 @@ class VisualizationMixin:
         if filename is None:
             filename = f"{Path(results.get('source', 'report')).stem}_top_sdgs.png"
 
-        council_output_dir = getattr(self, 'council_output_dir', Path('.'))
-        output_path = council_output_dir / filename
+        top_sdgs_dir = getattr(self, 'top_sdgs_dir', None)
+        if top_sdgs_dir:
+            output_path = top_sdgs_dir / filename
+        else:
+            council_output_dir = getattr(self, 'council_output_dir', Path('.'))
+            output_path = council_output_dir / filename
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
 

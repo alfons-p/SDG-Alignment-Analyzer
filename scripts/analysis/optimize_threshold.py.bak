@@ -1,0 +1,334 @@
+#!/usr/bin/env python3
+"""Grid search for optimal similarity thresholds.
+
+Tests threshold values from 0.1 to 0.9 in increments to find the optimal
+threshold that maximizes F1 score for each SDG or overall.
+
+Usage:
+    python scripts/analysis/optimize_threshold.py --mode hybrid
+    python scripts/analysis/optimize_threshold.py --mode st --sdgs 12 13
+"""
+
+import sys
+from pathlib import Path
+from typing import Dict, List, Tuple, Optional
+import json
+import argparse
+from dataclasses import dataclass
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+import pandas as pd
+import numpy as np
+from tqdm import tqdm
+from sklearn.metrics import precision_recall_fscore_support
+
+from src.hybrid_alignment_engine import HybridAlignmentEngine
+from src.alignment_engine import AlignmentEngine
+
+
+@dataclass
+class ThresholdResult:
+    """Result for a single threshold evaluation."""
+    threshold: float
+    precision: float
+    recall: float
+    f1: float
+    accuracy: float
+    num_predictions: int
+
+
+class ThresholdOptimizer:
+    """Optimize similarity threshold for SDG alignment."""
+
+    def __init__(
+        self,
+        csv_path: Path,
+        mode: str = "hybrid",
+        n_samples_per_sdg: int = 100,
+        agreement_threshold: float = 0.7
+    ):
+        """
+        Initialize optimizer.
+
+        Args:
+            csv_path: Path to OSDG data
+            mode: 'hybrid' or 'st'
+            n_samples_per_sdg: Number of samples per SDG
+            agreement_threshold: Minimum agreement for OSDG samples
+        """
+        self.csv_path = csv_path
+        self.mode = mode
+        self.n_samples_per_sdg = n_samples_per_sdg
+        self.agreement_threshold = agreement_threshold
+
+        # Load OSDG data
+        self.osdg_data = self._load_osdg_data()
+
+    def _load_osdg_data(self) -> pd.DataFrame:
+        """Load and filter OSDG data."""
+        print(f"Loading OSDG data from {self.csv_path}...")
+        df = pd.read_csv(self.csv_path, sep='\t', on_bad_lines='skip')
+
+        # Filter by agreement
+        df = df[df['agreement'] >= self.agreement_threshold].copy()
+        df = df[df['text'].notna() & (df['text'].str.strip() != '')]
+
+        print(f"Loaded {len(df)} records with agreement >= {self.agreement_threshold}")
+        return df
+
+    def get_balanced_samples(self, target_sdg: int) -> Tuple[List[str], List[int]]:
+        """Get balanced samples for a target SDG."""
+        # Positive samples (target SDG)
+        pos_df = self.osdg_data[self.osdg_data['sdg'] == target_sdg].copy()
+
+        # Negative samples (other SDGs)
+        neg_df = self.osdg_data[self.osdg_data['sdg'] != target_sdg].copy()
+
+        # Sample to balance
+        n_pos = min(len(pos_df), self.n_samples_per_sdg // 2)
+        n_neg = self.n_samples_per_sdg - n_pos
+
+        if len(pos_df) > 0:
+            pos_df = pos_df.sample(n=n_pos, random_state=42)
+        if len(neg_df) > 0:
+            neg_df = neg_df.sample(n=min(n_neg, len(neg_df)), random_state=42)
+
+        # Combine
+        texts = pos_df['text'].tolist() + neg_df['text'].tolist()
+        labels = [1] * len(pos_df) + [0] * len(neg_df)
+
+        # Shuffle
+        combined = list(zip(texts, labels))
+        np.random.seed(42)
+        np.random.shuffle(combined)
+        texts, labels = zip(*combined) if combined else ([], [])
+
+        return list(texts), list(labels)
+
+    def evaluate_threshold(
+        self,
+        threshold: float,
+        texts: List[str],
+        labels: List[int],
+        engine: AlignmentEngine
+    ) -> ThresholdResult:
+        """Evaluate a specific threshold."""
+        predictions = []
+
+        for text in texts:
+            try:
+                result = engine.align_activity(text, use_cache=False)
+                # Predict positive if top SDG matches AND score >= threshold
+                pred_sdg = result['top_sdg']
+                top_score = result['top_score']
+
+                # For multi-class: predict positive if top score >= threshold
+                # and it's for the target SDG
+                prediction = 1 if (pred_sdg in labels and top_score >= threshold) else 0
+                predictions.append(prediction)
+            except Exception:
+                predictions.append(0)
+
+        # Calculate metrics
+        if len(predictions) == 0:
+            return ThresholdResult(threshold, 0, 0, 0, 0, 0)
+
+        precision, recall, f1, _ = precision_recall_fscore_support(
+            labels, predictions, average='binary', zero_division=0
+        )
+        accuracy = np.mean(np.array(labels) == np.array(predictions))
+
+        return ThresholdResult(
+            threshold=threshold,
+            precision=precision,
+            recall=recall,
+            f1=f1,
+            accuracy=accuracy,
+            num_predictions=sum(predictions)
+        )
+
+    def optimize_threshold_for_sdg(
+        self,
+        target_sdg: int,
+        thresholds: Optional[List[float]] = None
+    ) -> Tuple[float, List[ThresholdResult]]:
+        """Find optimal threshold for a specific SDG."""
+        if thresholds is None:
+            thresholds = [round(i * 0.05, 2) for i in range(2, 19)]  # 0.1 to 0.9
+
+        # Get samples
+        texts, labels = self.get_balanced_samples(target_sdg)
+        print(f"\nSDG {target_sdg}: Testing {len(texts)} samples ({sum(labels)} positive)")
+
+        # Create engine
+        if self.mode == "hybrid":
+            engine = HybridAlignmentEngine(
+                use_sdg_bert=True,
+                ensemble_mode="weighted",
+                similarity_threshold=0.3  # Will be overridden
+            )
+        else:
+            engine = AlignmentEngine(similarity_threshold=0.3)  # Will be overridden
+
+        # Test thresholds
+        results = []
+        for thresh in tqdm(thresholds, desc=f"Testing thresholds for SDG {target_sdg}"):
+            engine.similarity_threshold = thresh
+            result = self.evaluate_threshold(thresh, texts, labels, engine)
+            results.append(result)
+
+        # Find best by F1
+        best = max(results, key=lambda x: x.f1)
+
+        print(f"\nBest threshold for SDG {target_sdg}: {best.threshold:.2f}")
+        print(f"  F1: {best.f1:.3f}, Precision: {best.precision:.3f}, Recall: {best.recall:.3f}")
+
+        return best.threshold, results
+
+    def optimize_global_threshold(
+        self,
+        sdgs: Optional[List[int]] = None,
+        thresholds: Optional[List[float]] = None
+    ) -> Tuple[float, Dict[int, ThresholdResult]]:
+        """Find optimal threshold across all SDGs."""
+        if sdgs is None:
+            sdgs = list(range(1, 18))
+
+        if thresholds is None:
+            thresholds = [round(i * 0.05, 2) for i in range(2, 19)]  # 0.1 to 0.9
+
+        print("="*60)
+        print("GLOBAL THRESHOLD OPTIMIZATION")
+        print("="*60)
+        print(f"Mode: {self.mode}")
+        print(f"SDGs: {sdgs}")
+        print(f"Thresholds: {thresholds}")
+
+        # Aggregate results across all SDGs
+        all_results = {thresh: [] for thresh in thresholds}
+
+        for sdg in sdgs:
+            texts, labels = self.get_balanced_samples(sdg)
+
+            if self.mode == "hybrid":
+                engine = HybridAlignmentEngine(use_sdg_bert=True)
+            else:
+                engine = AlignmentEngine()
+
+            for thresh in thresholds:
+                engine.similarity_threshold = thresh
+                result = self.evaluate_threshold(thresh, texts, labels, engine)
+                all_results[thresh].append(result)
+
+        # Calculate mean F1 for each threshold
+        mean_results = {}
+        for thresh, results in all_results.items():
+            mean_f1 = np.mean([r.f1 for r in results])
+            mean_precision = np.mean([r.precision for r in results])
+            mean_recall = np.mean([r.recall for r in results])
+            mean_accuracy = np.mean([r.accuracy for r in results])
+
+            mean_results[thresh] = ThresholdResult(
+                threshold=thresh,
+                precision=mean_precision,
+                recall=mean_recall,
+                f1=mean_f1,
+                accuracy=mean_accuracy,
+                num_predictions=np.mean([r.num_predictions for r in results])
+            )
+
+        # Find best threshold
+        best = max(mean_results.values(), key=lambda x: x.f1)
+
+        print(f"\n{'='*60}")
+        print("BEST GLOBAL THRESHOLD")
+        print(f"{'='*60}")
+        print(f"Threshold: {best.threshold:.2f}")
+        print(f"Mean F1: {best.f1:.3f}")
+        print(f"Mean Precision: {best.precision:.3f}")
+        print(f"Mean Recall: {best.recall:.3f}")
+
+        # Print top 5 thresholds
+        print(f"\nTop 5 thresholds:")
+        top5 = sorted(mean_results.values(), key=lambda x: x.f1, reverse=True)[:5]
+        for i, result in enumerate(top5, 1):
+            print(f"{i}. {result.threshold:.2f}: F1={result.f1:.3f}, "
+                  f"P={result.precision:.3f}, R={result.recall:.3f}")
+
+        return best.threshold, mean_results
+
+
+def main():
+    """Main entry point."""
+    parser = argparse.ArgumentParser(description="Optimize similarity threshold for SDG alignment")
+    parser.add_argument("--mode", choices=["hybrid", "st"], default="hybrid",
+                        help="Alignment mode to optimize")
+    parser.add_argument("--csv-path", default="data/external/osdg-community-data-v2024-04-01.csv",
+                        help="Path to OSDG data")
+    parser.add_argument("--sdgs", nargs="+", type=int, default=None,
+                        help="SDGs to optimize (default: all)")
+    parser.add_argument("--n-samples", type=int, default=100,
+                        help="Samples per SDG")
+    parser.add_argument("--threshold-range", type=str, default="0.1,0.9,0.05",
+                        help="Range and step: min,max,step")
+
+    args = parser.parse_args()
+
+    # Parse threshold range
+    min_t, max_t, step_t = map(float, args.threshold_range.split(","))
+    thresholds = [round(i * step_t, 2) for i in range(int(min_t / step_t), int(max_t / step_t) + 1)]
+
+    # Create optimizer
+    optimizer = ThresholdOptimizer(
+        csv_path=Path(args.csv_path),
+        mode=args.mode,
+        n_samples_per_sdg=args.n_samples
+    )
+
+    # Run optimization
+    if args.sdgs:
+        # Optimize per SDG
+        results = {}
+        for sdg in args.sdgs:
+            best_thresh, _ = optimizer.optimize_threshold_for_sdg(sdg, thresholds)
+            results[sdg] = best_thresh
+
+        print("\n" + "="*60)
+        print("OPTIMAL THRESHOLDS BY SDG")
+        print("="*60)
+        for sdg, thresh in results.items():
+            print(f"SDG {sdg}: {thresh:.2f}")
+    else:
+        # Optimize globally
+        best_thresh, all_results = optimizer.optimize_global_threshold(
+            sdgs=args.sdgs, thresholds=thresholds
+        )
+
+        # Save results
+        output_path = Path(f"results/threshold_optimization_{args.mode}.json")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        json_results = {
+            "mode": args.mode,
+            "best_threshold": best_thresh,
+            "all_results": {
+                str(r.threshold): {
+                    "f1": r.f1,
+                    "precision": r.precision,
+                    "recall": r.recall,
+                    "accuracy": r.accuracy,
+                    "num_predictions": r.num_predictions
+                }
+                for r in all_results.values()
+            }
+        }
+
+        with open(output_path, 'w') as f:
+            json.dump(json_results, f, indent=2)
+
+        print(f"\n✓ Results saved to: {output_path}")
+
+
+if __name__ == "__main__":
+    main()

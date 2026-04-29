@@ -386,6 +386,67 @@ class TextProcessor:
 
         return joined
 
+    def extract_candidate_sentences(self, text: str) -> List[str]:
+        """
+        Run Phase 1 only: segmentation + cleaning filters.
+
+        Returns candidate sentences that pass all cleaning filters but have NOT
+        been classified yet (no spaCy/BERT validation). These are the raw inputs
+        for Phase 2 classification.
+
+        Args:
+            text: Text to process
+
+        Returns:
+            List of candidate sentence strings
+        """
+        candidates = []
+
+        segments = self.segment_into_paragraphs(text)
+
+        for segment in segments:
+            word_count = len(segment.split())
+            if word_count < self.min_activity_length:
+                continue
+
+            sentences = self.segment_into_sentences(segment, split_on_bullets=True)
+            joined_groups = self._smart_sentence_join(sentences)
+
+            for group in joined_groups:
+                group_word_count = len(group.split())
+
+                if group_word_count < self.min_activity_length:
+                    continue
+                if group_word_count > self.max_activity_length:
+                    # Too long - try individual sentences
+                    individual_sentences = self.segment_into_sentences(group, split_on_bullets=False)
+                    for sent in individual_sentences:
+                        if self.min_activity_length <= len(sent.split()) <= self.max_activity_length:
+                            if self._passes_cleaning_filters(sent):
+                                candidates.append(sent)
+                    continue
+
+                if self._passes_cleaning_filters(group):
+                    candidates.append(group)
+
+        return candidates
+
+    def _passes_cleaning_filters(self, text: str) -> bool:
+        """Check if text passes all Phase 1 cleaning filters."""
+        if self._looks_like_table(text):
+            return False
+        if self._is_mostly_numbers(text):
+            return False
+        if not self._has_meaningful_content(text):
+            return False
+        if self._is_structural_content(text):
+            return False
+        if self._is_fragmented_start(text):
+            return False
+        if self._is_non_activity_content(text):
+            return False
+        return True
+
     def extract_activities(
         self,
         text: str,

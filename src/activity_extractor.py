@@ -1,6 +1,8 @@
 """Activity Extraction Module.
 
 Identifies and extracts meaningful activities from council reports.
+Uses BERT activity classifier (DeBERTa-v3-small) by default.
+Falls back to spaCy heuristics if the model is unavailable or --no-bert-classifier is set.
 """
 
 import re
@@ -11,6 +13,7 @@ from src.pdf_extractor import PDFExtractor
 from src.text_processor import TextProcessor
 from src.llm_activity_labeler import LLMActivityLabeler
 from src.enhanced_pdf_extractor import PDFPlumberExtractor, SentenceReconstructor
+from src.activity_classifier import ActivityClassifier
 
 
 # Financial statement section headings to detect and exclude
@@ -144,7 +147,10 @@ class ActivityExtractor:
         use_sentence_reconstruction: bool = True,
         spacy_model: str = "en_core_web_sm",
         nlp=None,
-        nofinancial: bool = False
+        nofinancial: bool = False,
+        use_bert_classifier: bool = False,
+        bert_classifier_model: Optional[str] = None,
+        min_confidence: float = 0.7,
     ):
         """
         Initialize activity extractor.
@@ -166,6 +172,9 @@ class ActivityExtractor:
             nlp: Optional spaCy language model for advanced sentence reconstruction.
                  If None and use_sentence_reconstruction is True, uses the model from TextProcessor.
             nofinancial: Whether to exclude financial statements section from extraction.
+            use_bert_classifier: Whether to use BERT activity classifier for sentence filtering.
+            bert_classifier_model: Path to BERT classifier model (default: models/activity-classifier/latest)
+            min_confidence: Minimum classifier confidence to keep an ACTION sentence (default: 0.7)
         """
         self.pdf_extractor = PDFExtractor()
         self.use_sentence_reconstruction = use_sentence_reconstruction
@@ -197,6 +206,19 @@ class ActivityExtractor:
         self.max_activity_length = max_activity_length
         self.use_llm_labeling = use_llm_labeling
         self.llm_max_workers = llm_max_workers
+        self.min_confidence = min_confidence
+
+        # Initialize BERT activity classifier if enabled
+        self.use_bert_classifier = use_bert_classifier
+        self.bert_classifier = None
+        if use_bert_classifier:
+            try:
+                self.bert_classifier = ActivityClassifier(model_path=bert_classifier_model)
+            except Exception as e:
+                print(f"Warning: Failed to load BERT classifier: {e}")
+                print("Falling back to spaCy-based extraction.")
+                self.use_bert_classifier = False
+
         if use_llm_labeling:
             self.llm_labeler = LLMActivityLabeler(
                 model=llm_model,
@@ -282,26 +304,44 @@ class ActivityExtractor:
         # Clean text first
         cleaned_text = self.text_processor.clean_text(text)
 
-        # Extract activities using text processor
-        activities = self.text_processor.extract_activities(
-            cleaned_text,
-            use_heuristics=True
-        )
+        if self.use_bert_classifier and self.bert_classifier:
+            # Phase 1: Get candidate sentences (segmentation + cleaning only)
+            candidates = self.text_processor.extract_candidate_sentences(cleaned_text)
 
-        # Filter and score activities with stricter criteria
-        filtered_activities = []
-        for activity in activities:
-            scored_activity = self._score_activity(activity)
-            # Stricter threshold: only activities with confidence > 0.6
-            if scored_activity["relevance_score"] > 0.6:
-                filtered_activities.append(scored_activity)
+            # Phase 2: Classify with BERT
+            if candidates:
+                results = self.bert_classifier.classify_batch(candidates)
+                filtered_activities = []
+                for candidate, result in zip(candidates, results):
+                    if result["is_activity"] and result["confidence"] >= self.min_confidence:
+                        filtered_activities.append({
+                            "text": candidate,
+                            "confidence": result["confidence"],
+                            "relevance_score": result["confidence"],
+                            "classification_method": "bert",
+                        })
+            else:
+                filtered_activities = []
 
-        # Debug: show activity extraction stats
-        print(f"  Extracted {len(activities)} activities, {len(filtered_activities)} passed relevance threshold (>0.6)")
-        if len(activities) > 0 and len(filtered_activities) == 0:
-            # Show top relevance scores for debugging
-            top_scores = sorted([a.get("relevance_score", 0) for a in activities], reverse=True)[:5]
-            print(f"  Top relevance scores: {top_scores}")
+            print(f"  BERT classified {len(candidates)} candidates, {len(filtered_activities)} ACTION")
+        else:
+            # Original spaCy-based pipeline
+            activities = self.text_processor.extract_activities(
+                cleaned_text,
+                use_heuristics=True
+            )
+
+            # Filter and score activities with stricter criteria
+            filtered_activities = []
+            for activity in activities:
+                scored_activity = self._score_activity(activity)
+                if scored_activity["relevance_score"] > 0.6:
+                    filtered_activities.append(scored_activity)
+
+            print(f"  Extracted {len(activities)} activities, {len(filtered_activities)} passed relevance threshold (>0.6)")
+            if len(activities) > 0 and len(filtered_activities) == 0:
+                top_scores = sorted([a.get("relevance_score", 0) for a in activities], reverse=True)[:5]
+                print(f"  Top relevance scores: {top_scores}")
 
         # Sort by relevance score
         filtered_activities.sort(key=lambda x: x["relevance_score"], reverse=True)
@@ -509,3 +549,14 @@ class ActivityExtractor:
             filtered = [a for a in filtered if a.get("section_type") == section_type]
 
         return filtered
+
+    def cleanup(self):
+        """Release MPS resources from BERT classifier."""
+        if hasattr(self, 'bert_classifier') and self.bert_classifier is not None:
+            self.bert_classifier.cleanup()
+
+    def __del__(self):
+        try:
+            self.cleanup()
+        except Exception:
+            pass

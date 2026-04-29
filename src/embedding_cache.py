@@ -20,7 +20,7 @@ import pickle
 class EmbeddingCache:
     """Efficient caching system for embeddings."""
 
-    CACHE_VERSION = "2.0"  # Increment when format changes
+    CACHE_VERSION = "3.0"  # Increment when format changes
 
     def __init__(self, cache_dir: Optional[Path] = None, use_memory_map: bool = False):
         """
@@ -71,9 +71,10 @@ class EmbeddingCache:
 
     def _get_model_fingerprint(self, model_name: str) -> str:
         """Generate fingerprint for model versioning."""
-        # Simple fingerprint based on model name and cache version
+        # Include variant config so cache auto-invalidates on variant changes
+        variant_config = "5var_c05_l05_t55_k30_i05"
         return hashlib.sha256(
-            f"{model_name}:{self.CACHE_VERSION}".encode()
+            f"{model_name}:{variant_config}:{self.CACHE_VERSION}".encode()
         ).hexdigest()[:16]
 
     def get_sdg_cache_path(self, model_name: str) -> Path:
@@ -323,6 +324,21 @@ class EmbeddingCache:
             except Exception:
                 removed["errors"] += 1
 
+        # Clear target embeddings
+        for f in self.cache_dir.glob("sdg_target_embeddings_v2_*.npz"):
+            try:
+                if older_than_days:
+                    data = np.load(f)
+                    timestamp = float(data.get('timestamp', 0))
+                    if timestamp < cutoff_time:
+                        f.unlink()
+                        removed["sdg"] += 1
+                else:
+                    f.unlink()
+                    removed["sdg"] += 1
+            except Exception:
+                removed["errors"] += 1
+
         # Clear activity embeddings
         for f in self.cache_dir.glob("act_*.npz"):
             try:
@@ -386,3 +402,102 @@ class EmbeddingCache:
         stats["total_size_mb"] = round(stats["total_size_mb"], 2)
 
         return stats
+
+    # --- Target-level embedding cache methods ---
+
+    def get_target_cache_path(self, model_name: str) -> Path:
+        """Get path for target embeddings cache."""
+        safe_model_name = model_name.replace('/', '_').replace('\\', '_')
+        fingerprint = self._get_model_fingerprint(model_name)
+        # Include "target_v1" to distinguish from goal-level cache
+        target_fp = hashlib.sha256(
+            f"{model_name}:target_v1:{self.CACHE_VERSION}".encode()
+        ).hexdigest()[:16]
+        return self.cache_dir / f"sdg_target_embeddings_v2_{safe_model_name}_{target_fp}"
+
+    def save_target_embeddings(
+        self,
+        embeddings: Dict[str, np.ndarray],
+        model_name: str,
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> Path:
+        """Save target-level embeddings with metadata.
+
+        Args:
+            embeddings: Dictionary mapping target IDs (e.g. "10.2") to embeddings
+            model_name: Name of the model used
+            metadata: Additional metadata to store
+
+        Returns:
+            Path to saved cache file
+        """
+        cache_path = self.get_target_cache_path(model_name)
+
+        target_ids = sorted(embeddings.keys())
+        embeddings_array = np.vstack([embeddings[tid] for tid in target_ids])
+
+        np.savez_compressed(
+            cache_path,
+            embeddings=embeddings_array,
+            target_ids=np.array(target_ids),
+            model_name=model_name,
+            cache_version=self.CACHE_VERSION,
+            timestamp=time.time(),
+            metadata=json.dumps(metadata or {})
+        )
+
+        self._metadata["entries"][str(cache_path.name)] = {
+            "model": model_name,
+            "timestamp": time.time(),
+            "version": self.CACHE_VERSION,
+            "target_count": len(embeddings),
+            "type": "target"
+        }
+        self._save_metadata()
+
+        return cache_path
+
+    def load_target_embeddings(
+        self,
+        model_name: str
+    ) -> Optional[Tuple[Dict[str, np.ndarray], Dict[str, Any]]]:
+        """Load target-level embeddings from cache.
+
+        Args:
+            model_name: Name of the model
+
+        Returns:
+            Tuple of (embeddings dict keyed by target_id, metadata) or None
+        """
+        cache_path = self.get_target_cache_path(model_name)
+        npz_path = Path(str(cache_path) + ".npz")
+
+        if not npz_path.exists():
+            return None
+
+        try:
+            data = np.load(npz_path, allow_pickle=True)
+
+            stored_version = str(data.get('cache_version', '1.0'))
+            if stored_version != self.CACHE_VERSION:
+                return None
+
+            stored_model = str(data.get('model_name', ''))
+            if stored_model != model_name:
+                return None
+
+            embeddings_array = data['embeddings']
+            target_ids = data['target_ids']
+
+            embeddings = {}
+            for i, tid in enumerate(target_ids):
+                embeddings[str(tid)] = embeddings_array[i]
+
+            metadata = json.loads(str(data.get('metadata', '{}')))
+            metadata['cache_timestamp'] = float(data.get('timestamp', 0))
+
+            return embeddings, metadata
+
+        except (IOError, KeyError, ValueError) as e:
+            print(f"Failed to load target cache: {e}")
+            return None

@@ -12,6 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from src.sdg_reference import SDGReference
 from src.config import Config
+from src.config.sdg_target_definitions import SDG_TARGET_DEFINITIONS
 from src.embedding_cache import EmbeddingCache
 from src.exceptions import EmbeddingError
 from src.sdg17_bias_correction import apply_sdg17_corrections
@@ -65,6 +66,8 @@ class AlignmentEngine:
         self._sdg_embeddings: Optional[Dict[int, np.ndarray]] = None
         self._sdg_embeddings_matrix: Optional[np.ndarray] = None
         self._sdg_numbers: Optional[List[int]] = None
+        self._target_embeddings_matrix: Optional[np.ndarray] = None
+        self._target_ids_list: Optional[List[str]] = None
 
         # Initialize activity embedding cache
         self._activity_cache = EmbeddingCache()
@@ -123,11 +126,24 @@ class AlignmentEngine:
                 self._sdg_embeddings[num] for num in self._sdg_numbers
             ])
 
+    def _initialize_target_embeddings(self):
+        """Pre-compute target embeddings matrix for batch processing."""
+        if self._target_embeddings_matrix is None:
+            target_embeddings = self.sdg_reference.get_target_embeddings()
+
+            self._target_ids_list = sorted(target_embeddings.keys())
+
+            self._target_embeddings_matrix = np.vstack([
+                target_embeddings[tid] for tid in self._target_ids_list
+            ])
+
     def align_activity(
         self,
         activity_text: str,
         return_top_n: Optional[int] = None,
-        use_cache: bool = True
+        use_cache: bool = True,
+        include_targets: bool = False,
+        target_boost: bool = False
     ) -> Dict[str, Any]:
         """
         Align a single activity with all SDGs.
@@ -136,6 +152,11 @@ class AlignmentEngine:
             activity_text: Activity description
             return_top_n: Return only top N SDGs (None for all)
             use_cache: Whether to use activity embedding cache
+            include_targets: Whether to include target-level scores
+            target_boost: If True, combine goal and target scores using max.
+                For each SDG, the score becomes max(goal_score, max_target_score)
+                where max_target_score is the highest target score within that SDG.
+                The is_aligned decision uses the combined score vs the threshold.
 
         Returns:
             Dictionary with scores for each SDG
@@ -183,6 +204,29 @@ class AlignmentEngine:
                 "threshold_used": threshold
             }
 
+        # Target boost: replace goal score with max(goal, max_target_per_sdg)
+        if target_boost:
+            import warnings
+            warnings.warn(
+                "target_boost is deprecated. Target descriptions are now included "
+                "in goal-level embeddings via the targets variant.",
+                DeprecationWarning,
+                stacklevel=2
+            )
+            target_scores = self._compute_target_scores(activity_embedding)
+            for sdg_num in range(1, 18):
+                max_target = max(
+                    (t["score"] for t in target_scores.values()
+                     if t["sdg_num"] == sdg_num),
+                    default=0.0
+                )
+                goal_score = scores[sdg_num]["score"]
+                combined = max(goal_score, max_target)
+                if combined != goal_score:
+                    scores[sdg_num]["score"] = round(combined, 4)
+                    scores[sdg_num]["is_aligned"] = combined >= scores[sdg_num]["threshold_used"]
+                    scores[sdg_num]["target_boost_applied"] = True
+
         # Apply SDG 17 bias correction if enabled
         if self.enable_sdg17_correction:
             scores = apply_sdg17_corrections(
@@ -227,6 +271,16 @@ class AlignmentEngine:
                 for sdg, data in sorted_scores[:return_top_n]
             ]
 
+        # Add target-level scores if requested
+        if include_targets:
+            target_scores = self._compute_target_scores(activity_embedding)
+            result["target_scores"] = target_scores
+            # Find top target
+            top_tid = max(target_scores.keys(), key=lambda k: target_scores[k]["score"])
+            result["top_target"] = top_tid
+            result["top_target_score"] = target_scores[top_tid]["score"]
+            result["top_target_sdg"] = target_scores[top_tid]["sdg_num"]
+
         return result
 
     def align_activities(
@@ -234,7 +288,9 @@ class AlignmentEngine:
         activities: List[Dict[str, Any]],
         show_progress: bool = True,
         batch_size: int = 32,
-        use_cache: bool = True
+        use_cache: bool = True,
+        include_targets: bool = False,
+        target_boost: bool = False
     ) -> List[Dict[str, Any]]:
         """
         Align multiple activities with SDGs using batch processing.
@@ -244,6 +300,8 @@ class AlignmentEngine:
             show_progress: Whether to show progress bar
             batch_size: Batch size for encoding
             use_cache: Whether to use activity embedding cache
+            include_targets: Whether to include target-level scores
+            target_boost: If True, combine goal and target scores using max.
 
         Returns:
             List of activity alignment results
@@ -338,6 +396,22 @@ class AlignmentEngine:
                     "threshold_used": threshold
                 }
 
+            # Target boost: replace goal score with max(goal, max_target_per_sdg)
+            if target_boost:
+                target_scores = self._compute_target_scores(activity_embeddings[idx])
+                for sdg_num in range(1, 18):
+                    max_target = max(
+                        (t["score"] for t in target_scores.values()
+                         if t["sdg_num"] == sdg_num),
+                        default=0.0
+                    )
+                    goal_score = scores[sdg_num]["score"]
+                    combined = max(goal_score, max_target)
+                    if combined != goal_score:
+                        scores[sdg_num]["score"] = round(combined, 4)
+                        scores[sdg_num]["is_aligned"] = combined >= scores[sdg_num]["threshold_used"]
+                        scores[sdg_num]["target_boost_applied"] = True
+
             # Apply SDG 17 bias correction if enabled
             if self.enable_sdg17_correction:
                 scores = apply_sdg17_corrections(
@@ -370,9 +444,75 @@ class AlignmentEngine:
 
             # Merge with original activity data
             result = {**activity, **alignment}
+
+            # Add target-level scores if requested
+            if include_targets:
+                target_scores = self._compute_target_scores(activity_embeddings[idx])
+                result["target_scores"] = target_scores
+                top_tid = max(target_scores.keys(), key=lambda k: target_scores[k]["score"])
+                result["top_target"] = top_tid
+                result["top_target_score"] = target_scores[top_tid]["score"]
+                result["top_target_sdg"] = target_scores[top_tid]["sdg_num"]
+
             results.append(result)
 
         return results
+
+    def _compute_target_scores(self, activity_embedding: np.ndarray, sdg_num: Optional[int] = None) -> Dict[str, Dict[str, Any]]:
+        """Compute target-level cosine similarity scores.
+
+        Args:
+            activity_embedding: Pre-computed activity embedding vector
+            sdg_num: If provided, only compute scores for targets of this SDG
+
+        Returns:
+            Dictionary of target_id -> {score, sdg_num, target_text}
+        """
+        self._initialize_target_embeddings()
+
+        activity_vec = activity_embedding.reshape(1, -1)
+
+        if sdg_num is not None:
+            # Filter to only targets for this SDG
+            indices = [i for i, tid in enumerate(self._target_ids_list)
+                       if SDG_TARGET_DEFINITIONS[tid]["sdg_num"] == sdg_num]
+            if not indices:
+                return {}
+            target_matrix = self._target_embeddings_matrix[indices]
+            target_ids = [self._target_ids_list[i] for i in indices]
+        else:
+            target_matrix = self._target_embeddings_matrix
+            target_ids = self._target_ids_list
+
+        similarities = cosine_similarity(activity_vec, target_matrix)[0]
+
+        result = {}
+        for i, tid in enumerate(target_ids):
+            result[tid] = {
+                "score": round(float(similarities[i]), 4),
+                "sdg_num": SDG_TARGET_DEFINITIONS[tid]["sdg_num"],
+                "target_text": SDG_TARGET_DEFINITIONS[tid]["target_text"],
+            }
+
+        return result
+
+    def align_targets(self, activity_text: str, sdg_num: Optional[int] = None) -> Dict[str, Dict[str, Any]]:
+        """Compute target-level alignment for an activity.
+
+        Standalone method for target-level analysis. Returns cosine similarity
+        scores against target embeddings. Scores are informational only —
+        no is_aligned flag or target-level thresholds.
+
+        Args:
+            activity_text: Activity description text
+            sdg_num: If provided, only compute scores for targets of this SDG
+
+        Returns:
+            Dictionary of target_id -> {score, sdg_num, target_text}
+        """
+        self._initialize_target_embeddings()
+        activity_embedding = self.sdg_reference.encode_text(activity_text)
+        return self._compute_target_scores(activity_embedding, sdg_num)
 
     def compute_report_alignment(
         self,
@@ -646,3 +786,14 @@ class AlignmentEngine:
         """Export alignment results to JSON."""
         with open(output_path, 'w') as f:
             json.dump(results, f, indent=2, default=str)
+
+    def cleanup(self):
+        """Release MPS resources from sentence transformer model."""
+        if hasattr(self, 'sdg_reference') and self.sdg_reference is not None:
+            self.sdg_reference.cleanup()
+
+    def __del__(self):
+        try:
+            self.cleanup()
+        except Exception:
+            pass

@@ -11,6 +11,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 from src.config import SDG_DEFINITIONS, Config
+from src.config.sdg_target_definitions import SDG_TARGET_DEFINITIONS
 from src.embedding_cache import EmbeddingCache
 from src.exceptions import EmbeddingError
 
@@ -34,6 +35,7 @@ class SDGReference:
 
         self._model: Optional[SentenceTransformer] = None
         self._embeddings: Optional[Dict[int, np.ndarray]] = None
+        self._target_embeddings: Optional[Dict[str, np.ndarray]] = None
 
         # Initialize the new embedding cache
         self._cache = EmbeddingCache(self.cache_dir)
@@ -42,7 +44,7 @@ class SDGReference:
     def model(self) -> SentenceTransformer:
         """Lazy-load the sentence transformer model with GPU support if available."""
         if self._model is None:
-            # Auto-detect device: cuda > mps (Apple Silicon) > cpu
+            # Auto-detect device: cuda > mps > cpu
             if os.getenv("CUDA_VISIBLE_DEVICES") != "-1":
                 import torch
                 if torch.cuda.is_available():
@@ -125,30 +127,35 @@ class SDGReference:
 
         return variants
 
-    def _combine_embeddings(self, embeddings: Dict[str, np.ndarray]) -> np.ndarray:
+    def _combine_embeddings(self, embeddings: Dict[str, np.ndarray],
+                            variant_weights: Optional[Dict[str, float]] = None) -> np.ndarray:
         """
         Combine multiple embeddings using weighted average.
 
         Args:
             embeddings: Dictionary of variant name to embedding array
+            variant_weights: Optional custom weights (overrides defaults)
 
         Returns:
             Combined embedding vector
         """
-        weights = {
-            'core': 0.35,        # Core description is most important
-            'local_gov': 0.30,   # Local context is crucial for council alignment
-            'indicators': 0.15,  # Official criteria provide structure
-            'keywords': 0.20     # Keywords help with direct matching
+        default_weights = {
+            'core': 0.05,
+            'local_gov': 0.05,
+            'targets': 0.55,
+            'keywords': 0.30,
+            'indicators': 0.05,
         }
 
+        weights = variant_weights if variant_weights is not None else default_weights
+
         # Normalize weights to sum to 1
-        total_weight = sum(weights.get(k, 0.25) for k in embeddings.keys())
+        total_weight = sum(weights.get(k, 0.20) for k in embeddings.keys())
 
         # Weighted combination
         combined = np.zeros_like(list(embeddings.values())[0])
         for variant, emb in embeddings.items():
-            weight = weights.get(variant, 0.25) / total_weight
+            weight = weights.get(variant, 0.20) / total_weight
             combined += weight * emb
 
         # Normalize the combined embedding
@@ -158,7 +165,51 @@ class SDGReference:
 
         return combined
 
-    def generate_embeddings(self, force_regenerate: bool = False) -> Dict[int, np.ndarray]:
+    def _generate_targets_variant_embedding(self, sdg_num: int) -> np.ndarray:
+        """Generate the targets variant embedding for an SDG.
+
+        Encodes each target individually (within the 384-token limit) and
+        averages the per-target embeddings to produce a single embedding
+        representing all targets for this SDG.
+
+        Args:
+            sdg_num: The SDG number (1-17)
+
+        Returns:
+            L2-normalized embedding vector representing all targets for this SDG
+        """
+        from src.config.sdg_target_definitions import get_targets_for_sdg
+
+        targets = get_targets_for_sdg(sdg_num)
+
+        if not targets:
+            # Fallback: encode the core description as the targets variant
+            sdg = SDG_DEFINITIONS.get(sdg_num, {})
+            fallback_text = f"SDG {sdg_num}: {sdg.get('name', '')}. {sdg.get('short_description', '')}"
+            return self.model.encode(fallback_text, convert_to_numpy=True)
+
+        target_texts = []
+        for target_id, target_def in targets.items():
+            text = (f"Target {target_id} of SDG {sdg_num}: "
+                    f"{target_def['target_text']}. "
+                    f"In plain terms: {target_def['layman_description']}")
+            target_texts.append(text)
+
+        # Batch-encode all target texts (each is within 384 tokens)
+        target_embeddings = self.model.encode(target_texts, convert_to_numpy=True)
+
+        # Average all target embeddings
+        avg_embedding = np.mean(target_embeddings, axis=0)
+
+        # L2 normalize
+        norm = np.linalg.norm(avg_embedding)
+        if norm > 0:
+            avg_embedding = avg_embedding / norm
+
+        return avg_embedding
+
+    def generate_embeddings(self, force_regenerate: bool = False,
+                           variant_weights: Optional[Dict[str, float]] = None) -> Dict[int, np.ndarray]:
         """
         Generate or load cached SDG embeddings with multi-text enhancement.
 
@@ -167,12 +218,13 @@ class SDGReference:
 
         Args:
             force_regenerate: Whether to regenerate embeddings
+            variant_weights: Optional custom variant weights (overrides defaults)
 
         Returns:
             Dictionary mapping SDG numbers to embeddings
         """
         # Try to load from new cache (v2 with numpy serialization)
-        if not force_regenerate:
+        if not force_regenerate and variant_weights is None:
             cached = self._cache.load_sdg_embeddings(self.model_name)
             if cached:
                 self._embeddings, metadata = cached
@@ -195,7 +247,7 @@ class SDGReference:
 
         # Generate embeddings with multi-text approach
         print(f"Generating enhanced SDG embeddings using {self.model_name}...")
-        print("Using multi-text embedding strategy (core + local_gov + indicators + keywords)")
+        print("Using multi-text embedding strategy (core + local_gov + targets + keywords + indicators)")
 
         self._embeddings = {}
 
@@ -209,8 +261,12 @@ class SDGReference:
                 embedding = self.model.encode(text, convert_to_numpy=True)
                 variant_embeddings[variant_name] = embedding
 
+            # Add targets variant (per-target encoding + averaging)
+            targets_embedding = self._generate_targets_variant_embedding(sdg_num)
+            variant_embeddings['targets'] = targets_embedding
+
             # Combine embeddings with weights
-            combined_embedding = self._combine_embeddings(variant_embeddings)
+            combined_embedding = self._combine_embeddings(variant_embeddings, variant_weights)
             self._embeddings[sdg_num] = combined_embedding
 
             # Print progress for every 5 SDGs
@@ -229,15 +285,16 @@ class SDGReference:
                 "SDG_DEFINITIONS may be incomplete."
             )
 
-        # Cache embeddings using new efficient format
-        try:
-            cache_path = self._cache.save_sdg_embeddings(
-                self._embeddings, self.model_name,
-                metadata={"variant_weights": {"core": 0.35, "local_gov": 0.30, "indicators": 0.15, "keywords": 0.20}}
-            )
-            print(f"Embeddings cached to {cache_path}")
-        except Exception as e:
-            print(f"Failed to cache embeddings: {e}")
+        # Cache embeddings using new efficient format (only with default weights)
+        if variant_weights is None:
+            try:
+                cache_path = self._cache.save_sdg_embeddings(
+                    self._embeddings, self.model_name,
+                    metadata={"variant_weights": {"core": 0.05, "local_gov": 0.05, "targets": 0.55, "keywords": 0.30, "indicators": 0.05}}
+                )
+                print(f"Embeddings cached to {cache_path}")
+            except Exception as e:
+                print(f"Failed to cache embeddings: {e}")
 
         return self._embeddings
 
@@ -366,22 +423,40 @@ class SDGReference:
         Returns:
             Dictionary with text variants and their relative contributions
         """
+        from src.config.sdg_target_definitions import get_targets_for_sdg
+
         sdg = SDG_DEFINITIONS.get(sdg_num, {})
         variants = self._generate_sdg_text_variants(sdg_num)
+        targets = get_targets_for_sdg(sdg_num)
+
+        # Build targets variant text summary
+        target_summary = ""
+        if targets:
+            target_summaries = []
+            for tid, tdef in targets.items():
+                target_summaries.append(f"Target {tid}: {tdef['target_text'][:80]}...")
+            target_summary = "; ".join(target_summaries[:3])
+            if len(targets) > 3:
+                target_summary += f" (+{len(targets)-3} more)"
+
+        all_variants = dict(variants)
+        all_variants['targets'] = target_summary if target_summary else "(no targets)"
 
         return {
             "sdg_number": sdg_num,
             "sdg_name": sdg.get("name", ""),
             "text_variants": {
                 name: text[:200] + "..." if len(text) > 200 else text
-                for name, text in variants.items()
+                for name, text in all_variants.items()
             },
             "weights": {
-                "core": 0.35,
-                "local_gov": 0.30,
-                "indicators": 0.15,
-                "keywords": 0.20
+                "core": 0.05,
+                "local_gov": 0.05,
+                "targets": 0.55,
+                "keywords": 0.30,
+                "indicators": 0.05,
             },
+            "total_targets": len(targets),
             "total_local_gov_keywords": len(sdg.get("local_gov_keywords", [])),
             "total_keywords": len(sdg.get("keywords", [])),
             "total_indicators": len(sdg.get("indicators", []))
@@ -447,3 +522,142 @@ class SDGReference:
 
         # Normalize by number of keywords
         return matches / len(keywords)
+
+    # --- Target-level embedding methods ---
+
+    def _generate_target_text_variants(self, target_id: str) -> Dict[str, str]:
+        """Generate 3 text variants for a target embedding.
+
+        Args:
+            target_id: Target ID like "10.2"
+
+        Returns:
+            Dictionary of variant name to text
+        """
+        target_def = SDG_TARGET_DEFINITIONS.get(target_id)
+        if target_def is None:
+            raise EmbeddingError(f"Target {target_id} not found in SDG_TARGET_DEFINITIONS")
+
+        sdg_num = target_def["sdg_num"]
+        target_text = target_def["target_text"]
+        layman = target_def["layman_description"]
+        detailed = target_def["detailed_info"]
+        sdg_name = SDG_DEFINITIONS.get(sdg_num, {}).get("name", f"SDG {sdg_num}")
+
+        # Variant 1: core — official UN target language (weight 0.50)
+        variants = {"core": target_text}
+
+        # Variant 2: context — simplified + expanded (weight 0.30)
+        variants["context"] = f"{layman} {detailed}"
+
+        # Variant 3: anchor — ties target to its parent goal (weight 0.20)
+        truncated = target_text[:100] + ("..." if len(target_text) > 100 else "")
+        variants["anchor"] = f"Target {target_id} of SDG {sdg_num} {sdg_name}: {truncated}"
+
+        return variants
+
+    def _combine_target_embeddings(self, embeddings: Dict[str, np.ndarray]) -> np.ndarray:
+        """Combine target variant embeddings with target-specific weights.
+
+        Args:
+            embeddings: Dictionary of variant name to embedding array
+
+        Returns:
+            Combined L2-normalized embedding vector
+        """
+        weights = {"core": 0.50, "context": 0.30, "anchor": 0.20}
+
+        total_weight = sum(weights.get(k, 0) for k in embeddings.keys())
+        combined = np.zeros_like(list(embeddings.values())[0])
+        for variant, emb in embeddings.items():
+            weight = weights.get(variant, 0) / total_weight
+            combined += weight * emb
+
+        norm = np.linalg.norm(combined)
+        if norm > 0:
+            combined = combined / norm
+
+        return combined
+
+    def generate_target_embeddings(self, force_regenerate: bool = False) -> Dict[str, np.ndarray]:
+        """Generate or load cached target-level embeddings.
+
+        Each target gets 3 text variants (core, context, anchor) encoded
+        separately and combined with weights (0.50, 0.30, 0.20).
+
+        Args:
+            force_regenerate: Whether to regenerate even if cached
+
+        Returns:
+            Dictionary mapping target IDs (e.g. "10.2") to embeddings
+        """
+        if not force_regenerate:
+            cached = self._cache.load_target_embeddings(self.model_name)
+            if cached:
+                self._target_embeddings, metadata = cached
+                print(f"Loaded target embeddings from cache ({len(self._target_embeddings)} targets)")
+                return self._target_embeddings
+
+        print(f"Generating target embeddings for {len(SDG_TARGET_DEFINITIONS)} targets...")
+        print("Using multi-text strategy (core=0.50, context=0.30, anchor=0.20)")
+
+        self._target_embeddings = {}
+        target_ids = sorted(SDG_TARGET_DEFINITIONS.keys())
+
+        for target_id in target_ids:
+            text_variants = self._generate_target_text_variants(target_id)
+            variant_embeddings = {}
+            for variant_name, text in text_variants.items():
+                variant_embeddings[variant_name] = self.model.encode(text, convert_to_numpy=True)
+            self._target_embeddings[target_id] = self._combine_target_embeddings(variant_embeddings)
+
+        print(f"Generated embeddings for {len(self._target_embeddings)} targets")
+
+        # Cache
+        try:
+            self._cache.save_target_embeddings(
+                self._target_embeddings, self.model_name,
+                metadata={"variant_weights": {"core": 0.50, "context": 0.30, "anchor": 0.20}}
+            )
+        except Exception as e:
+            print(f"Failed to cache target embeddings: {e}")
+
+        return self._target_embeddings
+
+    def get_target_embeddings(self) -> Dict[str, np.ndarray]:
+        """Get all target embeddings, generating if needed."""
+        if self._target_embeddings is None:
+            self.generate_target_embeddings()
+        return self._target_embeddings
+
+    def get_target_embedding(self, target_id: str) -> np.ndarray:
+        """Get embedding for a specific target.
+
+        Args:
+            target_id: Target ID like "10.2"
+
+        Returns:
+            Embedding vector
+        """
+        if self._target_embeddings is None:
+            self.generate_target_embeddings()
+        return self._target_embeddings[target_id]
+
+    def cleanup(self):
+        """Move model to CPU and release MPS resources."""
+        if hasattr(self, '_model') and self._model is not None:
+            import torch
+            try:
+                self._model.to("cpu")
+            except Exception:
+                pass
+            import gc
+            gc.collect()
+            if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                torch.mps.empty_cache()
+
+    def __del__(self):
+        try:
+            self.cleanup()
+        except Exception:
+            pass

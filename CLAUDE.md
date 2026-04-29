@@ -1,145 +1,95 @@
+# OpenWolf
+
+@.wolf/OPENWOLF.md
+
+This project uses OpenWolf for context management. Read and follow .wolf/OPENWOLF.md every session. Check .wolf/cerebrum.md before generating code. Check .wolf/anatomy.md before reading files.
+
+
 # CLAUDE.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+## Common Commands
 
-## 1. Think Before Coding
+```bash
+# Install dependencies
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+# Run tests (pytest configured in pyproject.toml with coverage)
+pytest                                          # All tests
+pytest tests/test_alignment_engine.py           # Single test file
+pytest tests/test_alignment_engine.py::TestAlignmentEngine::test_init  # Single test
+pytest --cov=src --cov-report=html              # With HTML coverage report
 
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask. Werify your assumptions or ask for more information
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-- Don't speculate. don't say "likely" or "probably". if you have a theory, check it and then reply.
+# Run the web dashboard
+streamlit run app.py
 
-## 2. Simplicity First
+# Run CLI analysis
+python scripts/run_analysis.py --input data/raw/ --output results/
+python scripts/run_analysis.py --input data/raw/ --output results/ --workers 4  # parallel
+python scripts/run_analysis.py --input data/raw/ --output results/ --no-hybrid   # ST-only mode
 
-**Minimum code that solves the problem. Nothing speculative.**
+# Code formatting (black, line-length=100)
+black .
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+# Threshold config inspection
+python scripts/check_thresholds.py
+python scripts/check_thresholds.py --show-all
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+# Threshold optimization
+python scripts/analysis/optimize_threshold.py --sdg 12              # Single SDG
+python scripts/analysis/optimize_threshold.py --sdg all              # All 17 SDGs
+python scripts/analysis/optimize_threshold.py --sdg all --cv 5       # All SDGs with 5-fold CV
+python scripts/analysis/optimize_threshold.py --sdg 12 --pct-samples 0.5  # 50% of min class
+python scripts/analysis/optimize_threshold_fast.py --mode hybrid     # Fast hybrid optimizer
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+## Architecture
 
----
+**Pipeline flow** (both CLI and dashboard):
+PDF Extraction → Text Processing → Activity Extraction → SDG Alignment → Reporting → Trend Analysis
 
-## 5. Performance & Caching
+Two alignment engines:
+- **`src/alignment_engine.py`**: Sentence Transformer only (cosine similarity)
+- **`src/hybrid_alignment_engine.py`**: Ensemble of ST (45%) + sdgBERT (55%), with per-SDG bias corrections and keyword boosting
 
-**Cache with intent, not by default.**
+**Two UI entry points:**
+- `app.py` → Streamlit dashboard (imports from `src/dashboard/`)
+- `scripts/run_analysis.py` → CLI with argparse (~1300 lines)
 
-When implementing caching:
-- Use content-addressed keys (SHA256 of content + model) for deterministic invalidation
-- Prefer numpy's native format (.npy/.npz) over pickle for numeric data - it's faster and more compact
-- Include version metadata with model fingerprints to auto-invalidate stale caches
-- Cache at the right granularity (SDG embeddings once per model, activity embeddings per text)
+**Key source layout:**
+- `src/config/` — `Config` dataclass (`settings.py`), SDG definitions (`sdg_definitions.py`), thresholds (`threshold_config.py`), `.env` loader (`env_loader.py`)
+- `src/reports/` — `Reporter` class composed via mixins (`base.py` + `visualizations.py` + `interactive.py` + `aggregations.py`)
+- `src/dashboard/` — Streamlit UI: `session.py` (state), `cache_manager.py`, `components/` (landing, sidebar, tabs), `processing/` (extraction + alignment)
+- `src/trends/` — Trend analysis subpackage (core, analysis, comparison, viz, exports)
+- `src/sdg_*_bias_correction.py` — Per-SDG bias correction modules (SDGs 4,6,8,10,11,12,14,16,17)
+- `scripts/analysis/` — Threshold optimization: `optimize_threshold.py` (ST-only per-SDG, cross-validation), `optimize_threshold_fast.py` (hybrid/bayesian)
 
----
+## Key Patterns and Conventions
 
-## 6. Code Organization
+- **Config**: Centralized `Config` dataclass in `src/config/settings.py` with env var overrides. Thresholds live in `src/config/threshold_config.py` as the single source of truth — never hardcode threshold values.
+- **Environment loading**: Singleton `EnvLoader` in `src/config/env_loader.py` auto-loads `.env` on import. Don't call `load_dotenv()` directly.
+- **Caching**: Two levels — `EmbeddingCache` (content-addressed SHA256 keys, numpy `.npy` format) for model embeddings, and `CacheManager` (Streamlit session state, hash-based) for dashboard results. Always include model fingerprint in cache keys.
+- **GPU auto-detection**: `SDGReference` checks cuda > mps > cpu. Force CPU with `CUDA_VISIBLE_DEVICES=""`.
+- **Default model**: `voyager205/sdg-finetuned-enhanced` from HuggingFace Hub, with local path fallback to `models/sdg-finetuned-enhanced/`.
+- **Output filenames**: Standardized format `{state}_{council}_{region}_{year}_alignment.csv` — not original PDF filenames.
+- **Reporter mixin composition**: `Reporter` inherits from `BaseReporter`, `VisualizationMixin`, `InteractiveMixin`, `AggregationMixin`. Add new report capabilities to the appropriate mixin, not `base.py`.
 
-**Files should fit on a screen, not in a book.**
+## Behavioral Guidelines
 
-- If a file exceeds ~500 lines, consider modularizing
-- Extract pure functions that don't depend on framework state (e.g., Streamlit session)
-- Group by feature/domain, not by layer (dashboard/utils.py, not helpers.py)
-- Keep framework-specific imports (Streamlit, Flask) at the edges, not in core logic
+**Think before coding.** Don't assume. If uncertain, ask. If multiple interpretations exist, present them. If something is unclear, stop and name what's confusing.
 
-**When to split:**
-- Utilities used in multiple places → extract to shared module
-- Constants/configuration → config module
-- Pure business logic → separate from UI/rendering code
+**Simplicity first.** Minimum code that solves the problem. No speculative features, no abstractions for single-use code, no error handling for impossible scenarios. If you write 200 lines and it could be 50, rewrite it.
 
----
+**Surgical changes.** Touch only what you must. Don't refactor things that aren't broken. Match existing style. When your changes create orphans (unused imports/variables), remove them. Don't remove pre-existing dead code unless asked.
 
-## 7. Bug Prevention Patterns
+**Goal-driven execution.** Define verifiable success criteria before implementing. For multi-step tasks, state a plan with verification checkpoints.
 
-**Common code smells to catch:**
+**Root cause over patches.** Diagnose to the root cause. Never apply workarounds unless explicitly asked.
 
-1. **Duplicate assignments**: Same variable assigned twice without intermediate use
+**Cache with intent.** Use content-addressed keys (SHA256 of content + model). Prefer numpy `.npy` over pickle. Include version metadata for auto-invalidation. Cache at the right granularity (SDG embeddings once per model, activity embeddings per text).
 
-2. **Custom implementations of standard algorithms**:
+**Code organization.** Files exceeding ~500 lines should be considered for modularization. Extract pure functions that don't depend on Streamlit session state. Keep framework imports at the edges, not in core logic.
 
-3. **Missing cache invalidation**:
-
----
-
-## 8. Project Hygiene & Directory Organization
-
-**A place for everything, and everything in its place.**
-
-Messy projects accumulate technical debt. Keep the root directory clean and organized.
-
-### The .gitignore Rule
-
-**Create `.gitignore` early and keep it comprehensive:**
-
-### Clean Up After Debugging
-
-### The "One Day" Trap
-
-**Don't keep files "just in case":**
-
-
-**Git is your backup:**
-
-### Verification Checklist
-
-1. **Trace the data flow**: Where does each model's output enter the pipeline?
-2. **Verify all components contribute**: Add assertions or logging to confirm each model's scores affect the final result
-3. **Compare outputs**: Run both "single model" and "ensemble" modes and verify different outputs
-4. **Check the math**: Ensemble scores should be weighted combinations, not just one model's scores
-5. **Test with known inputs**: Use inputs where each model gives different predictions to verify combination
-
-### Red Flags
-
-
----
-
-## 9. Root cause
-
-
-No quick fixes. ALways diagnose to the root cause and devise proper solutions. Never apply patches or workarounds unless explicitly asked.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+**Bug prevention.** Watch for: duplicate assignments (same variable assigned twice without intermediate use), missing cache invalidation, and reimplementing standard algorithms.

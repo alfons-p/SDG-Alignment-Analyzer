@@ -3,6 +3,9 @@
 Integrates the sadickam/sdgBERT model for SDG classification alongside
 the sentence transformer approach. Provides ensemble capabilities.
 
+Supports both single-label (16-class softmax, original) and multi-label
+(17-class sigmoid, fine-tuned) model variants.
+
 Reference:
 - Model: https://huggingface.co/sadickam/sdgBERT
 - Paper: Sadick et al. (2026), Journal of Construction Engineering and Management
@@ -20,8 +23,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from src.exceptions import ModelLoadError
 
 
-# SDG definitions (matching the sdgBERT model's output classes)
-# Note: sdgBERT only covers SDG 1-16, not SDG 17
+# Single-label mapping: class index → SDG (original sdgBERT, 16 classes)
 SDG_BERT_MAPPING = {
     0: {"sdg": 1, "name": "No Poverty", "color": "#E5243B"},
     1: {"sdg": 2, "name": "Zero Hunger", "color": "#DDA63A"},
@@ -41,84 +43,122 @@ SDG_BERT_MAPPING = {
     15: {"sdg": 16, "name": "Peace, Justice and Strong Institutions", "color": "#00689D"},
 }
 
+# Multi-label mapping: class index → SDG (fine-tuned sdgBERT, 17 classes)
+SDG_BERT_MAPPING_MULTILABEL = {
+    0: {"sdg": 1, "name": "No Poverty", "color": "#E5243B"},
+    1: {"sdg": 2, "name": "Zero Hunger", "color": "#DDA63A"},
+    2: {"sdg": 3, "name": "Good Health and Well-being", "color": "#4C9F38"},
+    3: {"sdg": 4, "name": "Quality Education", "color": "#C5192D"},
+    4: {"sdg": 5, "name": "Gender Equality", "color": "#FF3A21"},
+    5: {"sdg": 6, "name": "Clean Water and Sanitation", "color": "#26BDE2"},
+    6: {"sdg": 7, "name": "Affordable and Clean Energy", "color": "#FCC30B"},
+    7: {"sdg": 8, "name": "Decent Work and Economic Growth", "color": "#A21942"},
+    8: {"sdg": 9, "name": "Industry, Innovation and Infrastructure", "color": "#FD6925"},
+    9: {"sdg": 10, "name": "Reduced Inequalities", "color": "#DD1367"},
+    10: {"sdg": 11, "name": "Sustainable Cities and Communities", "color": "#FD9D24"},
+    11: {"sdg": 12, "name": "Responsible Consumption and Production", "color": "#BF8B2E"},
+    12: {"sdg": 13, "name": "Climate Action", "color": "#3F7E44"},
+    13: {"sdg": 14, "name": "Life Below Water", "color": "#0A97D9"},
+    14: {"sdg": 15, "name": "Life on Land", "color": "#56C02B"},
+    15: {"sdg": 16, "name": "Peace, Justice and Strong Institutions", "color": "#00689D"},
+    16: {"sdg": 17, "name": "Partnerships for the Goals", "color": "#19486A"},
+}
+
 
 class SDGBERTClassifier:
     """
-    SDG BERT Classifier using sadickam/sdgBERT model.
-    
-    Provides single-label classification for SDG 1-16.
-    SDG 17 (Partnerships) is not covered by this model.
-    
-    Performance (from model card):
-    - Accuracy: 90%
-    - Matthews Correlation: 0.89
-    
-    Reference:
-        Sadick, A.-M., Hasan, A. and Ahiaga-Dagbui, D.D. (2026),
-        "Modeling sustainability discourse in the construction industry: 
-        A deep-learning approach". Journal of Construction Engineering and 
-        Management, 152(4). DOI: 10.1061/JCEMD4.COENG-16205
+    SDG BERT Classifier supporting both single-label and multi-label models.
+
+    Single-label (16-class): Original sadickam/sdgBERT with softmax, SDGs 1-16.
+    Multi-label (17-class): Fine-tuned model with sigmoid, SDGs 1-17.
+
+    The model type is auto-detected from num_labels in the model config.
     """
-    
-    MODEL_NAME = "sadickam/sdgBERT"
-    
+
+    MODEL_NAME = "voyager205/sdg-bert-multilabel"
+    FALLBACK_MODEL = "voyager205/sdg-bert-multilabel"
+
     def __init__(self, model_name: Optional[str] = None, device: Optional[str] = None):
         """
         Initialize the SDG BERT classifier.
 
         Args:
-            model_name: HuggingFace model name (default: sadickam/sdgBERT)
+            model_name: HuggingFace model name or local path (default: sadickam/sdgBERT)
             device: Device to use ('cuda', 'mps', 'cpu', or None for auto)
         """
         self.model_name = model_name or self.MODEL_NAME
 
-        # Auto-detect best device: CUDA > MPS > CPU
+        # Auto-detect device: CUDA > MPS > CPU
         if device is None:
             if torch.cuda.is_available():
                 self.device = "cuda"
-            elif torch.backends.mps.is_available():
+            elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
                 self.device = "mps"
             else:
                 self.device = "cpu"
         else:
             self.device = device
 
-        print(f"Loading sdgBERT model: {self.model_name}")
-        print(f"Device: {self.device}")
-        
-        try:
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-            self.model = AutoModelForSequenceClassification.from_pretrained(self.model_name)
-            self.model.to(self.device)
-            self.model.eval()
-            print("✓ sdgBERT model loaded successfully")
-        except Exception as e:
-            raise ModelLoadError(f"Failed to load sdgBERT model: {e}. "
-                                 f"Ensure transformers and torch are installed.") from e
-        
-        self.num_labels = len(SDG_BERT_MAPPING)
+        # Try local fine-tuned model first, fall back to HuggingFace
+        models_to_try = [self.model_name]
+        if model_name is None and self.model_name != self.FALLBACK_MODEL:
+            models_to_try.append(self.FALLBACK_MODEL)
+
+        loaded = False
+        for attempt_model in models_to_try:
+            try:
+                print(f"Initializing sdgBERT: {attempt_model}")
+                self.tokenizer = AutoTokenizer.from_pretrained(attempt_model)
+                self.model = AutoModelForSequenceClassification.from_pretrained(attempt_model)
+                self.model.to(self.device)
+                self.model.eval()
+                self.model_name = attempt_model
+                print("sdgBERT model loaded successfully")
+                loaded = True
+                break
+            except Exception as e:
+                if attempt_model == models_to_try[-1]:
+                    raise ModelLoadError(f"Failed to load sdgBERT model: {e}. "
+                                         f"Ensure transformers and torch are installed.") from e
+                print(f"Model {attempt_model} not found, trying fallback...")
+
+        if not loaded:
+            raise ModelLoadError("Failed to load any sdgBERT model.")
+
+        # Auto-detect model type from config
+        self.num_labels = self.model.config.num_labels
+        self.is_multilabel = (
+            getattr(self.model.config, "problem_type", None) == "multi_label_classification"
+            or self.num_labels == 17
+        )
+        self.mapping = SDG_BERT_MAPPING_MULTILABEL if self.is_multilabel else SDG_BERT_MAPPING
+        if self.is_multilabel:
+            print(f"  Multi-label mode: {self.num_labels} classes (SDGs 1-17), sigmoid activation")
+        else:
+            print(f"  Single-label mode: {self.num_labels} classes (SDGs 1-16), softmax activation")
         
     def predict(self, text: str, return_all_scores: bool = False) -> Union[int, Dict]:
         """
         Predict SDG for a single text.
-        
+
         Args:
             text: Input text to classify
             return_all_scores: If True, return probabilities for all SDGs
-            
+
         Returns:
-            If return_all_scores=False: predicted SDG number (1-16)
+            If return_all_scores=False: predicted SDG number (1-16 or 1-17)
             If return_all_scores=True: dict with 'sdg', 'confidence', 'all_scores'
         """
+        max_sdg = 17 if self.is_multilabel else 16
         if not text or not text.strip():
             if return_all_scores:
                 return {
                     'sdg': None,
                     'confidence': 0.0,
-                    'all_scores': {i: 0.0 for i in range(1, 17)}
+                    'all_scores': {i: 0.0 for i in range(1, max_sdg + 1)}
                 }
             return None
-        
+
         # Tokenize
         inputs = self.tokenizer(
             text,
@@ -127,32 +167,37 @@ class SDGBERTClassifier:
             padding=True,
             max_length=512
         ).to(self.device)
-        
+
         # Predict
         with torch.no_grad():
             outputs = self.model(**inputs)
-            probabilities = torch.softmax(outputs.logits, dim=1)
+            if self.is_multilabel:
+                probabilities = torch.sigmoid(outputs.logits)
+            else:
+                probabilities = torch.softmax(outputs.logits, dim=1)
             probabilities = probabilities.cpu().numpy()[0]
-        
+
         # Get predicted class
         predicted_class = int(np.argmax(probabilities))
         confidence = float(probabilities[predicted_class])
-        
+
         # Map to SDG number
-        predicted_sdg = SDG_BERT_MAPPING[predicted_class]['sdg']
-        
+        predicted_sdg = self.mapping[predicted_class]['sdg']
+
         if not return_all_scores:
             return predicted_sdg
-        
+
         # Build scores dict for all SDGs
         all_scores = {}
         for class_idx, prob in enumerate(probabilities):
-            sdg_num = SDG_BERT_MAPPING[class_idx]['sdg']
-            all_scores[sdg_num] = float(prob)
-        
-        # Add SDG 17 with 0 score (not covered by model)
-        all_scores[17] = 0.0
-        
+            if class_idx in self.mapping:
+                sdg_num = self.mapping[class_idx]['sdg']
+                all_scores[sdg_num] = float(prob)
+
+        # For single-label model, add SDG 17 with 0 score
+        if not self.is_multilabel:
+            all_scores[17] = 0.0
+
         return {
             'sdg': predicted_sdg,
             'confidence': confidence,
@@ -181,7 +226,7 @@ class SDGBERTClassifier:
 
         for i in batches:
             batch = texts[i:i + batch_size]
-            
+
             # Tokenize batch
             inputs = self.tokenizer(
                 batch,
@@ -190,48 +235,80 @@ class SDGBERTClassifier:
                 padding=True,
                 max_length=512
             ).to(self.device)
-            
+
             # Predict
             with torch.no_grad():
                 outputs = self.model(**inputs)
-                probabilities = torch.softmax(outputs.logits, dim=1)
+                if self.is_multilabel:
+                    probabilities = torch.sigmoid(outputs.logits)
+                else:
+                    probabilities = torch.softmax(outputs.logits, dim=1)
                 probabilities = probabilities.cpu().numpy()
-            
+
             # Process each prediction
             for probs in probabilities:
                 predicted_class = int(np.argmax(probs))
                 confidence = float(probs[predicted_class])
-                predicted_sdg = SDG_BERT_MAPPING[predicted_class]['sdg']
-                
+                predicted_sdg = self.mapping[predicted_class]['sdg']
+
                 # Build all scores
                 all_scores = {}
                 for class_idx, prob in enumerate(probs):
-                    sdg_num = SDG_BERT_MAPPING[class_idx]['sdg']
-                    all_scores[sdg_num] = float(prob)
-                all_scores[17] = 0.0  # Not covered
-                
+                    if class_idx in self.mapping:
+                        sdg_num = self.mapping[class_idx]['sdg']
+                        all_scores[sdg_num] = float(prob)
+
+                # For single-label model, add SDG 17 with 0 score
+                if not self.is_multilabel:
+                    all_scores[17] = 0.0
+
                 results.append({
                     'sdg': predicted_sdg,
                     'confidence': confidence,
                     'all_scores': all_scores
                 })
-        
+
         return results
     
     def get_model_info(self) -> Dict:
         """Get information about the loaded model."""
-        return {
+        coverage = 'SDG 1-17' if self.is_multilabel else 'SDG 1-16 (excludes SDG 17)'
+        info = {
             'model_name': self.model_name,
             'device': self.device,
             'num_parameters': sum(p.numel() for p in self.model.parameters()),
             'num_trainable_parameters': sum(p.numel() for p in self.model.parameters() if p.requires_grad),
-            'coverage': 'SDG 1-16 (excludes SDG 17)',
-            'performance': {
-                'accuracy': 0.90,
-                'matthews_correlation': 0.89
-            },
+            'num_labels': self.num_labels,
+            'is_multilabel': self.is_multilabel,
+            'coverage': coverage,
             'citation': 'Sadick et al. (2026), Journal of Construction Engineering and Management'
         }
+        if not self.is_multilabel:
+            info['performance'] = {
+                'accuracy': 0.90,
+                'matthews_correlation': 0.89
+            }
+        return info
+
+    def cleanup(self):
+        """Move model to CPU and release MPS resources."""
+        if hasattr(self, 'model') and self.model is not None and self.device != "cpu":
+            self.model.to("cpu")
+            self.device = "cpu"
+        import gc
+        gc.collect()
+        try:
+            import torch
+            if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                torch.mps.empty_cache()
+        except Exception:
+            pass
+
+    def __del__(self):
+        try:
+            self.cleanup()
+        except Exception:
+            pass
 
 
 class EnsembleSDGClassifier:
@@ -298,10 +375,8 @@ class EnsembleSDGClassifier:
         # Combine scores using weighted average
         ensemble_scores = {}
         for sdg_num in range(1, 18):
-            st_score = 0.0
-            # Normalize ST score to probability-like (assume max score ~0.6)
-            st_score_raw = st_alignment['all_scores'].get(sdg_num, {}).get('score', 0)
-            st_score = min(st_score_raw / 0.6, 1.0)  # Normalize
+            # ST scores already span 0-1 — no normalization needed
+            st_score = st_alignment['all_scores'].get(sdg_num, {}).get('score', 0)
             
             sdg_bert_score = sdg_bert_result['all_scores'].get(sdg_num, 0)
             
@@ -452,5 +527,21 @@ def compare_classifiers(
         
         results['sentence_transformer_accuracy'] = st_correct / total
         results['sdg_bert_accuracy'] = sdg_bert_correct / total
-    
+
     return results
+
+
+# Ensure background PyTorch distributed process groups are shut down at exit.
+# HuggingFace's AutoModelForSequenceClassification may initialize distributed
+# groups depending on model config; these must be destroyed before C++ teardown.
+import atexit
+
+def _force_shutdown_distributed():
+    try:
+        import torch.distributed as dist
+        if dist.is_available() and dist.is_initialized():
+            dist.destroy_process_group()
+    except Exception:
+        pass
+
+atexit.register(_force_shutdown_distributed)
