@@ -140,6 +140,7 @@ def get_extractor(min_words: int = 20, max_words: int = 500):
 
 
 def get_engine():
+    """DEPRECATED: Use get_hybrid_engine() for V2. Kept for ST-only fallback."""
     from src.alignment_engine import AlignmentEngine
     return AlignmentEngine()
 
@@ -148,26 +149,33 @@ def get_hybrid_engine(
     model_name: str,
     similarity_threshold: float,
     ensemble_mode: str = "weighted",
-    sdg_bert_weight: float = 0.55,
-    st_weight: float = 0.45,
-    enable_sdg17_correction: bool = True,
-    enable_sdg11_correction: bool = True,
+    bias_corrections: dict = None,
     use_custom_thresholds: bool = False,
-    custom_sdg_thresholds: dict = None
+    custom_sdg_thresholds: dict = None,
 ):
-    """Initialize hybrid alignment engine with sdgBERT support."""
+    """Initialize hybrid alignment engine with sdgBERT support (V2).
+
+    Per-SDG ensemble weights loaded from SDG_ENSEMBLE_WEIGHTS automatically.
+    """
     from src.hybrid_alignment_engine import HybridAlignmentEngine
+
+    bias = bias_corrections or {}
     return HybridAlignmentEngine(
         model_name=model_name,
         similarity_threshold=similarity_threshold,
         use_sdg_bert=True,
         ensemble_mode=ensemble_mode,
-        sdg_bert_weight=sdg_bert_weight,
-        st_weight=st_weight,
-        enable_sdg17_correction=enable_sdg17_correction,
-        enable_sdg11_correction=enable_sdg11_correction,
+        enable_sdg17_correction=bias.get(17, True),
+        enable_sdg11_correction=bias.get(11, True),
+        enable_sdg14_correction=bias.get(14, True),
+        enable_sdg4_correction=bias.get(4, True),
+        enable_sdg6_correction=bias.get(6, True),
+        enable_sdg8_correction=bias.get(8, True),
+        enable_sdg10_correction=bias.get(10, True),
+        enable_sdg12_correction=bias.get(12, True),
+        enable_sdg16_correction=bias.get(16, True),
         use_custom_thresholds=use_custom_thresholds,
-        custom_sdg_thresholds=custom_sdg_thresholds
+        custom_sdg_thresholds=custom_sdg_thresholds,
     )
 
 

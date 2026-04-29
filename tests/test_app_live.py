@@ -150,13 +150,11 @@ def test_processing_settings_fields():
         "similarity_threshold",
         "use_hybrid",
         "ensemble_mode",
-        "sdg_bert_weight",
-        "st_weight",
         "min_words",
         "max_words",
         "top_activities",
-        "enable_sdg17_correction",
-        "enable_sdg11_correction",
+        "enable_bias_corrections",
+        "bias_corrections",
         "use_custom_thresholds",
         "sdg_thresholds",
     ]
@@ -164,15 +162,15 @@ def test_processing_settings_fields():
         assert hasattr(settings, field), f"Missing field: {field}"
 
 def test_processing_settings_defaults():
-    from src.dashboard.components.sidebar import ProcessingSettings, MODEL_PATHS
+    from src.dashboard.components.sidebar import ProcessingSettings, MODEL_FINETUNED
     settings = ProcessingSettings()
-    assert settings.model_name == MODEL_PATHS["finetuned"]
+    assert settings.model_name == MODEL_FINETUNED
     assert settings.similarity_threshold == 0.5
-    assert settings.use_hybrid == False
+    assert settings.use_hybrid == True
     assert settings.min_words == 20
     assert settings.max_words == 500
-    assert settings.enable_sdg17_correction == True
-    assert settings.enable_sdg11_correction == True
+    assert settings.enable_bias_corrections == True
+    assert settings.bias_corrections == {}
 
 def test_processing_settings_custom():
     from src.dashboard.components.sidebar import ProcessingSettings

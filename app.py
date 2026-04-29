@@ -99,16 +99,13 @@ def main():
         'similarity_threshold': settings.similarity_threshold,
         'use_hybrid': settings.use_hybrid,
         'ensemble_mode': settings.ensemble_mode,
-        'sdg_bert_weight': settings.sdg_bert_weight,
-        'st_weight': settings.st_weight,
         'min_words': settings.min_words,
         'max_words': settings.max_words,
         'top_activities': settings.top_activities,
-        'enable_sdg17_correction': settings.enable_sdg17_correction,
-        'enable_sdg11_correction': settings.enable_sdg11_correction,
+        'enable_bias_corrections': settings.enable_bias_corrections,
+        'bias_corrections': str(sorted(settings.bias_corrections.items())),
         'use_custom_thresholds': settings.use_custom_thresholds,
         'sdg_thresholds': settings.sdg_thresholds,
-        # Hash model config to detect code/config changes
         'model_config': str(settings.model_name) + str(settings.use_hybrid),
     })
 
@@ -149,13 +146,10 @@ def main():
                 similarity_threshold=settings.similarity_threshold,
                 use_hybrid=settings.use_hybrid,
                 ensemble_mode=settings.ensemble_mode,
-                sdg_bert_weight=settings.sdg_bert_weight,
-                st_weight=settings.st_weight,
                 min_words=settings.min_words,
                 max_words=settings.max_words,
                 top_activities=settings.top_activities if settings.top_activities > 0 else None,
-                enable_sdg17_correction=settings.enable_sdg17_correction,
-                enable_sdg11_correction=settings.enable_sdg11_correction,
+                bias_corrections=settings.bias_corrections,
                 use_custom_thresholds=settings.use_custom_thresholds,
                 sdg_thresholds=settings.sdg_thresholds,
                 progress_bar=progress_bar
@@ -248,19 +242,18 @@ def main():
 
     # Show mode info in main area
     if settings.use_hybrid:
-        st.success(f"✓ Using Hybrid Ensemble (sdgBERT: {settings.sdg_bert_weight:.0%}, ST: {settings.st_weight:.0%})")
+        st.success("✓ Hybrid Ensemble (sdgBERT + ST with per-SDG auto-weights)")
     else:
-        st.info("Using Sentence Transformer only")
+        st.info("Sentence Transformer only (legacy mode)")
 
     # Show bias correction status
-    bias_info = []
-    if settings.enable_sdg17_correction:
-        bias_info.append("SDG 17")
-    if settings.enable_sdg11_correction:
-        bias_info.append("SDG 11")
-
-    if bias_info:
-        st.caption(f"🔧 Bias corrections enabled: {', '.join(bias_info)}")
+    if settings.enable_bias_corrections:
+        active = [sdg for sdg, enabled in settings.bias_corrections.items() if enabled]
+        if active:
+            sdg_list = ", ".join(str(s) for s in sorted(active))
+            st.caption(f"🔧 Bias corrections active: SDGs {sdg_list}")
+    else:
+        st.caption("Bias corrections disabled")
 
     # Get SDG mention results from session state
     sdg_mentions = SessionManager.get(CacheKey.SDG_MENTION_RESULTS)

@@ -15,65 +15,42 @@ def align_activities_with_sdgs(
     similarity_threshold: float,
     use_hybrid: bool,
     ensemble_mode: str,
-    sdg_bert_weight: float,
-    st_weight: float,
-    enable_sdg17_correction: bool = True,
-    enable_sdg11_correction: bool = True,
+    bias_corrections: dict = None,
     use_custom_thresholds: bool = False,
     sdg_thresholds: dict = None,
-    progress_bar=None
+    progress_bar=None,
 ) -> Dict[str, Any]:
-    """Align extracted activities with SDGs using the specified engine and threshold.
-
-    This runs every time the threshold or model settings change.
+    """Align extracted activities with SDGs.
 
     Args:
-        activities_data: Dictionary with extracted activities
-        model_name: Name of the sentence transformer model
-        similarity_threshold: Minimum similarity threshold for alignment
-        use_hybrid: Whether to use hybrid ensemble (sdgBERT + ST)
-        ensemble_mode: How to combine models ('weighted', 'fallback', 'single')
-        sdg_bert_weight: Weight for sdgBERT in ensemble
-        st_weight: Weight for sentence transformer in ensemble
-        enable_sdg17_correction: Enable SDG 17 bias correction
-        enable_sdg11_correction: Enable SDG 11 bias correction
-        use_custom_thresholds: Use custom SDG-specific thresholds
-        sdg_thresholds: Dict of SDG -> threshold values
-        progress_bar: Optional Streamlit progress bar
-
-    Returns:
-        Dictionary with alignment results or error information
+        bias_corrections: Dict of SDG number -> bool for per-SDG bias corrections.
     """
     start_time = time.time()
 
-    if activities_data['total_activities'] == 0:
+    if activities_data["total_activities"] == 0:
         return {"error": "No activities found in document"}
 
     try:
         if progress_bar:
-            progress_bar.progress(30, f"Loading AI models ({'Hybrid' if use_hybrid else 'Standard'})...")
+            mode_label = "Hybrid" if use_hybrid else "Standard"
+            progress_bar.progress(30, f"Loading AI models ({mode_label})...")
 
-        # Align with SDGs using appropriate engine
         if use_hybrid:
             engine = get_cached_hybrid_engine(
                 model_name=model_name,
                 similarity_threshold=similarity_threshold,
                 ensemble_mode=ensemble_mode,
-                sdg_bert_weight=sdg_bert_weight,
-                st_weight=st_weight,
-                enable_sdg17_correction=enable_sdg17_correction,
-                enable_sdg11_correction=enable_sdg11_correction,
+                bias_corrections=bias_corrections,
                 use_custom_thresholds=use_custom_thresholds,
-                custom_sdg_thresholds=sdg_thresholds
+                custom_sdg_thresholds=sdg_thresholds,
             )
         else:
             engine = get_cached_engine(
                 model_name,
                 similarity_threshold,
-                enable_sdg17_correction=enable_sdg17_correction,
-                enable_sdg11_correction=enable_sdg11_correction,
+                bias_corrections=bias_corrections,
                 use_custom_thresholds=use_custom_thresholds,
-                custom_sdg_thresholds=sdg_thresholds
+                custom_sdg_thresholds=sdg_thresholds,
             )
 
         if progress_bar:
@@ -95,47 +72,24 @@ def align_activities_with_sdgs(
 
 def process_pdf(
     uploaded_file,
-    model_name: str = "all-mpnet-base-v2",
-    similarity_threshold: float = 0.3,
-    use_hybrid: bool = False,
+    model_name=None,
+    similarity_threshold: float = 0.5,
+    use_hybrid: bool = True,
     ensemble_mode: str = "weighted",
-    sdg_bert_weight: float = 0.55,
-    st_weight: float = 0.45,
     min_words: int = 20,
     max_words: int = 500,
     top_activities: Optional[int] = None,
-    enable_sdg17_correction: bool = True,
-    enable_sdg11_correction: bool = True,
+    bias_corrections: dict = None,
     use_custom_thresholds: bool = False,
     sdg_thresholds: dict = None,
-    progress_bar=None
+    progress_bar=None,
 ) -> Dict[str, Any]:
-    """Process uploaded PDF and return results with metadata.
+    """Process uploaded PDF and return SDG alignment results (V2).
 
-    This is the main entry point for PDF processing, combining extraction
-    and alignment steps.
-
-    Args:
-        uploaded_file: Streamlit UploadedFile object
-        model_name: Name of the sentence transformer model
-        similarity_threshold: Minimum similarity threshold for alignment
-        use_hybrid: Whether to use hybrid ensemble
-        ensemble_mode: How to combine models
-        sdg_bert_weight: Weight for sdgBERT in ensemble
-        st_weight: Weight for sentence transformer in ensemble
-        min_words: Minimum word count for activities
-        max_words: Maximum word count for activities
-        top_activities: Limit to top N activities (None for all)
-        enable_sdg17_correction: Enable SDG 17 bias correction
-        enable_sdg11_correction: Enable SDG 11 bias correction
-        use_custom_thresholds: Use custom SDG-specific thresholds
-        sdg_thresholds: Dict of SDG -> threshold values
-        progress_bar: Optional Streamlit progress bar
-
-    Returns:
-        Dictionary with alignment results
+    Hybrid ensemble is the default. ST-only available as fallback.
+    Per-SDG ensemble weights loaded automatically from SDG_ENSEMBLE_WEIGHTS.
     """
-    # Step 1: Extract activities (cached - only runs if file or extraction params change)
+    # Step 1: Extract activities (cached)
     if progress_bar:
         progress_bar.progress(10, "Extracting activities from PDF (cached)...")
 
@@ -144,24 +98,21 @@ def process_pdf(
         uploaded_file.name,
         min_words,
         max_words,
-        top_activities
+        top_activities,
     )
 
     if "error" in activities_data:
         return activities_data
 
-    # Step 2: Align with SDGs (runs every time threshold/model changes)
+    # Step 2: Align with SDGs
     return align_activities_with_sdgs(
         activities_data,
         model_name=model_name,
         similarity_threshold=similarity_threshold,
         use_hybrid=use_hybrid,
         ensemble_mode=ensemble_mode,
-        sdg_bert_weight=sdg_bert_weight,
-        st_weight=st_weight,
-        enable_sdg17_correction=enable_sdg17_correction,
-        enable_sdg11_correction=enable_sdg11_correction,
+        bias_corrections=bias_corrections,
         use_custom_thresholds=use_custom_thresholds,
         sdg_thresholds=sdg_thresholds,
-        progress_bar=progress_bar
+        progress_bar=progress_bar,
     )
