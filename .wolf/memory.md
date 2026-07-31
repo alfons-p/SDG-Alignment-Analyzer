@@ -1326,3 +1326,9 @@
 | 09:21 | Edited frontend/src/pages/ActivitiesPage.tsx | 3→4 lines | ~59 |
 | 09:21 | Edited frontend/src/pages/ActivitiesPage.tsx | 2→2 lines | ~24 |
 | 09:25 | Added Activities explorer (search + section filters + goal-chip table); linked from Results | ActivitiesPage.tsx, App.tsx, results.css, ResultsPage.tsx | verified 176 rows Melbourne | ~5000 |
+| 09:27 | Created frontend/src/pages/GapsPage.tsx | — | ~1608 |
+| 09:27 | Edited frontend/src/pages/index.ts | 2→3 lines | ~38 |
+| 09:27 | Edited frontend/src/App.tsx | inline fix | ~42 |
+| 09:28 | Edited frontend/src/App.tsx | 1→2 lines | ~41 |
+| 09:28 | Edited frontend/src/pages/ResultsPage.tsx | 3→6 lines | ~78 |
+| 09:31 | Added Gaps screen (unevidenced goals ranked by mean, closest-language passages) | GapsPage.tsx, App.tsx, results.css, ResultsPage.tsx | verified 4 gaps Melbourne | ~4500 |

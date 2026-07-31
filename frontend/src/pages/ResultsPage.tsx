@@ -137,6 +137,9 @@ export function ResultsPage() {
           <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/activities`)}>
             Activity explorer
           </button>
+          <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/gaps`)}>
+            Gaps
+          </button>
           <button className="rx-ev-link" onClick={() => handleExport('csv')}>
             Export CSV
           </button>
