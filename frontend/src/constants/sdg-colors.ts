@@ -47,4 +47,29 @@ export function getSDGName(sdg: number): string {
   return SDG_NAMES[sdg] ?? `Goal ${sdg}`
 }
 
+/** Full official goal names, for headers (not the short table labels). */
+export const SDG_OFFICIAL: Record<number, string> = {
+  1: 'End poverty in all its forms everywhere',
+  2: 'End hunger, achieve food security and improved nutrition',
+  3: 'Ensure healthy lives and well-being for all at all ages',
+  4: 'Ensure inclusive and equitable quality education',
+  5: 'Achieve gender equality and empower all women and girls',
+  6: 'Ensure availability and sustainable management of water',
+  7: 'Ensure access to affordable, reliable, sustainable energy',
+  8: 'Promote sustained, inclusive economic growth and decent work',
+  9: 'Build resilient infrastructure and foster innovation',
+  10: 'Reduce inequality within and among countries',
+  11: 'Make cities inclusive, safe, resilient and sustainable',
+  12: 'Ensure sustainable consumption and production patterns',
+  13: 'Take urgent action to combat climate change',
+  14: 'Conserve and sustainably use the oceans and marine resources',
+  15: 'Protect and restore terrestrial ecosystems',
+  16: 'Promote peaceful, inclusive societies and strong institutions',
+  17: 'Strengthen the means of implementation and global partnership',
+}
+
+export function getSDGOfficial(sdg: number): string {
+  return SDG_OFFICIAL[sdg] ?? ''
+}
+
 export const SDG_COUNT = 17

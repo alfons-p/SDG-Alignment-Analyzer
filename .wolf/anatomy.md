@@ -1,10 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T12:49:01.021Z
-> Files: 813 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T22:52:35.932Z
+> Files: 815 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
+- `shot-goal.mjs` — Declares CHROME (~332 tok)
 - `shot.mjs` — Declares CHROME (~401 tok)
 
 ## ../../../../.claude/plans/
@@ -210,7 +211,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~280 tok)
+- `App.tsx` — App (~306 tok)
 - `index.css` — Styles: 2 rules, 22 vars (~394 tok)
 - `main.tsx` — queryClient (~172 tok)
 
@@ -256,7 +257,7 @@
 
 ## frontend/src/constants/
 
-- `sdg-colors.ts` — Short goal names, as used in ledger rows and table headers. (~306 tok)
+- `sdg-colors.ts` — Short goal names, as used in ledger rows and table headers. (~671 tok)
 
 ## frontend/src/lib/
 
@@ -267,10 +268,11 @@
 
 - `ComparePage.tsx` — ComparePage (~1701 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
-- `index.ts` (~76 tok)
+- `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
+- `index.ts` (~90 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~662 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~755 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3258 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3188 tok)
 - `UploadPage.tsx` — defaultSettings (~761 tok)
 
 ## frontend/src/types/

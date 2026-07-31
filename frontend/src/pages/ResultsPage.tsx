@@ -109,12 +109,8 @@ export function ResultsPage() {
     setSearchParams(next, { replace: true })
   }
 
-  // Goal-detail is a separate screen (not yet built); record the intent in the
-  // URL so it becomes linkable once that route lands. See data-contract Part A.
   function openGoal(sdg: number) {
-    const next = new URLSearchParams(searchParams)
-    next.set('goal', String(sdg))
-    setSearchParams(next, { replace: true })
+    navigate(`/results/${id}/goal/${sdg}`)
   }
 
   async function handleExport(format: 'csv' | 'json') {
