@@ -134,6 +134,9 @@ export function ResultsPage() {
           <ArrowLeft size={14} /> Back to dashboard
         </button>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, padding: '16px 44px 0' }}>
+          <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/activities`)}>
+            Activity explorer
+          </button>
           <button className="rx-ev-link" onClick={() => handleExport('csv')}>
             Export CSV
           </button>

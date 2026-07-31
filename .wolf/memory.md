@@ -1315,3 +1315,14 @@
 | 06:52 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/shot-goal.mjs | — | ~331 |
 | 08:52 | Edited ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/shot-goal.mjs | inline fix | ~15 |
 | 09:14 | Added Goal detail screen (rail, header, stat tiles, ranked passages, side panel); wired ledger drill-down | GoalDetailPage.tsx, App.tsx, results.css, sdg-colors.ts, ResultsPage.tsx | verified goal 11 rich + goal 14 empty | ~6000 |
+| 09:14 | Session end: 33 writes across 23 files (dependencies.py, sdg-analyzer.yml, vite.config.ts, com.sdg.tunnel.plist, com.sdg.backend.plist) | 16 reads | ~32278 tok |
+| 09:19 | Created frontend/src/pages/ActivitiesPage.tsx | — | ~47 |
+| 09:20 | Created frontend/src/pages/ActivitiesPage.tsx | — | ~1503 |
+| 09:20 | Edited frontend/src/pages/index.ts | 2→3 lines | ~41 |
+| 09:20 | Edited frontend/src/App.tsx | inline fix | ~39 |
+| 09:20 | Edited frontend/src/App.tsx | 1→2 lines | ~44 |
+| 09:20 | Edited frontend/src/pages/ResultsPage.tsx | 4→7 lines | ~103 |
+| 09:21 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/shot-path.mjs | — | ~306 |
+| 09:21 | Edited frontend/src/pages/ActivitiesPage.tsx | 3→4 lines | ~59 |
+| 09:21 | Edited frontend/src/pages/ActivitiesPage.tsx | 2→2 lines | ~24 |
+| 09:25 | Added Activities explorer (search + section filters + goal-chip table); linked from Results | ActivitiesPage.tsx, App.tsx, results.css, ResultsPage.tsx | verified 176 rows Melbourne | ~5000 |

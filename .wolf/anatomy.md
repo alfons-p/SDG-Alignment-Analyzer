@@ -1,11 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T22:52:35.932Z
-> Files: 815 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T23:21:55.649Z
+> Files: 817 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
 - `shot-goal.mjs` — Declares CHROME (~332 tok)
+- `shot-path.mjs` — Declares CHROME (~306 tok)
 - `shot.mjs` — Declares CHROME (~401 tok)
 
 ## ../../../../.claude/plans/
@@ -211,7 +212,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~306 tok)
+- `App.tsx` — App (~333 tok)
 - `index.css` — Styles: 2 rules, 22 vars (~394 tok)
 - `main.tsx` — queryClient (~172 tok)
 
@@ -266,13 +267,14 @@
 
 ## frontend/src/pages/
 
+- `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
 - `ComparePage.tsx` — ComparePage (~1701 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
-- `index.ts` (~90 tok)
+- `index.ts` (~104 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~662 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~755 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3188 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3229 tok)
 - `UploadPage.tsx` — defaultSettings (~761 tok)
 
 ## frontend/src/types/
@@ -1051,3 +1053,4 @@
 
 - `test_activity_classifier.py` — Tests for ActivityClassifier module. (~1410 tok)
 - `test_app_live.py` — Comprehensive tests for app.py and its dependencies. (~5214 tok)
+- frontend/src/pages/ActivitiesPage.tsx — Activity explorer: search + section filters (client-side), table with aligned-goal chips + top score, rows open goal. Route /results/:id/activities. page_size capped 200.
