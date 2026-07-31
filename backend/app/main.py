@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
 from backend.app.dependencies import init_db
-from backend.app.routers import auth, analysis, reference, results
+from backend.app.routers import auth, analysis, reference, results, public
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,6 +56,7 @@ app.include_router(auth.router)
 app.include_router(analysis.router)
 app.include_router(reference.router)
 app.include_router(results.router)
+app.include_router(public.router)
 
 
 @app.get("/api/health")

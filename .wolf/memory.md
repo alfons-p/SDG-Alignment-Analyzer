@@ -1338,3 +1338,26 @@
 | 09:34 | Edited frontend/src/pages/ResultsPage.tsx | 14→19 lines | ~176 |
 | 09:34 | Edited frontend/src/components/results/ResultsModes.tsx | 10→9 lines | ~56 |
 | 09:41 | Completed Results modes: Published statement (mosaic+highlights+absent), Breadth-vs-depth, Trend | ResultsModes.tsx, ResultsPage.tsx, results.ts, results.css | verified all 3 modes | ~7000 |
+| 09:47 | Edited backend/app/models/analysis.py | modified Analysis() | ~341 |
+| 09:48 | Created backend/app/services/identity.py | — | ~385 |
+| 09:48 | Edited backend/app/dependencies.py | added 1 import(s) | ~72 |
+| 09:48 | Edited backend/app/dependencies.py | 4→8 lines | ~118 |
+| 09:48 | Edited backend/app/dependencies.py | modified init_db() | ~479 |
+| 09:48 | Edited backend/app/dependencies.py | modified is_admin() | ~140 |
+| 09:48 | Edited backend/app/routers/analysis.py | 8→12 lines | ~104 |
+| 09:49 | Edited backend/app/schemas/analysis.py | modified AnalysisSummary() | ~123 |
+| 09:49 | Edited backend/app/routers/analysis.py | added 1 import(s) | ~53 |
+| 09:49 | Edited backend/app/routers/analysis.py | modified _normalize_summary_keys() | ~446 |
+| 09:49 | Edited backend/app/routers/analysis.py | 4→4 lines | ~52 |
+| 09:49 | Edited backend/app/routers/analysis.py | 4→6 lines | ~86 |
+| 09:49 | Edited backend/app/services/aggregation.py | expanded (+9 lines) | ~172 |
+| 09:49 | Edited backend/app/services/aggregation.py | modified compute_multi_report_comparison() | ~271 |
+| 09:50 | Edited backend/app/routers/results.py | modified compare_results() | ~351 |
+| 09:50 | Created backend/app/services/public_data.py | — | ~1107 |
+| 09:50 | Created backend/app/routers/public.py | — | ~586 |
+| 09:51 | Edited backend/app/routers/analysis.py | modified publish_analysis() | ~371 |
+| 09:51 | Edited backend/app/routers/analysis.py | inline fix | ~27 |
+| 09:51 | Edited backend/app/main.py | inline fix | ~22 |
+| 09:51 | Edited backend/app/main.py | 1→2 lines | ~20 |
+| 09:52 | Edited ../../../../Library/LaunchAgents/com.sdg.backend.plist | 2→3 lines | ~49 |
+| 09:54 | Backend Part C: published flag+council columns+migration, public routes, compare coverage, gaps fix, extraction metrics, admin publish | backend/app/** | all endpoints verified live | ~12000 |

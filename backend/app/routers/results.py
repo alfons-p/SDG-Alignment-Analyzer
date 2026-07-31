@@ -1,6 +1,7 @@
 """Results router — compare, list all results."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from backend.app.dependencies import get_db, get_current_user
@@ -16,12 +17,15 @@ def compare_results(body: CompareRequest, user: User = Depends(get_current_user)
     if len(body.analysis_ids) < 2:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="At least 2 analysis IDs required")
 
+    # A user can compare their own analyses and any published one. With a single
+    # admin uploading everything, a user-scoped filter would return nothing for
+    # other viewers (data-contract C#4).
     analyses = (
         db.query(Analysis)
         .filter(
             Analysis.id.in_(body.analysis_ids),
-            Analysis.user_id == user.id,
             Analysis.status == "completed",
+            or_(Analysis.user_id == user.id, Analysis.published.is_(True)),
         )
         .all()
     )

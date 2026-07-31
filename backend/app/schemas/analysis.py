@@ -40,6 +40,10 @@ class AnalysisSummary(BaseModel):
     top_sdgs: list[dict[str, Any]]
     gaps: list[dict[str, Any]]
     coverage: dict[int, float] | None = None
+    # Extraction quality (data-contract Part C #5)
+    page_count: int | None = None
+    activities_per_100_pages: float | None = None
+    barren_activities: int | None = None
 
 
 class AnalysisResultResponse(BaseModel):

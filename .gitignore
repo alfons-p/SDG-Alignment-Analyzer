@@ -73,8 +73,9 @@ results/trends/*
 !results/trends/.gitkeep
 !results/by_council/.gitkeep
 
-# Large model files (download from Hugging Face Hub)
-models/
+# Large model files (download from Hugging Face Hub) — root-anchored so it does
+# not swallow source packages like backend/app/models.
+/models/
 *.bin
 *.safetensors
 *.pkl

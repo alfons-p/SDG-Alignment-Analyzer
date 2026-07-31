@@ -10,8 +10,9 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, s
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
-from backend.app.dependencies import get_db, get_current_user, SessionLocal
+from backend.app.dependencies import get_db, get_current_user, get_current_admin, SessionLocal
 from backend.app.models import Analysis, User
+from backend.app.services.identity import parse_report_identity
 from backend.app.schemas.analysis import (
     ProcessingSettingsSchema,
     AnalysisJobResponse,
@@ -130,6 +131,7 @@ def upload_pdf(
         nofinancial=nofinancial,
     )
 
+    ident = parse_report_identity(file.filename)
     analysis = Analysis(
         user_id=user.id,
         status="queued",
@@ -137,6 +139,9 @@ def upload_pdf(
         file_path=str(file_path),
         file_size=file_size,
         settings=settings,
+        council_name=ident["council_name"],
+        state=ident["state"],
+        year=ident["year"],
     )
     db.add(analysis)
     db.commit()
@@ -181,7 +186,7 @@ def get_results(analysis_id: str, user: User = Depends(get_current_user), db: Se
     result = analysis.result or {}
     summary = result.get("report_alignment")
     if summary:
-        summary = _normalize_summary_keys(summary, result.get("source", ""))
+        summary = _normalize_summary_keys(summary, result.get("source", ""), result)
     return AnalysisResultResponse(
         id=analysis.id,
         original_filename=analysis.original_filename,
@@ -204,7 +209,9 @@ def get_result_summary(analysis_id: str, user: User = Depends(get_current_user),
     summary = analysis.result.get("report_alignment", {})
     if not summary:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No summary data")
-    return AnalysisSummary(**_normalize_summary_keys(summary, analysis.result.get("source", "")))
+    return AnalysisSummary(
+        **_normalize_summary_keys(summary, analysis.result.get("source", ""), analysis.result)
+    )
 
 
 @router.get("/results/{analysis_id}/activities", response_model=ActivityPageResponse)
@@ -288,6 +295,29 @@ def cancel_analysis(analysis_id: str, user: User = Depends(get_current_user), db
     return {"status": "cancelled"}
 
 
+@router.post("/{analysis_id}/publish")
+def publish_analysis(analysis_id: str, admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """Make a completed analysis publicly readable. Admin only (data-contract C#0)."""
+    analysis = db.query(Analysis).filter(Analysis.id == analysis_id).first()
+    if not analysis:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Analysis not found")
+    if analysis.status != "completed":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Only completed analyses can be published")
+    analysis.published = True
+    db.commit()
+    return {"id": analysis.id, "published": True}
+
+
+@router.post("/{analysis_id}/unpublish")
+def unpublish_analysis(analysis_id: str, admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    analysis = db.query(Analysis).filter(Analysis.id == analysis_id).first()
+    if not analysis:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Analysis not found")
+    analysis.published = False
+    db.commit()
+    return {"id": analysis.id, "published": False}
+
+
 @router.delete("/{analysis_id}", status_code=204)
 def delete_analysis(analysis_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     analysis = _get_user_analysis(analysis_id, user, db)
@@ -307,13 +337,35 @@ def _get_user_analysis(analysis_id: str, user: User, db: Session) -> Analysis:
     return analysis
 
 
-def _normalize_summary_keys(summary: dict, source: str = "") -> dict:
-    """Convert string SDG keys to int for mean_scores and coverage.
-    Also injects source if missing from report_alignment."""
-    if "mean_scores" in summary and summary["mean_scores"]:
+def _normalize_summary_keys(summary: dict, source: str = "", result: dict | None = None) -> dict:
+    """Convert string SDG keys to int, recompute gaps as coverage==0 (ranked by
+    mean, per data-contract C#3), and attach extraction-quality metrics (C#5).
+    Injects source if missing."""
+    if summary.get("mean_scores"):
         summary["mean_scores"] = {int(k): v for k, v in summary["mean_scores"].items()}
-    if "coverage" in summary and summary["coverage"]:
+    if summary.get("coverage"):
         summary["coverage"] = {int(k): v for k, v in summary["coverage"].items()}
     if "source" not in summary:
         summary["source"] = source
+
+    coverage = summary.get("coverage") or {}
+    mean_scores = summary.get("mean_scores") or {}
+    if coverage:
+        from src.config.sdg_definitions import SDG_DEFINITIONS
+
+        gaps = [
+            {"sdg": n, "name": SDG_DEFINITIONS[n]["name"], "mean_score": mean_scores.get(n, 0.0), "coverage": 0.0}
+            for n in range(1, 18)
+            if coverage.get(n, 0) == 0
+        ]
+        summary["gaps"] = sorted(gaps, key=lambda g: g["mean_score"], reverse=True)
+
+    if result is not None:
+        activities = result.get("activities", []) or []
+        page_count = (result.get("metadata") or {}).get("page_count")
+        total = summary.get("total_activities", len(activities))
+        summary["page_count"] = page_count
+        summary["barren_activities"] = sum(1 for a in activities if a.get("num_aligned", 0) == 0)
+        if page_count:
+            summary["activities_per_100_pages"] = round(total / page_count * 100, 1)
     return summary
