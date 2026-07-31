@@ -1,0 +1,312 @@
+/* Evidence-ledger + Results screen, recreated from the Organic design references.
+   All values reference ported tokens (see index.css); SDG data colours come
+   from the SDG_COLORS constant via inline style. Scoped under `.organic` so the
+   cream ground and Caprasimo/Figtree type do not leak into other pages. */
+
+.organic {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  min-height: 100%;
+  margin: -32px;               /* bleed past AppLayout's p-8 so the header band is full-width */
+  padding-bottom: 56px;
+}
+.organic h1,
+.organic h2,
+.organic h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.organic *,
+.organic *::before,
+.organic *::after {
+  box-sizing: border-box;
+}
+
+.rx-card {
+  background: var(--color-surface);
+  border-radius: 32px;
+}
+.rx-elev-md {
+  box-shadow: var(--shadow-md);
+}
+.rx-elev-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+/* — header band — */
+.rx-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 34px 44px 26px;
+  background: var(--color-accent-2-100);
+}
+.rx-kicker {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-2-700);
+}
+.rx-council {
+  font-size: 40px;
+  line-height: 1.05;
+}
+.rx-yearpills {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+}
+.rx-yearpill {
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+.rx-meta {
+  font-size: 15px;
+  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+}
+.rx-figure-value {
+  font-family: var(--font-heading);
+  font-size: 34px;
+  line-height: 1;
+}
+.rx-figure-label {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+
+/* — extraction chip — */
+.rx-extchip {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 18px 9px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
+}
+.rx-extchip .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-accent-2-500);
+}
+.rx-extchip .grade {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.rx-extchip .detail {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+/* — view switcher — */
+.rx-views {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+.rx-view {
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  box-shadow: none;
+}
+.rx-view:hover {
+  opacity: 0.88;
+}
+.rx-view[data-active='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+.rx-viewnote {
+  font-size: 13px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  max-width: 520px;
+  text-wrap: pretty;
+}
+
+/* — ledger — */
+.rx-ledger-lead {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 1.35;
+  max-width: 900px;
+  text-wrap: pretty;
+}
+.rx-ledger-sub {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.rx-row {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 12px 16px;
+}
+.rx-row:hover {
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+.rx-row-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.rx-goal-circle {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.rx-goal-name {
+  width: 210px;
+  flex: 0 0 auto;
+  font-size: 15px;
+  font-weight: 600;
+}
+.rx-bar-track {
+  flex: 1 1 auto;
+  height: 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+  overflow: hidden;
+}
+.rx-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+.rx-count {
+  width: 92px;
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 700;
+}
+.rx-band {
+  width: 132px;
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.rx-evidence {
+  margin: 12px 0 4px 52px;
+  padding: 18px 22px;
+  border-radius: 22px;
+  background: var(--color-accent-2-100);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rx-ev-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-2-700);
+}
+.rx-ev-quote {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 820px;
+  text-wrap: pretty;
+}
+.rx-ev-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.rx-ev-meta {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.rx-ev-link {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: var(--color-accent-700);
+}
+.rx-ev-link:hover {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+/* — provenance strip — */
+.rx-provenance {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 44px;
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.rx-provenance button {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-accent-700);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  padding: 0;
+}
+
+/* — misc — */
+.rx-backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-accent-700);
+  padding: 16px 44px 0;
+}
+.rx-placeholder {
+  padding: 40px 44px;
+  font-size: 15px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}

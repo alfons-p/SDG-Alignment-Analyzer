@@ -1,7 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T05:30:06.714Z
-> Files: 804 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T12:49:01.021Z
+> Files: 813 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
+
+- `shot.mjs` — Declares CHROME (~401 tok)
 
 ## ../../../../.claude/plans/
 
@@ -16,6 +20,9 @@
 ## ../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/
 
 - `bert_activity_classifier_model_research.md` — BERT Activity Classifier — Model Selection Research (~952 tok)
+- `frontend-redesign-pending.md` (~392 tok)
+- `MEMORY.md` — Memory Index (~70 tok)
+- `v2-persistent-deployment.md` (~353 tok)
 
 ## ../../../../.cloudflared/
 
@@ -32,7 +39,7 @@
 - `!` (~0 tok)
 - `.coverage` (~18566 tok)
 - `.DS_Store` (~2731 tok)
-- `.gitignore` — Git ignore rules (~324 tok)
+- `.gitignore` — Git ignore rules (~325 tok)
 - `app.py` — Streamlit Web Dashboard for SDG Alignment Analyzer. (~3397 tok)
 - `BUGFIX_SUMMARY.md` — Bug Fix Summary: NT_Litchfield_Urban_2025.pdf Returning 0 Activities (~611 tok)
 - `CLAUDE.md` — OpenWolf (~1479 tok)
@@ -108,6 +115,9 @@
 ## .streamlit/
 
 - `config.toml` — Streamlit Configuration (~69 tok)
+
+## Frontend — Results (V2 design handoff, evidence-ledger)
+
 
 ## backend/app/
 
@@ -201,7 +211,7 @@
 ## frontend/src/
 
 - `App.tsx` — App (~280 tok)
-- `index.css` — Styles: 1 rules (~44 tok)
+- `index.css` — Styles: 2 rules, 22 vars (~394 tok)
 - `main.tsx` — queryClient (~172 tok)
 
 ## frontend/src/api/
@@ -231,6 +241,13 @@
 - `index.ts` (~24 tok)
 - `Sidebar.tsx` — links (~551 tok)
 
+## frontend/src/components/results/
+
+- `EvidenceLedger.tsx` — Evidence ledger — all 17 Goals ranked by aligned-activity count. A row expands (~1487 tok)
+- `results.css` — Styles: 49 rules (~1898 tok)
+- `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~648 tok)
+- `ViewSwitcher.tsx` — VIEWS (~377 tok)
+
 ## frontend/src/components/sdg/
 
 - `CoverageChart.tsx` — CoverageChart (~305 tok)
@@ -239,10 +256,11 @@
 
 ## frontend/src/constants/
 
-- `sdg-colors.ts` — Exports SDG_COLORS, getSDGColor, SDG_COUNT (~130 tok)
+- `sdg-colors.ts` — Short goal names, as used in ledger rows and table headers. (~306 tok)
 
 ## frontend/src/lib/
 
+- `results.ts` — Two-digit goal label, e.g. 3 -> "03". (~1254 tok)
 - `utils.ts` — Exports cn (~48 tok)
 
 ## frontend/src/pages/
@@ -252,7 +270,7 @@
 - `index.ts` (~76 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~662 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~755 tok)
-- `ResultsPage.tsx` — STAGES (~3532 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3258 tok)
 - `UploadPage.tsx` — defaultSettings (~761 tok)
 
 ## frontend/src/types/

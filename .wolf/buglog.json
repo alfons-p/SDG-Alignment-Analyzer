@@ -1617,6 +1617,41 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-30T20:33:53.291622"
+    },
+    {
+      "error_message": "Live GitHub PAT (ghp_...) sitting in untracked file 'src/Anyone with repo access can use this tok', nearly committed",
+      "root_cause": "terminal output containing a token pasted and saved as a file in src/; several other terminal pastes saved as stray files too",
+      "fix": "deleted stray files; scanned tree+history (token never committed/pushed); added backend/*.db, uploads/, results-old/ to .gitignore; TOKEN STILL NEEDS REVOKING by user",
+      "tags": [
+        "security",
+        "secret-leak",
+        "github-token",
+        "git",
+        "commit-hygiene"
+      ],
+      "id": "bug-101",
+      "timestamp": "2026-07-31T15:49:52.670607",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-31T15:49:52.670607"
+    },
+    {
+      "error_message": "npm run build (tsc -b) fails: pre-existing TS errors in Sidebar.tsx (unused BarChart3), SDGBarChart.tsx (recharts Formatter type + <cell> typo), ComparePage.tsx (unused imports)",
+      "file": "frontend/src/components/sdg/SDGBarChart.tsx",
+      "root_cause": "pre-existing type errors committed in fa02efb; dev server (vite) skips typecheck so they went unnoticed",
+      "fix": "NOT FIXED \u2014 outside current task scope (Results/ledger). Noted for later cleanup so npm run build passes",
+      "tags": [
+        "frontend",
+        "typescript",
+        "build",
+        "pre-existing",
+        "recharts"
+      ],
+      "id": "bug-102",
+      "timestamp": "2026-07-31T21:22:25.143495",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-31T21:22:25.143495"
     }
   ]
 }

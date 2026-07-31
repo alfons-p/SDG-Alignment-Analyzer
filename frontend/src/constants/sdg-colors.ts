@@ -22,4 +22,29 @@ export function getSDGColor(sdg: number): string {
   return SDG_COLORS[sdg] ?? '#6b7280'
 }
 
+/** Short goal names, as used in ledger rows and table headers. */
+export const SDG_NAMES: Record<number, string> = {
+  1: 'No Poverty',
+  2: 'Zero Hunger',
+  3: 'Good Health',
+  4: 'Quality Education',
+  5: 'Gender Equality',
+  6: 'Clean Water',
+  7: 'Clean Energy',
+  8: 'Decent Work',
+  9: 'Innovation',
+  10: 'Reduced Inequalities',
+  11: 'Sustainable Cities',
+  12: 'Responsible Consumption',
+  13: 'Climate Action',
+  14: 'Life Below Water',
+  15: 'Life on Land',
+  16: 'Peace & Justice',
+  17: 'Partnerships',
+}
+
+export function getSDGName(sdg: number): string {
+  return SDG_NAMES[sdg] ?? `Goal ${sdg}`
+}
+
 export const SDG_COUNT = 17

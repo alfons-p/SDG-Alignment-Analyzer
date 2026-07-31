@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Download, ArrowLeft, XCircle, Loader2 } from 'lucide-react'
+import { ArrowLeft, XCircle, Loader2 } from 'lucide-react'
 import { getResults, getJob, exportCSV, exportJSON, cancelAnalysis } from '../api/analysis'
-import { StatusBadge } from '../components/analysis/StatusBadge'
-import { SDGColorBadge } from '../components/sdg/SDGColorBadge'
-import { SDGBarChart } from '../components/sdg/SDGBarChart'
-import { CoverageChart } from '../components/sdg/CoverageChart'
-import { ScoreBar } from '../components/analysis/ScoreBar'
-import { ActivityTable } from '../components/analysis/ActivityTable'
-import { SDG_COUNT } from '../constants/sdg-colors'
-import type { AnalysisResult, AnalysisJob } from '../types'
+import { ResultsHeader } from '../components/results/ResultsHeader'
+import { ViewSwitcher, type ResultsView } from '../components/results/ViewSwitcher'
+import { EvidenceLedger } from '../components/results/EvidenceLedger'
+import { leadingGoal, goalsEvidenced } from '../lib/results'
+import type { AnalysisJob, AnalysisSummary } from '../types'
+import '../components/results/results.css'
 
 const STAGES = [
   { key: 'Reading PDF text', label: 'Reading PDF text' },
@@ -22,6 +20,8 @@ const STAGES = [
   { key: 'Generating summary', label: 'Generating summary' },
 ]
 
+const VALID_VIEWS: ResultsView[] = ['ledger', 'statement', 'depth', 'trend']
+
 export function ResultsPage() {
   const { id } = useParams<{ id: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -30,6 +30,10 @@ export function ResultsPage() {
   const queryClient = useQueryClient()
 
   const [shouldFetchResults, setShouldFetchResults] = useState(!isPolling)
+  const [showMethod, setShowMethod] = useState(false)
+
+  const viewParam = searchParams.get('view') as ResultsView | null
+  const view: ResultsView = viewParam && VALID_VIEWS.includes(viewParam) ? viewParam : 'ledger'
 
   const { data: job, isLoading: jobLoading } = useQuery({
     queryKey: ['job', id],
@@ -96,13 +100,22 @@ export function ResultsPage() {
     )
   }
 
-  const { summary } = result ?? {}
-  if (!summary) return <div className="text-sm text-slate-500">No summary data</div>
+  const summary = result?.summary
+  if (!result || !summary) return <div className="text-sm text-slate-500">No summary data</div>
 
-  const meanScores = Object.entries(summary.mean_scores).map(([sdg, score]) => ({
-    sdg: Number(sdg),
-    score: score as number,
-  }))
+  function setView(v: ResultsView) {
+    const next = new URLSearchParams(searchParams)
+    next.set('view', v)
+    setSearchParams(next, { replace: true })
+  }
+
+  // Goal-detail is a separate screen (not yet built); record the intent in the
+  // URL so it becomes linkable once that route lands. See data-contract Part A.
+  function openGoal(sdg: number) {
+    const next = new URLSearchParams(searchParams)
+    next.set('goal', String(sdg))
+    setSearchParams(next, { replace: true })
+  }
 
   async function handleExport(format: 'csv' | 'json') {
     try {
@@ -119,100 +132,67 @@ export function ResultsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <button
-            onClick={() => navigate('/')}
-            className="text-sm text-blue-600 hover:underline flex items-center gap-1 mb-2"
-          >
-            <ArrowLeft size={14} /> Back to dashboard
+    <div className="organic">
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <button className="rx-backlink" onClick={() => navigate('/')}>
+          <ArrowLeft size={14} /> Back to dashboard
+        </button>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, padding: '16px 44px 0' }}>
+          <button className="rx-ev-link" onClick={() => handleExport('csv')}>
+            Export CSV
           </button>
-          <h1 className="text-2xl font-bold text-slate-900">{result.original_filename}</h1>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => handleExport('csv')}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            <Download size={14} /> CSV
-          </button>
-          <button
-            onClick={() => handleExport('json')}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            <Download size={14} /> JSON
+          <button className="rx-ev-link" onClick={() => handleExport('json')}>
+            Export JSON
           </button>
         </div>
       </div>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <SummaryCard label="Activities" value={summary.total_activities} />
-        <SummaryCard label="Mean Score" value={summary.mean_alignment_score.toFixed(3)} />
-        <SummaryCard label="Aligned SDGs" value={summary.top_sdgs.length} />
-        <SummaryCard label="Gaps" value={summary.gaps.length} />
-      </div>
+      <ResultsHeader filename={result.original_filename} summary={summary} />
 
-      {/* Top SDG highlight */}
-      {summary.top_sdgs[0] && (
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4">
-          <SDGColorBadge sdg={summary.top_sdgs[0].sdg} size="lg" />
-          <div>
-            <p className="text-xs text-slate-400">Top SDG</p>
-            <p className="text-lg font-semibold text-slate-900">
-              {summary.top_sdgs[0].name}
-            </p>
-            <p className="text-sm text-slate-500">
-              Score {summary.top_sdgs[0].mean_score.toFixed(3)} • Coverage{' '}
-              {(summary.top_sdgs[0].coverage * 100).toFixed(0)}%
-            </p>
-          </div>
+      <ViewSwitcher view={view} onChange={setView} />
+
+      {view === 'ledger' ? (
+        <EvidenceLedger
+          analysisId={id}
+          summary={summary}
+          lead={ledgerLead(summary)}
+          onOpenGoal={openGoal}
+          onOpenMethod={() => setShowMethod((s) => !s)}
+        />
+      ) : (
+        <div className="rx-placeholder">
+          This presentation is part of the redesign and is not built yet. The evidence ledger is
+          the implemented mode.
         </div>
       )}
 
-      <SDGBarChart data={meanScores} title="Mean SDG Alignment Scores" />
-
-      {summary.coverage && <CoverageChart coverage={summary.coverage} />}
-
-      <div className="grid grid-cols-2 gap-6">
-        {/* Top SDGs */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-slate-900 mb-3">Top SDGs</h3>
-          <div className="space-y-2">
-            {summary.top_sdgs.slice(0, 5).map((s) => (
-              <ScoreBar key={s.sdg} sdg={s.sdg} score={s.mean_score} label={s.name} />
-            ))}
+      {showMethod && result.settings && (
+        <div style={{ padding: '0 44px 40px' }}>
+          <div className="rx-card rx-elev-sm" style={{ padding: '24px 30px' }}>
+            <h3 style={{ fontSize: 20, marginBottom: 12 }}>How this was measured</h3>
+            <pre style={{ margin: 0, fontSize: 12, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-body)' }}>
+              {JSON.stringify(result.settings, null, 2)}
+            </pre>
           </div>
         </div>
-
-        {/* Gaps */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-slate-900 mb-3">Gaps</h3>
-          <div className="space-y-2">
-            {summary.gaps.length === 0 ? (
-              <p className="text-xs text-slate-400">No gaps — all SDGs have some coverage</p>
-            ) : (
-              summary.gaps.map((g) => (
-                <ScoreBar key={g.sdg} sdg={g.sdg} score={g.mean_score} label={g.name} />
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-
-      <ActivityTable analysisId={id} />
+      )}
     </div>
   )
 }
 
-function SummaryCard({ label, value }: { label: string; value: number | string }) {
-  return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4">
-      <p className="text-xs text-slate-400">{label}</p>
-      <p className="text-2xl font-bold text-slate-900 mt-1">{value}</p>
-    </div>
-  )
+/**
+ * A factual one-line lead for the ledger, composed from the data. No copywriter
+ * is in the loop; the LLM narrative (rpt.ledgerLead in the design) is a later
+ * enhancement — this states what the numbers show without overclaiming.
+ */
+function ledgerLead(summary: AnalysisSummary): string {
+  const lead = leadingGoal(summary)
+  const evidenced = goalsEvidenced(summary)
+  if (!lead) {
+    return `No goal dominates this report — coverage is spread thinly across ${evidenced} of the 17 Goals.`
+  }
+  const pct = Math.round(lead.share * 100)
+  return `${lead.name} leads what this report describes — ${pct}% of its ${summary.total_activities} activities align to it, and ${evidenced} of the 17 Goals reach any described activity at all.`
 }
 
 function getActiveStageIndex(currentStep: string | null): number {
@@ -244,7 +224,6 @@ function PollingView({
         <p className="text-sm text-slate-500">{job?.original_filename}</p>
       </div>
 
-      {/* Current step */}
       {currentStep && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-6 flex items-center gap-3">
           <Loader2 size={16} className="text-blue-600 animate-spin shrink-0" />
@@ -252,7 +231,6 @@ function PollingView({
         </div>
       )}
 
-      {/* Progress bar */}
       <div className="mb-6">
         <div className="flex justify-between text-xs text-slate-500 mb-1.5">
           <span>Progress</span>
@@ -266,14 +244,12 @@ function PollingView({
         </div>
       </div>
 
-      {/* Pipeline stages */}
       <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6">
         <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Pipeline stages</h3>
         <ul className="space-y-2">
           {STAGES.map((stage, i) => {
             const isDone = i < activeIdx
             const isActive = i === activeIdx
-            const isPending = i > activeIdx
 
             return (
               <li key={stage.key} className="flex items-center gap-3">
@@ -313,7 +289,6 @@ function PollingView({
         </ul>
       </div>
 
-      {/* Cancel button */}
       <div className="text-center">
         <button
           onClick={onCancel}
