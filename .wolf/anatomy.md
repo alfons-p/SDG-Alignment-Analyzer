@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T23:34:27.314Z
-> Files: 819 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T23:55:17.488Z
+> Files: 822 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
@@ -32,7 +32,7 @@
 
 ## ../../../../Library/LaunchAgents/
 
-- `com.sdg.backend.plist` (~296 tok)
+- `com.sdg.backend.plist` (~313 tok)
 - `com.sdg.frontend.plist` (~222 tok)
 - `com.sdg.tunnel.plist` (~194 tok)
 
@@ -41,7 +41,7 @@
 - `!` (~0 tok)
 - `.coverage` (~18566 tok)
 - `.DS_Store` (~2731 tok)
-- `.gitignore` — Git ignore rules (~325 tok)
+- `.gitignore` — Git ignore rules (~347 tok)
 - `app.py` — Streamlit Web Dashboard for SDG Alignment Analyzer. (~3397 tok)
 - `BUGFIX_SUMMARY.md` — Bug Fix Summary: NT_Litchfield_Urban_2025.pdf Returning 0 Activities (~611 tok)
 - `CLAUDE.md` — OpenWolf (~1479 tok)
@@ -124,36 +124,39 @@
 ## backend/app/
 
 - `__init__.py` (~0 tok)
-- `dependencies.py` — get_db, init_db, hash_password, verify_password (~819 tok)
-- `main.py` — FastAPI application entry point. (~467 tok)
+- `dependencies.py` — get_db, init_db, hash_password, verify_password (~1466 tok)
+- `main.py` — FastAPI application entry point. (~479 tok)
 
 ## backend/app/models/
 
 - `__init__.py` (~25 tok)
-- `analysis.py` — Declares Analysis (~457 tok)
+- `analysis.py` — Declares Analysis (~661 tok)
 - `base.py` — Declares Base (~24 tok)
 - `user.py` — Declares User (~237 tok)
 
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~3740 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~4426 tok)
 - `auth.py` — Auth router — register, login. (~1022 tok)
+- `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
-- `results.py` — Results router — compare, list all results. (~414 tok)
+- `results.py` — Results router — compare, list all results. (~490 tok)
 
 ## backend/app/schemas/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Pydantic: ProcessingSettingsSchema (~583 tok)
+- `analysis.py` — Pydantic: ProcessingSettingsSchema (~633 tok)
 - `auth.py` — Declares UserRegister (~131 tok)
 
 ## backend/app/services/
 
 - `__init__.py` (~0 tok)
-- `aggregation.py` — Standalone aggregation functions — extracted logic, no Reporter dependency. (~749 tok)
+- `aggregation.py` — Standalone aggregation functions — extracted logic, no Reporter dependency. (~935 tok)
 - `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~3087 tok)
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
+- `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
+- `public_data.py` — Aggregate published analyses into the public coverage payload the landing (~1107 tok)
 
 ## backend/tests/
 
@@ -1055,4 +1058,3 @@
 
 - `test_activity_classifier.py` — Tests for ActivityClassifier module. (~1410 tok)
 - `test_app_live.py` — Comprehensive tests for app.py and its dependencies. (~5214 tok)
-- frontend/src/components/results/ResultsModes.tsx — StatementView (mosaic sized by count, top-3 highlights, absent panel), DepthView (breadth/depth ranked lists + read-together note), TrendView (single analysed year, honest data-note).

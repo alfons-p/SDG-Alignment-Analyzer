@@ -1361,3 +1361,4 @@
 | 09:51 | Edited backend/app/main.py | 1→2 lines | ~20 |
 | 09:52 | Edited ../../../../Library/LaunchAgents/com.sdg.backend.plist | 2→3 lines | ~49 |
 | 09:54 | Backend Part C: published flag+council columns+migration, public routes, compare coverage, gaps fix, extraction metrics, admin publish | backend/app/** | all endpoints verified live | ~12000 |
+| 09:55 | Edited .gitignore | 4→5 lines | ~44 |

@@ -1652,6 +1652,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-31T21:22:25.143495"
+    },
+    {
+      "error_message": "backend/app/models package uncommitted in fa02efb \u2014 bare .gitignore pattern models/ (meant for root ML dir) swallowed backend/app/models; fresh clone would fail to import",
+      "file": ".gitignore",
+      "root_cause": "generic Python .gitignore uses bare directory patterns (models/, lib/) that match nested source dirs anywhere in the tree",
+      "fix": "root-anchor to /models/ and /lib/; re-add the packages. Same class as the earlier lib/ (utils.ts) bug",
+      "tags": [
+        "gitignore",
+        "backend",
+        "models",
+        "source-swallowed",
+        "fa02efb"
+      ],
+      "id": "bug-103",
+      "timestamp": "2026-08-01T09:58:13.846971",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-01T09:58:13.846971"
     }
   ]
 }
