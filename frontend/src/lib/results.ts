@@ -108,6 +108,37 @@ export function buildLedger(
   return rows
 }
 
+export interface RankRow {
+  sdg: number
+  num: string
+  name: string
+  color: string
+  value: number
+  label: string
+  barPct: number
+}
+
+/** Goals ranked by aligned-activity count ("breadth") or mean score ("depth"). */
+export function rankGoals(summary: AnalysisSummary, by: 'count' | 'mean', limit = 9): RankRow[] {
+  const rows = []
+  for (let i = 1; i <= SDG_COUNT; i++) {
+    const value = by === 'count' ? goalCount(summary, i) : summary.mean_scores?.[i] ?? 0
+    rows.push({ sdg: i, value })
+  }
+  rows.sort((a, b) => b.value - a.value)
+  const top = rows.slice(0, limit)
+  const max = Math.max(1e-9, ...top.map((r) => r.value))
+  return top.map((r) => ({
+    sdg: r.sdg,
+    num: pad(r.sdg),
+    name: getSDGName(r.sdg),
+    color: getSDGColor(r.sdg),
+    value: r.value,
+    label: by === 'count' ? (r.value === 0 ? '—' : String(r.value)) : r.value.toFixed(2),
+    barPct: r.value === 0 ? 0 : Math.max(2, (r.value / max) * 100),
+  }))
+}
+
 /** Leading goal = the one with the highest coverage share. */
 export function leadingGoal(summary: AnalysisSummary): {
   sdg: number

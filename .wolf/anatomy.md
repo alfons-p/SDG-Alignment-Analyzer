@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T23:28:09.771Z
-> Files: 818 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T23:34:27.314Z
+> Files: 819 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
@@ -248,6 +248,7 @@
 - `EvidenceLedger.tsx` — Evidence ledger — all 17 Goals ranked by aligned-activity count. A row expands (~1487 tok)
 - `results.css` — Styles: 49 rules (~1898 tok)
 - `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~648 tok)
+- `ResultsModes.tsx` — A factual "read together" note: the Goal that reads clearly but is rarely described. (~3514 tok)
 - `ViewSwitcher.tsx` — VIEWS (~377 tok)
 
 ## frontend/src/components/sdg/
@@ -262,7 +263,7 @@
 
 ## frontend/src/lib/
 
-- `results.ts` — Two-digit goal label, e.g. 3 -> "03". (~1254 tok)
+- `results.ts` — Two-digit goal label, e.g. 3 -> "03". (~1524 tok)
 - `utils.ts` — Exports cn (~48 tok)
 
 ## frontend/src/pages/
@@ -275,7 +276,7 @@
 - `index.ts` (~115 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~662 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~755 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3266 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3339 tok)
 - `UploadPage.tsx` — defaultSettings (~761 tok)
 
 ## frontend/src/types/
@@ -1054,4 +1055,4 @@
 
 - `test_activity_classifier.py` — Tests for ActivityClassifier module. (~1410 tok)
 - `test_app_live.py` — Comprehensive tests for app.py and its dependencies. (~5214 tok)
-- frontend/src/pages/GapsPage.tsx — Gaps: coverage==0 goals ranked by mean, closest-language passage (max score across all activities), action + structural note. Route /results/:id/gaps.
+- frontend/src/components/results/ResultsModes.tsx — StatementView (mosaic sized by count, top-3 highlights, absent panel), DepthView (breadth/depth ranked lists + read-together note), TrendView (single analysed year, honest data-note).

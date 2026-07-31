@@ -1332,3 +1332,9 @@
 | 09:28 | Edited frontend/src/App.tsx | 1→2 lines | ~41 |
 | 09:28 | Edited frontend/src/pages/ResultsPage.tsx | 3→6 lines | ~78 |
 | 09:31 | Added Gaps screen (unevidenced goals ranked by mean, closest-language passages) | GapsPage.tsx, App.tsx, results.css, ResultsPage.tsx | verified 4 gaps Melbourne | ~4500 |
+| 09:32 | Edited frontend/src/lib/results.ts | added optional chaining | ~289 |
+| 09:34 | Created frontend/src/components/results/ResultsModes.tsx | — | ~3520 |
+| 09:34 | Edited frontend/src/pages/ResultsPage.tsx | added 1 import(s) | ~46 |
+| 09:34 | Edited frontend/src/pages/ResultsPage.tsx | 14→19 lines | ~176 |
+| 09:34 | Edited frontend/src/components/results/ResultsModes.tsx | 10→9 lines | ~56 |
+| 09:41 | Completed Results modes: Published statement (mosaic+highlights+absent), Breadth-vs-depth, Trend | ResultsModes.tsx, ResultsPage.tsx, results.ts, results.css | verified all 3 modes | ~7000 |

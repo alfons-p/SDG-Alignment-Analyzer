@@ -6,6 +6,7 @@ import { getResults, getJob, exportCSV, exportJSON, cancelAnalysis } from '../ap
 import { ResultsHeader } from '../components/results/ResultsHeader'
 import { ViewSwitcher, type ResultsView } from '../components/results/ViewSwitcher'
 import { EvidenceLedger } from '../components/results/EvidenceLedger'
+import { StatementView, DepthView, TrendView } from '../components/results/ResultsModes'
 import { leadingGoal, goalsEvidenced } from '../lib/results'
 import type { AnalysisJob, AnalysisSummary } from '../types'
 import '../components/results/results.css'
@@ -153,7 +154,7 @@ export function ResultsPage() {
 
       <ViewSwitcher view={view} onChange={setView} />
 
-      {view === 'ledger' ? (
+      {view === 'ledger' && (
         <EvidenceLedger
           analysisId={id}
           summary={summary}
@@ -161,12 +162,17 @@ export function ResultsPage() {
           onOpenGoal={openGoal}
           onOpenMethod={() => setShowMethod((s) => !s)}
         />
-      ) : (
-        <div className="rx-placeholder">
-          This presentation is part of the redesign and is not built yet. The evidence ledger is
-          the implemented mode.
-        </div>
       )}
+      {view === 'statement' && (
+        <StatementView
+          analysisId={id}
+          summary={summary}
+          filename={result.original_filename}
+          onOpenGoal={openGoal}
+        />
+      )}
+      {view === 'depth' && <DepthView summary={summary} />}
+      {view === 'trend' && <TrendView summary={summary} filename={result.original_filename} />}
 
       {showMethod && result.settings && (
         <div style={{ padding: '0 44px 40px' }}>
