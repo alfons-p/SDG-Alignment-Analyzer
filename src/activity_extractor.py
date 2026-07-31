@@ -5,7 +5,6 @@ Uses BERT activity classifier (DeBERTa-v3-small) by default.
 Falls back to spaCy heuristics if the model is unavailable or --no-bert-classifier is set.
 """
 
-import re
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple, Union
 
@@ -16,70 +15,146 @@ from src.enhanced_pdf_extractor import PDFPlumberExtractor, SentenceReconstructo
 from src.activity_classifier import ActivityClassifier
 
 
-# Financial statement section headings to detect and exclude
-FINANCIAL_STATEMENT_HEADINGS = [
-    "financial statements",
-    "financial statement",
-    "statement of financial position",
+# Strong signals that a page is part of the actual financial statements section
+# (not just a TOC entry or narrative mention)
+_FINANCIAL_SECTION_TITLE_MARKERS = [
+    "annual financial report",
+    "certification of the financial statements",
+    "independent audit report",
+    "independent auditor's report",
+    "auditor's independence declaration",
     "statement of comprehensive income",
-    "statement of financial performance",
+    "statement of financial position",
     "statement of cash flows",
     "statement of changes in equity",
     "notes to the financial statements",
-    "notes to financial statements",
     "notes to and forming part of the financial statements",
-    "financial report",
-    "certified financial statements",
-    "audited financial statements",
+    "consolidated financial report",
+]
+
+# Weak signals — contribute confidence but don't alone trigger financial section start
+_FINANCIAL_PAGE_CONTENT_MARKERS = [
     "general purpose financial statements",
     "special purpose financial statements",
+    "certified financial statements",
+    "audited financial statements",
+    "income statement",
+    "balance sheet",
 ]
+
+
+def _is_financial_section_page(page_text: str) -> bool:
+    """Check if a single page is part of the financial statements section."""
+    text_lower = page_text.lower()
+    for marker in _FINANCIAL_SECTION_TITLE_MARKERS:
+        if marker in text_lower:
+            return True
+    return False
+
+
+def _find_financial_section_start(pages: list[dict]) -> int:
+    """
+    Find the index of the first page in the financial statements section.
+
+    Uses page-level detection to find where the ACTUAL financial report begins,
+    avoiding false positives from TOC entries and narrative mentions.
+
+    Returns the page index, or len(pages) if no financial section found.
+    """
+    # Pass 1: Look for strong standalone section markers (page titles/headers)
+    for i, page in enumerate(pages):
+        text = page["text"].strip()
+        text_lower = text.lower()
+        first_line = text_lower.split("\n")[0].strip() if text else ""
+
+        # Strong signal: page opens with financial report title
+        for marker in _FINANCIAL_SECTION_TITLE_MARKERS:
+            if first_line == marker or first_line.startswith(marker):
+                return i
+            # Also check if the marker appears as a heading within first 3 lines
+            first_3_lines = "\n".join(text_lower.split("\n")[:3])
+            if f"\n{marker}\n" in f"\n{first_3_lines}\n":
+                return i
+
+    # Pass 2: "Certification of the Financial Statements" is the strongest
+    # unambiguous signal — it never appears in TOC or narrative
+    for i, page in enumerate(pages):
+        text_lower = page["text"].lower()
+        if "certification of the financial statements" in text_lower:
+            # Look nearby for audit/accounting language to confirm
+            context = text_lower
+            audit_signals = ["opinion", "audit", "compliance", "accounting standard",
+                           "true and fair", "internal control"]
+            hits = sum(1 for s in audit_signals if s in context)
+            if hits >= 1:
+                return i
+
+    # Pass 3: Combination of financial content markers on same page
+    for i, page in enumerate(pages):
+        text_lower = page["text"].lower()
+        hits = sum(1 for m in _FINANCIAL_PAGE_CONTENT_MARKERS if m in text_lower)
+        strong_hits = sum(1 for m in _FINANCIAL_SECTION_TITLE_MARKERS if m in text_lower)
+        if strong_hits >= 2 or (strong_hits >= 1 and hits >= 2):
+            return i
+
+    # No financial section found
+    return len(pages)
+
+
+def filter_financial_pages(pages: list[dict]) -> tuple[list[dict], int]:
+    """
+    Remove financial statement pages from page-structured extraction.
+
+    Detects the start of the actual financial statements section (not TOC entries
+    or narrative mentions) and excludes all pages from that point.
+
+    Args:
+        pages: List of page dicts with 'page_number' and 'text' keys
+
+    Returns:
+        Tuple of (filtered_pages, dropped_count)
+    """
+    if not pages:
+        return pages, 0
+
+    start_idx = _find_financial_section_start(pages)
+
+    if start_idx >= len(pages):
+        return pages, 0
+
+    # Drop everything from the financial section start
+    dropped = len(pages) - start_idx
+    return pages[:start_idx], dropped
 
 
 def filter_financial_statements(text: str) -> str:
     """
-    Remove financial statements section from text.
+    Legacy wrapper — operates on raw text using page-level detection.
+    Extracts pages via PDFPlumberExtractor, filters, and reassembles text.
 
-    Detects financial statement headings and removes all text after that point.
-    This is useful for focusing analysis on narrative sections rather than
-    standardized financial reporting.
-
-    Args:
-        text: The full text extracted from a PDF
-
-    Returns:
-        Text with financial statements section removed
+    Prefer filter_financial_pages() when pages are already extracted.
     """
     if not text:
         return text
 
+    # For standalone raw text, fall back to basic heading detection
+    # with TOC guard: require heading to appear after 25% of document
     text_lower = text.lower()
 
-    # Find the earliest occurrence of any financial statement heading
     earliest_pos = len(text)
-    found_heading = None
-
-    for heading in FINANCIAL_STATEMENT_HEADINGS:
-        # Look for heading with various formatting patterns
+    for heading in _FINANCIAL_SECTION_TITLE_MARKERS:
         patterns = [
-            f"\n{heading}\n",           # Heading on its own line
-            f"\n{heading}:",            # Heading with colon
-            f"\n{heading} ",            # Heading followed by space
-            f"\n{heading.upper()}\n",   # Uppercase version
-            f"\n{heading.upper()}:",    # Uppercase with colon
-            f"\n{heading.upper()} ",    # Uppercase with space
+            f"\n{heading}\n",
+            f"\n{heading.upper()}\n",
         ]
-
         for pattern in patterns:
             pos = text_lower.find(pattern)
-            if pos != -1 and pos < earliest_pos:
+            pct = pos / len(text) if pos != -1 else 0
+            if pos != -1 and pct > 0.20 and pos < earliest_pos:
                 earliest_pos = pos
-                found_heading = heading
 
     if earliest_pos < len(text):
-        # Found financial statement section - remove it
-        filtered_text = text[:earliest_pos]
-        return filtered_text
+        return text[:earliest_pos]
 
     return text
 
@@ -121,21 +196,6 @@ class ActivityExtractor:
         ],
     }
 
-    # Pre-compiled regex patterns for scoring (cached at class level)
-    _OUTCOME_PATTERNS = [
-        re.compile(r'\d+\s*(?:percent|%|people|households|residents|jobs|tonnes|units)', re.IGNORECASE),
-        re.compile(r'\$[\d,]+(?:\.\d{2})?', re.IGNORECASE),
-        re.compile(r'(?:increased|decreased|reduced|improved)\s+by\s+\d+', re.IGNORECASE),
-    ]
-
-    # SDG-relevant keywords (cached at class level)
-    _SDG_RELEVANT_TERMS = [
-        "sustainable", "climate", "environment", "community", "health",
-        "education", "infrastructure", "economic", "social", "partnership",
-        "innovation", "biodiversity", "renewable", "waste", "recycling",
-        "wellbeing", "inclusion", "diversity", "accessibility", "conservation"
-    ]
-
     def __init__(
         self,
         min_activity_length: int = 20,
@@ -151,6 +211,7 @@ class ActivityExtractor:
         use_bert_classifier: bool = False,
         bert_classifier_model: Optional[str] = None,
         min_confidence: float = 0.7,
+        require_action_verb: bool = False,
     ):
         """
         Initialize activity extractor.
@@ -173,8 +234,11 @@ class ActivityExtractor:
                  If None and use_sentence_reconstruction is True, uses the model from TextProcessor.
             nofinancial: Whether to exclude financial statements section from extraction.
             use_bert_classifier: Whether to use BERT activity classifier for sentence filtering.
-            bert_classifier_model: Path to BERT classifier model (default: models/activity-classifier/latest)
+            bert_classifier_model: Path to BERT classifier model (Hub repo ID or local path.
+                                 default: voyager205/sdg-activity-classifier)
             min_confidence: Minimum classifier confidence to keep an ACTION sentence (default: 0.7)
+            require_action_verb: Whether to require at least one action verb (priority or standard)
+                                in BERT-classified ACTION sentences (default: False)
         """
         self.pdf_extractor = PDFExtractor()
         self.use_sentence_reconstruction = use_sentence_reconstruction
@@ -207,6 +271,7 @@ class ActivityExtractor:
         self.use_llm_labeling = use_llm_labeling
         self.llm_max_workers = llm_max_workers
         self.min_confidence = min_confidence
+        self.require_action_verb = require_action_verb
 
         # Initialize BERT activity classifier if enabled
         self.use_bert_classifier = use_bert_classifier
@@ -227,25 +292,42 @@ class ActivityExtractor:
         else:
             self.llm_labeler = None
 
-    def extract_from_pdf(self, pdf_path: Path) -> Dict[str, Any]:
+    def extract_from_pdf(self, pdf_path: Path, progress_callback: callable = None) -> Dict[str, Any]:
         """
         Extract activities from a PDF file.
 
         Args:
             pdf_path: Path to PDF file
+            progress_callback: Optional callable(percent, step_text) for progress reporting
 
         Returns:
             Dictionary with activities and metadata
         """
+        cb = progress_callback or (lambda p, s: None)
+
         # Extract text from PDF
-        extraction_result = self.pdf_extractor.extract_text_from_pdf(pdf_path)
+        cb(6.0, "Reading PDF text...")
 
-        # Store raw text for debugging reference
-        raw_text = extraction_result["text"]
-
-        # Filter out financial statements if requested
         if self.nofinancial:
-            raw_text = filter_financial_statements(raw_text)
+            from src.enhanced_pdf_extractor import PDFPlumberExtractor
+            plumber = PDFPlumberExtractor()
+            extraction_result = plumber.extract_text_from_pdf(pdf_path)
+            pages = extraction_result.get("pages", [])
+
+            # Filter financial pages before assembling text
+            filtered_pages, dropped = filter_financial_pages(pages)
+            if dropped > 0:
+                print(f"  Excluded {dropped} financial statement pages (pages {filtered_pages[-1]['page_number']+1 if filtered_pages else '?'}+ dropped)")
+
+            # Reassemble text from filtered pages
+            raw_text = "\n".join(p["text"] for p in filtered_pages)
+            # Update extraction result to reflect filtered text
+            extraction_result["text"] = raw_text
+            extraction_result["pages"] = filtered_pages
+            extraction_result["financial_pages_dropped"] = dropped
+        else:
+            extraction_result = self.pdf_extractor.extract_text_from_pdf(pdf_path)
+            raw_text = extraction_result["text"]
 
         # Apply sentence reconstruction if enabled
         if self.use_sentence_reconstruction and self.sentence_reconstructor:
@@ -254,7 +336,8 @@ class ActivityExtractor:
             reconstructed_text = raw_text
 
         # Extract activities from the text
-        activities = self.extract_from_text(reconstructed_text)
+        cb(8.0, "Cleaning and segmenting text into sentences...")
+        activities = self.extract_from_text(reconstructed_text, progress_callback=progress_callback)
 
         # Add section context and source tracking if available
         if extraction_result.get("sections"):
@@ -291,16 +374,19 @@ class ActivityExtractor:
             "raw_text_sample": raw_text[:2000] if raw_text else None  # First 2000 chars for debugging
         }
 
-    def extract_from_text(self, text: str) -> List[Dict[str, Any]]:
+    def extract_from_text(self, text: str, progress_callback: callable = None) -> List[Dict[str, Any]]:
         """
         Extract activities from plain text.
 
         Args:
             text: Input text
+            progress_callback: Optional callable(percent, step_text) for progress reporting
 
         Returns:
             List of activity dictionaries
         """
+        cb = progress_callback or (lambda p, s: None)
+
         # Clean text first
         cleaned_text = self.text_processor.clean_text(text)
 
@@ -308,40 +394,46 @@ class ActivityExtractor:
             # Phase 1: Get candidate sentences (segmentation + cleaning only)
             candidates = self.text_processor.extract_candidate_sentences(cleaned_text)
 
-            # Phase 2: Classify with BERT
+            # Phase 2: Classify with BERT + quick structure guard
             if candidates:
+                cb(12.0, f"Classifying {len(candidates)} sentences with BERT...")
                 results = self.bert_classifier.classify_batch(candidates)
-                filtered_activities = []
+                raw_activities = []
                 for candidate, result in zip(candidates, results):
                     if result["is_activity"] and result["confidence"] >= self.min_confidence:
-                        filtered_activities.append({
+                        if self.require_action_verb and not self.text_processor.has_action_verb_quick(candidate):
+                            continue
+                        raw_activities.append({
                             "text": candidate,
                             "confidence": result["confidence"],
-                            "relevance_score": result["confidence"],
                             "classification_method": "bert",
                         })
             else:
-                filtered_activities = []
+                raw_activities = []
 
-            print(f"  BERT classified {len(candidates)} candidates, {len(filtered_activities)} ACTION")
+            print(f"  BERT classified {len(candidates)} candidates, {len(raw_activities)} ACTION")
         else:
-            # Original spaCy-based pipeline
-            activities = self.text_processor.extract_activities(
+            # spaCy-based pipeline: segmentation + structure validation
+            raw_activities = self.text_processor.extract_activities(
                 cleaned_text,
                 use_heuristics=True
             )
 
-            # Filter and score activities with stricter criteria
-            filtered_activities = []
-            for activity in activities:
-                scored_activity = self._score_activity(activity)
-                if scored_activity["relevance_score"] > 0.6:
-                    filtered_activities.append(scored_activity)
+            print(f"  Extracted {len(raw_activities)} activities via spaCy")
 
-            print(f"  Extracted {len(activities)} activities, {len(filtered_activities)} passed relevance threshold (>0.6)")
-            if len(activities) > 0 and len(filtered_activities) == 0:
-                top_scores = sorted([a.get("relevance_score", 0) for a in activities], reverse=True)[:5]
-                print(f"  Top relevance scores: {top_scores}")
+        # Shared post-processing: score relevance, add section type, filter
+        filtered_activities = []
+        for activity in raw_activities:
+            scored = self._score_activity(activity)
+            if scored["relevance_score"] >= 0.5:
+                filtered_activities.append(scored)
+
+        if len(raw_activities) > 0 and len(filtered_activities) == 0:
+            top_scores = sorted(
+                [self._score_activity(a)["relevance_score"] for a in raw_activities],
+                reverse=True
+            )[:5]
+            print(f"  Top relevance scores: {top_scores}")
 
         # Sort by relevance score
         filtered_activities.sort(key=lambda x: x["relevance_score"], reverse=True)
@@ -357,52 +449,18 @@ class ActivityExtractor:
 
     def _score_activity(self, activity: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Score an activity based on strict validation criteria.
+        Score an activity combining model confidence with text-based relevance.
 
-        Args:
-            activity: Activity dictionary from text processor
-
-        Returns:
-            Activity with added relevance score
+        Uses shared TextProcessor.score_relevance() for text features.
+        Final score = 0.6 * confidence + 0.4 * text_relevance.
         """
         text = activity["text"]
         base_confidence = activity.get("confidence", 0.5)
+        text_score = self.text_processor.score_relevance(text)
 
-        score = base_confidence
-
-        # Bonus for SDG-relevant keywords (use cached class attribute)
-        text_lower = text.lower()
-        sdg_matches = sum(1 for term in self._SDG_RELEVANT_TERMS if term in text_lower)
-        score += min(sdg_matches * 0.05, 0.15)  # Reduced from 0.1/0.3 to be stricter
-
-        # Bonus for quantitative outcomes (use pre-compiled patterns)
-        for pattern in self._OUTCOME_PATTERNS:
-            if pattern.search(text):
-                score += 0.05  # Reduced from 0.1
-                break
-
-        # Bonus for specificity indicators
-        specificity_markers = [
-            'for', 'in', 'at', 'with', 'to',
-            'community', 'residents', 'people', 'families',
-            'area', 'region', 'town', 'city'
-        ]
-        specificity_count = sum(1 for marker in specificity_markers if marker in text_lower)
-        score += min(specificity_count * 0.02, 0.1)
-
-        # Penalty for too many numbers (likely a table)
-        words = text.split()
-        if words:
-            number_ratio = sum(1 for w in words if any(c.isdigit() for c in w)) / len(words)
-            if number_ratio > 0.3:
-                score *= 0.5
-
-        # Detect section type
-        section_type = self.text_processor.detect_section_type(text)
-
-        # Store section type and relevance score
-        activity["section_type"] = section_type
-        activity["relevance_score"] = min(score, 1.0)
+        activity["relevance_score"] = round(0.6 * base_confidence + 0.4 * text_score, 4)
+        activity["word_count"] = len(text.split())
+        activity["section_type"] = self.text_processor.detect_section_type(text)
 
         return activity
 

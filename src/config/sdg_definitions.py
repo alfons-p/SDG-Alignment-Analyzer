@@ -553,3 +553,11 @@ SDG_DEFINITIONS: Dict[int, Dict[str, Any]] = {
         "color": "#19486A"
     },
 }
+
+# Derived convenience maps (auto-generated from SDG_DEFINITIONS)
+SDG_COLORS: Dict[int, str] = {k: v["color"] for k, v in SDG_DEFINITIONS.items()}
+
+SDG_DATA: Dict[int, Dict[str, str]] = {
+    k: {"name": v["name"], "description": v["short_description"]}
+    for k, v in SDG_DEFINITIONS.items()
+}

@@ -77,7 +77,7 @@ def load_split(path: Path, label_map: dict = None) -> tuple[list[str], list[int]
     texts, labels = [], []
     with open(path, encoding="utf-8") as f:
         for row in csv.DictReader(f):
-            label = row["label"].strip().upper()
+            label = row["consensus_label"].strip().upper()
             if label not in LABEL_MAP_3CLASS:
                 continue
             texts.append(row["text"])
@@ -243,7 +243,7 @@ def main():
     print(f"  Output: {output_dir}")
 
     # Load data
-    splits_dir = Path("data/splits")
+    splits_dir = Path("data/splits-consensus")
     train_texts, train_labels = load_split(splits_dir / "activity_train.csv", label_map=label_map)
     val_texts, val_labels = load_split(splits_dir / "activity_val.csv", label_map=label_map)
     test_texts, test_labels = load_split(splits_dir / "activity_test.csv", label_map=label_map)

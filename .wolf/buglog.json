@@ -1,0 +1,1622 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-04-16T04:35:29.965Z",
+      "error_message": "Wrong return value",
+      "file": "src/hybrid_alignment_engine.py",
+      "root_cause": "Was returning: super().align_activities(activities, show_progress",
+      "fix": "Now returns: super().align_activities(activities, show_progress",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-16T04:35:29.965Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-04-16T04:49:56.282Z",
+      "error_message": "Wrong reference: Counter should be CounterClass",
+      "file": "scripts/analyze_target_boost_fp.py",
+      "root_cause": "Used \"Counter\" instead of \"CounterClass\"",
+      "fix": "Changed Counter \u2192 CounterClass",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-04-16T04:53:07.105Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-04-16T12:52:36.300Z",
+      "error_message": "Significant refactor of ",
+      "file": "../../../../.claude/plans/mossy-humming-parasol.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10\u219241 lines (2 removed) | Also: 1. Load the AidData dataset (1000 samples); 2. Pre-compute all 5 variant embeddings for each S | Also: 2. Implement changes, bump cache version; 3. Run `scripts/optimize_variant_weights.py` \u2192 fin",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-16T12:52:49.103Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-04-16T13:35:45.179Z",
+      "error_message": "Significant refactor of ",
+      "file": "../../../../.claude/plans/mossy-humming-parasol.md",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 20\u219238 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-16T13:35:45.179Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-04-16T13:55:42.080Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/sdg_reference.py",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 32\u219280 lines (8 removed) | Also: for name, text in variants.items(); \"core\": 0.35,",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-16T13:59:56.284Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-04-16T14:01:39.481Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/embedding_cache.py",
+      "root_cause": "Had \"2.0\"",
+      "fix": "Changed to \"3.0\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-16T14:01:39.481Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-04-16T22:55:11.498Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/finetune_with_variants.py",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 11\u219214 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-16T22:55:11.498Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-04-17T08:00:00.000Z",
+      "error_message": "TypeError: unsupported operand type(s) for //: 'int' and 'NoneType' in SentenceTransformer.fit()",
+      "file": "scripts/finetune_with_variants.py",
+      "root_cause": "sentence-transformers v5.3 fit() computes steps_per_epoch = len(dataset) // batch_size. When using batch_sampler, PyTorch sets DataLoader.batch_size=None, causing TypeError. Also, NoDuplicatesDataLoader was removed in v3+.",
+      "fix": "Use standard DataLoader with shuffle=True and batch_size parameter instead of custom batch_sampler or NoDuplicatesDataLoader. With 307K examples and batch_size=32, same-SDG MNR false negatives have minimal impact.",
+      "tags": [
+        "sentence-transformers",
+        "compatibility",
+        "dataloader",
+        "mnr"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-17T08:55:00.000Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-04-17T23:39:14.875Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/embedding_cache.py",
+      "root_cause": "Had \"5var_c30_l25_t20_k15_i10\"",
+      "fix": "Changed to \"5var_c05_l05_t55_k30_i05\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-17T23:39:14.875Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-04-18T22:00:00.000Z",
+      "error_message": "get_embedding_info() returned stale variant weights after optimization",
+      "file": "src/sdg_reference.py",
+      "root_cause": "get_embedding_info() had hardcoded old weights (0.30/0.25/0.20/0.15/0.10) while _combine_embeddings() and cache metadata used optimized weights (0.05/0.05/0.55/0.30/0.05)",
+      "fix": "Updated get_embedding_info() weights to match optimized values",
+      "tags": [
+        "stale-weights",
+        "hardcoded",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-18T22:00:00.000Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-04-20T01:35:08.349Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/sdg_bert_classifier.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 42\u219265 lines (2 removed) | Also: return {; 'coverage': 'SDG 1-16 (excludes SDG 17)',",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-20T01:35:40.185Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-04-20T10:00:00.000Z",
+      "error_message": "SDG 8 ensemble weights sum to 0.67 instead of 1.0",
+      "file": "src/sdg_ensemble_weights.py",
+      "root_cause": "SDG 8 had (0.15, 0.52) which sums to 0.67. Likely typo: should be (0.48, 0.52) matching other SDGs. Comments also said '15%/85%' but actual values were ~50/50.",
+      "fix": "Changed SDG 8 to (0.48, 0.52). Fixed DEFAULT weights from 0.15/0.85 to 0.50/0.50 to match actual values. Updated all comments.",
+      "tags": [
+        "wrong-value",
+        "ensemble-weights",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T10:00:00.000Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-04-20T12:28:00.000Z",
+      "error_message": "RuntimeError: Placeholder storage has not been allocated on MPS device!",
+      "file": "scripts/finetune_sdgbert_multilabel.py",
+      "root_cause": "HuggingFace Trainer auto-detects and uses MPS device even when --device cpu is passed. After training, the model stays on MPS, but evaluation code sends inputs to CPU. MPS has a known PyTorch bug with placeholder storage.",
+      "fix": "Force model.to('cpu') and use eval_device='cpu' in all evaluation functions after trainer.train(). Also add use_cpu=(device=='cpu') to TrainingArguments.",
+      "tags": [
+        "mps",
+        "device-mismatch",
+        "pytorch",
+        "finetuning"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T12:28:00.000Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-04-20T04:58:56.073Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/sdg_bert_classifier.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 12\u219225 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-20T04:58:56.073Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-04-20T08:42:51.856Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/benchmark_thresholds.py",
+      "root_cause": "39 lines replaced/restructured",
+      "fix": "Rewrote 57\u2192152 lines (39 removed) | Also: help=\"Path to fine-tuned sdgBERT model\"); # Initialize engines | Also: # Reuse data loading and score computation from th; from scripts.optimize_thresholds import (",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-20T08:45:09.434Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-04-21T00:28:53.991Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/benchmark_all_models.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 14\u219220 lines (2 removed) | Also: osdg_oot_sub = oot_scores[len(aid_oot[\"texts\"]):]; f\"OSDG acc: {result['osdg_accuracy']:.4f}\") | Also: print(\"\\n\" + \"=\" * 110); print(\"=\" * 110)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-21T00:29:17.640Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-04-21T14:55:00.000Z",
+      "error_message": "benchmark_sdganalyzer.py re-optimized thresholds on evaluation data instead of using production thresholds",
+      "file": "scripts/benchmark_sdganalyzer.py",
+      "root_cause": "Initial implementation independently optimized per-SDG thresholds on the domain evaluation data (fitting to test set), producing inflated results like BERT SDG 10 threshold=0.219 vs production threshold=0.810",
+      "fix": "Rewrote to use production thresholds from threshold_config.py (get_all_thresholds) for ST, sdgBERT, and Hybrid modes only. Removed threshold optimization logic entirely.",
+      "tags": [
+        "data-leakage",
+        "evaluation",
+        "thresholds",
+        "domain-shift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-21T14:55:00.000Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-04-21T10:54:45.641Z",
+      "error_message": "Significant refactor of ",
+      "file": "../../../../.claude/plans/clever-wandering-peacock.md",
+      "root_cause": "18 lines replaced/restructured",
+      "fix": "Rewrote 29\u219216 lines (18 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-21T10:54:45.641Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-04-21T13:26:54.346Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/extract_raw_sentences.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 26\u219249 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-21T13:26:54.346Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-04-22T00:33:42.229Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4\u21926 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T00:33:42.229Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-04-22T01:04:31.957Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4\u21926 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T01:04:31.957Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-04-22T05:14:05.817Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 15\u219224 lines (3 removed) | Also: # Warn if daily request budget may exceed free-tie; total_api_calls = (len(todo) + args.batch_size - 1",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-22T05:18:14.658Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-04-22T09:16:06.477Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 32\u219263 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T09:16:06.477Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-04-22T09:16:29.800Z",
+      "error_message": "Wrong reference: ollama should be urllib",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "Used \"ollama\" instead of \"urllib\"",
+      "fix": "Changed ollama \u2192 urllib",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-22T09:16:29.800Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-04-23T04:06:07.832Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 7\u219212 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T04:06:07.832Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-04-23T04:06:15.913Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "Had \"f1_macro\"",
+      "fix": "Changed to \"test_f1_action\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T04:06:15.913Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-04-23T14:00:00.000Z",
+      "error_message": "KeyError: 'f1_macro' in finetune_activity_classifier.py test evaluation",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "Trainer.evaluate() prefixes metric keys with 'eval_' (e.g., 'eval_f1_macro' not 'f1_macro'). Script used unprefixed keys.",
+      "fix": "Changed to use .get('eval_f1_macro', .get('f1_macro', 0)) pattern to handle both prefixed and unprefixed keys.",
+      "tags": [
+        "transformers",
+        "trainer",
+        "metric-keys",
+        "finetuning"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:00:00.000Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-04-23T14:05:00.000Z",
+      "error_message": "ValueError: Converting from Tiktoken failed when loading DeBERTa-v3 tokenizer",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "tiktoken 0.12.0 is incompatible with transformers 4.49.0's tokenizer conversion for DeBERTa-v3. AutoTokenizer.from_pretrained() with use_fast=False still tries fast path internally. tiktoken load_tiktoken_bpe gets None for blobpath causing AttributeError.",
+      "fix": "Replaced AutoTokenizer with DebitaV2Tokenizer (slow tokenizer class) which bypasses tiktoken entirely. Also installed sentencepiece which DebitaV2Tokenizer requires.",
+      "tags": [
+        "tiktoken",
+        "tokenizer",
+        "deberta",
+        "compatibility",
+        "finetuning"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T14:05:00.000Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-04-23T04:35:23.231Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 22\u219231 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T04:35:23.231Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-04-23T04:35:26.396Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "Had \"Fine-tune DeBERTa-v3-small for 3-class activity c",
+      "fix": "Changed to \"Fine-tune DeBERTa-v3-small for activity classific",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T04:35:26.396Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-04-23T15:30:00.000Z",
+      "error_message": "NameError: name DebitaV2Tokenizer is not defined. Did you mean: DebertaV2Tokenizer?",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "Typo: wrote DebitaV2Tokenizer instead of DebertaV2Tokenizer in both comment and code. Made the same typo twice in one edit.",
+      "fix": "Corrected to DebertaV2Tokenizer.",
+      "tags": [
+        "typo",
+        "tokenizer",
+        "deberta"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T15:30:00.000Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-04-23T21:35:31.677Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/activity_extractor.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 45\u219270 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T21:35:31.677Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-04-23T23:44:59.407Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/activity_classifier.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 9\u219215 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-23T23:44:59.407Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-04-24T07:30:00.000Z",
+      "error_message": "ActivityClassifier ModelLoadError: Incorrect path_or_model_id for models/activity-classifier/latest",
+      "file": "src/activity_classifier.py",
+      "root_cause": "transformers from_pretrained does not follow symlinks and cannot resolve relative paths when CWD differs from project root. Path was also doubled when resolve() prepended CWD.",
+      "fix": "Use PROJECT_ROOT (Path(__file__).parent.parent) to resolve relative paths, then .resolve() for symlinks. Always pass absolute paths to from_pretrained.",
+      "tags": [
+        "transformers",
+        "symlink",
+        "path-resolution",
+        "activity-classifier"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T07:30:00.000Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-04-24T00:15:03.310Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/pipeline_workflow.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 31\u219236 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T00:15:03.310Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-04-24T00:17:53.423Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/config/settings.py",
+      "root_cause": "Had \"false\"",
+      "fix": "Changed to \"true\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T00:17:53.423Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-04-24T00:18:10.526Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "Had 'use_bert_classifier'",
+      "fix": "Changed to 'no_bert_classifier'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T00:18:10.526Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-04-24T00:18:35.190Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/pipeline_workflow.md",
+      "root_cause": "Had `--use-bert-classifier`",
+      "fix": "Changed to `--no-bert-classifier`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-24T00:18:50.251Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-04-24T00:18:45.063Z",
+      "error_message": "Wrong reference: default should be no",
+      "file": "docs/pipeline_workflow.md",
+      "root_cause": "Used \"default\" instead of \"no\"",
+      "fix": "Changed default \u2192 no",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T00:18:45.063Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-04-24T00:21:16.628Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/pipeline_workflow.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 9\u219213 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T00:21:16.628Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-04-24T01:08:34.184Z",
+      "error_message": "Wrong return value",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "Was returning: {'year': '', 'state': '', 'urban_rural': '', 'rela",
+      "fix": "Now returns: {'year': '', 'state': '', 'council_name': '', 'urb",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T01:08:34.184Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-04-24T01:21:51.594Z",
+      "error_message": "Wrong reference: council_output_dir should be summary_dir",
+      "file": "src/reports/base.py",
+      "root_cause": "Used \"council_output_dir\" instead of \"summary_dir\"",
+      "fix": "Changed council_output_dir \u2192 summary_dir",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T01:21:51.594Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-04-24T01:36:42.506Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "18 lines replaced/restructured",
+      "fix": "Rewrote 20\u219210 lines (18 removed) | Also: # Disable multiprocessing resource tracker (not ne; # warning caused by os._exit(0) skipping normal Py | Also: # Suppress multiprocessing resource_tracker leaked; # (caused by os._exit(0) skipping normal cleanup) | Also: # Disable multiprocessing resource tracker to avoi; # (caused by os._exit(0) at end skipping normal Py | Also: # Stop the multiprocessing resource tracker before; # doesn't report \"leaked semaphore\" warnings (caus | Also: \"\"\"Move all tracked MPS models to CPU and flush MP; Called via atexit BEFORE Python's final GC, which  | Also: # Skip Python's C++ final teardown to avoid MPS bu; # The atexit handler (_cleanup_mps) already moved ",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 7,
+      "last_seen": "2026-04-24T01:44:03.142Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-04-24T10:00:00.000Z",
+      "error_message": "zsh: bus error when running run_analysis.py with MPS models",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "C++ static destruction order fiasco in PyTorch MPS backend. MPS allocator's std::shared_timed_mutex is destroyed during C++ static teardown before Python's final GC runs tensor destructors. Tensor destructors try to use the already-destroyed MPS allocator, causing SIGBUS. Previous fix (disabling MPS) caused 3-5x slowdown. Inline cleanup after main() was too late.",
+      "fix": "Two-layer fix: (1) cleanup() methods on every model class that cascade model.to(cpu) + gc.collect() + torch.mps.empty_cache(), (2) atexit handler that calls cleanup() on tracked models, then sweeps gc.get_objects() for any remaining MPS tensors and moves them to CPU, then gc.collect() + torch.mps.empty_cache(). Zero MPS tensors remain before Python final GC, so MPS allocator mutex destruction is harmless. No os._exit needed.",
+      "tags": [
+        "mps",
+        "bus-error",
+        "pytorch",
+        "apple-silicon",
+        "atexit"
+      ],
+      "related_bugs": [
+        "bug-013"
+      ],
+      "occurrences": 3,
+      "last_seen": "2026-04-24T10:00:00.000Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-04-24T02:07:15.102Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "23 lines replaced/restructured",
+      "fix": "Rewrote 60\u219228 lines (23 removed) | Also: return alignment_results; return None",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-24T02:07:55.458Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-04-24T02:16:24.070Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 17\u219231 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T02:16:24.070Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-04-24T09:40:23.741Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "14 lines replaced/restructured",
+      "fix": "Rewrote 21\u21927 lines (14 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-24T09:40:23.741Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-04-25T02:03:49.631Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "Had \"models/sdg-finetuned-enhanced/sdg-enhanced-finetu",
+      "fix": "Changed to \"models/sdg-finetuned/sdg-variant-finetuned-202604",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-25T02:03:49.631Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-04-26T11:59:37.073Z",
+      "error_message": "Wrong reference: pdf_path should be args",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "Used \"pdf_path\" instead of \"args\"",
+      "fix": "Changed pdf_path \u2192 args",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-26T11:59:37.073Z"
+    },
+    {
+      "id": "bug-050",
+      "timestamp": "2026-04-29T22:21:38.573Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/sdg_bert_classifier.py",
+      "root_cause": "Had \"models/sdg-bert-multilabel/sdg-bert-multilabel-20",
+      "fix": "Changed to \"voyager205/sdg-bert-multilabel\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-04-29T22:24:42.496Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-04-29T22:40:33.212Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/sdg_bert_classifier.py",
+      "root_cause": "Had \"models/sdg-bert-multilabel/sdg-bert-multilabel-20",
+      "fix": "Changed to \"voyager205/sdg-bert-multilabel\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T22:40:33.212Z"
+    },
+    {
+      "id": "bug-052",
+      "timestamp": "2026-04-29T23:30:00.130Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/dashboard/utils.py",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 30\u219238 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-29T23:30:00.130Z"
+    },
+    {
+      "id": "bug-053",
+      "timestamp": "2026-04-30T01:00:19.427Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/dashboard/utils.py",
+      "root_cause": "28 lines replaced/restructured",
+      "fix": "Rewrote 36\u21926 lines (28 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-30T01:00:19.427Z"
+    },
+    {
+      "id": "bug-054",
+      "timestamp": "2026-04-30T01:33:17.627Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/services/analysis_service.py",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 29\u219265 lines (3 removed) | Also: engine = get_hybrid_engine(; bias_corrections=bias,",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-04-30T01:33:24.729Z"
+    },
+    {
+      "id": "bug-055",
+      "timestamp": "2026-04-30T01:49:46.953Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/dependencies.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6\u21926 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-04-30T01:49:46.953Z"
+    },
+    {
+      "id": "bug-056",
+      "timestamp": "2026-05-02T22:47:03.197Z",
+      "error_message": "Significant refactor of ",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6\u219217 lines (2 removed) | Also: \"\"\"Call Ollama chat API with think=false to disabl; Uses raw HTTP API instead of the ollama Python SDK",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-02T22:48:16.369Z"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-05-02T22:48:51.600Z",
+      "error_message": "Wrong return value",
+      "file": "scripts/label_sentences_batch.py",
+      "root_cause": "Was returning: label_batch_openai(model_name, sentences, batch_si",
+      "fix": "Now returns: label_batch_openai(model_name, sentences, batch_si",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-02T22:48:51.600Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-05-03T01:40:02.144Z",
+      "error_message": "Wrong return value",
+      "file": "src/hybrid_alignment_engine.py",
+      "root_cause": "Was returning: super().align_activities(activities, show_progress",
+      "fix": "Now returns: super().align_activities(activities, show_progress",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T01:40:02.144Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-05-03T01:40:58.824Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/text_processor.py",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 11\u219213 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T01:40:58.824Z"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-05-03T01:41:58.187Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "Had \"Auto-starting {args.auto_start_ollama} server(s).",
+      "fix": "Changed to \"Auto-starting {desired_servers} server(s)...\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T01:41:58.187Z"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-05-03T01:45:48.011Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/auth.py",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 40\u219282 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T01:45:48.011Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-05-03T01:48:17.038Z",
+      "error_message": "Incorrect value in code",
+      "file": "backend/tests/test_api.py",
+      "root_cause": "Had \"wrongpassword\"",
+      "fix": "Changed to \"WrongPass1\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T01:49:18.891Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-05-03T01:48:17.219Z",
+      "error_message": "Wrong reference: 404 should be 409",
+      "file": "backend/tests/test_api.py",
+      "root_cause": "Used \"404\" instead of \"409\"",
+      "fix": "Changed 404 \u2192 409",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T01:48:17.407Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-05-03T01:51:10.590Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/auth.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4\u21924 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T01:51:10.590Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-05-03T02:38:47.774Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/services/analysis_service.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 38\u219247 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T02:38:47.774Z"
+    },
+    {
+      "id": "bug-066",
+      "timestamp": "2026-05-03T02:52:41.091Z",
+      "error_message": "Wrong return value",
+      "file": "backend/app/routers/analysis.py",
+      "root_cause": "Was returning: AnalysisSummary(**summary)",
+      "fix": "Now returns: AnalysisSummary(**_normalize_summary_keys(summary)",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T02:52:41.091Z"
+    },
+    {
+      "id": "bug-067",
+      "timestamp": "2026-05-03T02:58:39.963Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/analysis.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7\u219210 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T02:58:39.963Z"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-05-03T02:58:47.183Z",
+      "error_message": "Wrong return value",
+      "file": "backend/app/routers/analysis.py",
+      "root_cause": "Was returning: AnalysisSummary(**_normalize_summary_keys(summary)",
+      "fix": "Now returns: AnalysisSummary(**_normalize_summary_keys(summary,",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T02:58:47.183Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-05-03T03:04:01.423Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/activity_extractor.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 28\u219233 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T03:04:01.423Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-05-03T03:23:22.315Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/routers/analysis.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 12\u219217 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T03:23:22.315Z"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-05-03T03:24:05.111Z",
+      "error_message": "Significant refactor of ",
+      "file": "backend/app/services/analysis_service.py",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 13\u219220 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T03:24:05.111Z"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-05-03T03:35:47.090Z",
+      "error_message": "Missing guard clause",
+      "file": "frontend/src/api/analysis.ts",
+      "root_cause": "No early return/throw for edge case: value === undefined || value === null",
+      "fix": "Added guard clause: if (value === undefined || value === null)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T03:35:47.090Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-05-03T03:57:31.102Z",
+      "error_message": "Significant refactor of ",
+      "file": "frontend/src/components/analysis/ProcessingSettings.tsx",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 27\u219219 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T03:57:31.102Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-05-03T03:57:51.210Z",
+      "error_message": "Null/undefined access in ",
+      "file": "frontend/src/components/analysis/ProcessingSettings.tsx",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T03:57:51.210Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-05-03T04:30:34.763Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/activity_extractor.py",
+      "root_cause": "28 lines replaced/restructured",
+      "fix": "Rewrote 66\u2192142 lines (28 removed) | Also: # Store raw text for debugging reference; # Filter out financial statements if requested",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T04:31:16.430Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-05-03T06:36:46.593Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/text_processor.py",
+      "root_cause": "33 lines replaced/restructured",
+      "fix": "Rewrote 58\u219217 lines (33 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T06:36:46.593Z"
+    },
+    {
+      "id": "bug-077",
+      "timestamp": "2026-05-03T06:38:00.948Z",
+      "error_message": "Wrong reference: False should be True",
+      "file": "src/activity_extractor.py",
+      "root_cause": "Used \"False\" instead of \"True\"",
+      "fix": "Changed False \u2192 True",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T06:38:00.948Z"
+    },
+    {
+      "id": "bug-078",
+      "timestamp": "2026-05-03T06:38:01.123Z",
+      "error_message": "Wrong reference: False should be True",
+      "file": "backend/app/services/analysis_service.py",
+      "root_cause": "Used \"False\" instead of \"True\"",
+      "fix": "Changed False \u2192 True",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T06:38:01.476Z"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-05-03T06:38:01.652Z",
+      "error_message": "Wrong reference: False should be True",
+      "file": "backend/app/routers/analysis.py",
+      "root_cause": "Used \"False\" instead of \"True\"",
+      "fix": "Changed False \u2192 True",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T06:38:01.834Z"
+    },
+    {
+      "id": "bug-080",
+      "timestamp": "2026-05-03T06:38:02.129Z",
+      "error_message": "Wrong reference: false should be true",
+      "file": "frontend/src/pages/UploadPage.tsx",
+      "root_cause": "Used \"false\" instead of \"true\"",
+      "fix": "Changed false \u2192 true",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T06:38:02.129Z"
+    },
+    {
+      "id": "bug-081",
+      "timestamp": "2026-05-03T06:39:32.598Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/activity_extractor.py",
+      "root_cause": "34 lines replaced/restructured",
+      "fix": "Rewrote 50\u219216 lines (34 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T06:39:32.598Z"
+    },
+    {
+      "id": "bug-082",
+      "timestamp": "2026-05-03T08:36:17.725Z",
+      "error_message": "Wrong reference: use_custom_thresholds should be require_action_verb",
+      "file": "frontend/src/pages/UploadPage.tsx",
+      "root_cause": "Used \"use_custom_thresholds\" instead of \"require_action_verb\"",
+      "fix": "Changed use_custom_thresholds \u2192 require_action_verb",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T08:36:17.725Z"
+    },
+    {
+      "id": "bug-083",
+      "timestamp": "2026-05-03T21:30:19.805Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/finetune_activity_classifier.py",
+      "root_cause": "Had \"label\"",
+      "fix": "Changed to \"consensus_label\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T21:31:16.806Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-05-03T22:00:20.485Z",
+      "error_message": "Wrong reference: classize should be classify",
+      "file": "tests/test_activity_classifier.py",
+      "root_cause": "Used \"classize\" instead of \"classify\"",
+      "fix": "Changed classize \u2192 classify",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T22:00:20.485Z"
+    },
+    {
+      "id": "bug-085",
+      "timestamp": "2026-05-03T23:40:02.777Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/pipeline_workflow.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4\u21924 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T23:40:02.777Z"
+    },
+    {
+      "id": "bug-086",
+      "timestamp": "2026-05-04T00:21:24.748Z",
+      "error_message": "Wrong reference: True should be False",
+      "file": "src/activity_extractor.py",
+      "root_cause": "Used \"True\" instead of \"False\"",
+      "fix": "Changed True \u2192 False",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:21:24.748Z"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-05-04T00:21:56.076Z",
+      "error_message": "Wrong reference: True should be False",
+      "file": "backend/app/routers/analysis.py",
+      "root_cause": "Used \"True\" instead of \"False\"",
+      "fix": "Changed True \u2192 False",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-04T00:21:56.256Z"
+    },
+    {
+      "id": "bug-088",
+      "timestamp": "2026-05-04T00:21:56.436Z",
+      "error_message": "Wrong reference: True should be False",
+      "file": "backend/app/services/analysis_service.py",
+      "root_cause": "Used \"True\" instead of \"False\"",
+      "fix": "Changed True \u2192 False",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-04T00:21:56.822Z"
+    },
+    {
+      "id": "bug-089",
+      "timestamp": "2026-05-04T00:22:14.911Z",
+      "error_message": "Wrong reference: true should be false",
+      "file": "frontend/src/pages/UploadPage.tsx",
+      "root_cause": "Used \"true\" instead of \"false\"",
+      "fix": "Changed true \u2192 false",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "tsx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:22:14.911Z"
+    },
+    {
+      "id": "bug-090",
+      "timestamp": "2026-05-04T00:22:20.755Z",
+      "error_message": "Wrong reference: excluded should be included",
+      "file": "docs/pipeline_flow_diagram.md",
+      "root_cause": "Used \"excluded\" instead of \"included\"",
+      "fix": "Changed excluded \u2192 included",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:22:20.755Z"
+    },
+    {
+      "id": "bug-091",
+      "timestamp": "2026-05-04T00:36:54.752Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/pipeline_flow_diagram.md",
+      "root_cause": "55 lines replaced/restructured",
+      "fix": "Rewrote 61\u21923 lines (55 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:36:54.752Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-05-04T00:50:31.344Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/activity_classifier.py",
+      "root_cause": "Had \"models/activity-classifier/latest\"",
+      "fix": "Changed to \"voyager205/sdg-activity-classifier\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:50:31.344Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-05-04T00:50:31.527Z",
+      "error_message": "Significant refactor of ",
+      "file": "src/activity_classifier.py",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 8\u219218 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:50:31.527Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-05-04T00:51:18.710Z",
+      "error_message": "Significant refactor of ",
+      "file": "docs/pipeline_flow_diagram.md",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 18\u219230 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:51:18.710Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-05-04T00:51:23.394Z",
+      "error_message": "Incorrect value in code",
+      "file": "docs/pipeline_flow_diagram.md",
+      "root_cause": "Had `models/activity-classifier/latest`",
+      "fix": "Changed to `voyager205/sdg-activity-classifier`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:51:23.394Z"
+    },
+    {
+      "id": "bug-096",
+      "timestamp": "2026-05-04T00:51:31.407Z",
+      "error_message": "Incorrect value in code",
+      "file": "src/config/settings.py",
+      "root_cause": "Had \"models/activity-classifier/latest\"",
+      "fix": "Changed to \"voyager205/sdg-activity-classifier\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T00:51:31.407Z"
+    },
+    {
+      "id": "bug-097",
+      "timestamp": "2026-05-04T01:18:37.615Z",
+      "error_message": "Incorrect value in code",
+      "file": "scripts/run_analysis.py",
+      "root_cause": "Had \"Path to BERT classifier model (default: models/ac",
+      "fix": "Changed to \"Path to BERT classifier model (Hub repo ID or loc",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "py"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T01:18:37.615Z"
+    },
+    {
+      "id": "bug-098",
+      "timestamp": "2026-07-30T19:59:37.903643",
+      "error_message": "Missing Authorization header returned 403 instead of 401; frontend interceptor only handles 401 so no redirect to /login",
+      "file": "backend/app/dependencies.py",
+      "root_cause": "HTTPBearer() defaults auto_error=True, which raises 403 on absent credentials before get_current_user runs",
+      "fix": "HTTPBearer(auto_error=False) + explicit `if credentials is None: raise HTTPException(401, 'Not authenticated')`",
+      "tags": [
+        "auth",
+        "fastapi",
+        "httpbearer",
+        "401",
+        "403",
+        "jwt"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T19:59:37.903643"
+    },
+    {
+      "error_message": "cloudflared tunnel route dns created CNAME pointing to the wrong (alnura-app) tunnel ID instead of sdg-analyzer",
+      "root_cause": "route dns without --config used the default ~/.cloudflared/config.yml tunnel (alnura), ignoring intent",
+      "fix": "re-run with `cloudflared tunnel --config <sdg.yml> route dns --overwrite-dns sdg-analyzer <host>`",
+      "tags": [
+        "cloudflared",
+        "tunnel",
+        "dns",
+        "route",
+        "config"
+      ],
+      "id": "bug-099",
+      "timestamp": "2026-07-30T20:33:53.291622",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:33:53.291622"
+    },
+    {
+      "error_message": "cloudflared tunnel could not reach Vite frontend (127.0.0.1:5173 returned 000/502) while localhost:5173 worked",
+      "root_cause": "Vite v8 default binds `localhost` = IPv6 ::1 only; cloudflared connects to IPv4 127.0.0.1 -> mismatch",
+      "fix": "set server.host='127.0.0.1' in vite.config.ts to bind IPv4",
+      "tags": [
+        "vite",
+        "ipv6",
+        "cloudflared",
+        "tunnel",
+        "502",
+        "host-binding"
+      ],
+      "id": "bug-101",
+      "timestamp": "2026-07-30T20:33:53.291622",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:33:53.291622"
+    }
+  ]
+}

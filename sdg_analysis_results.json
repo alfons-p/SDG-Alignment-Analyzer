@@ -1,0 +1,284 @@
+{
+  "1": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "2": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "3": {
+    "total": 2,
+    "activities": [
+      {
+        "text": "Increased active and healthy lifestyles that support residents living independently for longer Proportion of adults who ...",
+        "score": 1.0,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "3 actions complete Assist to improve mental wellbeing within the community All three actions within this strategic prior...",
+        "score": 1.0,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "4": {
+    "total": 3,
+    "activities": [
+      {
+        "text": "In addition, they have introduced Children Activities during School Holidays as well as After School Care during the Sch...",
+        "score": 0.9916880528132122,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Council is developing a two-year action plan for the Families, Youth and Children Strategy, which will detail how Counci...",
+        "score": 0.8735930820306143,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Perth African Nations Football and Sports (PANSA) Youth Hub The Youth Hub weekly drop-in is delivered as an extension of...",
+        "score": 0.8084940363963445,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "5": {
+    "total": 1,
+    "activities": [
+      {
+        "text": "Council delivered Active Bystander and Family Violence training to staff as part of 16 Days of Activism against Gender-b...",
+        "score": 0.9980209300518036,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "6": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "7": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "8": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "9": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "10": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "11": {
+    "total": 14,
+    "activities": [
+      {
+        "text": "Private contractors provide waste collection services for non-residential and large multi-unit dwellings by direct arran...",
+        "score": 0.9360807844996452,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Council has also introduced a funding program for our smaller communities of up to $50,000.00 This program is designed t...",
+        "score": 0.6587761322557926,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Community Engagement Council have adopted a Community Engagement Strategy (available on Council\u2019s website) identifying g...",
+        "score": 0.85,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Road Safety Strategy 2024 Draft document has been prepared and will also be progressing to community consultation This i...",
+        "score": 0.85,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Under the MSA the Council provides (if required by the Company) a Management Services Fee in reference to the following ...",
+        "score": 0.470554572045803,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "use open spaces and infrastructure for the community to connect, engage and participate Deliver the Open Space Strategy ...",
+        "score": 1.0,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Status at Roads: Connecting Our Communities Arumpo Road Upgrade (24.5km) Funding: Australian Government Remote Roads Upg...",
+        "score": 0.7999270611405372,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "DISTRICT COUNCIL OF Streaky Bay WIRRULLA HASLAM PERLUBIE POOCHERA SCEALE BAY BAIRD BAY INTRODUCTION The District Council...",
+        "score": 0.755940137565136,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "INTERNAL REVIEW OF COUNCIL DECISIONS In accordance with Section 270 of the Local Government Act 1999, Council has adopte...",
+        "score": 0.6941525188088418,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "In 2022/23, the City awarded a contractor for fabrication and installation of a total of nine entry statements, which wi...",
+        "score": 0.8431108023524284,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Completed the annual review of the City\u2019s Service Business Continuity Plans, ensuring response strategies are up to date...",
+        "score": 0.8446919366717338,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "To ensure public electric vehicle (EV) charging infrastructure is provided appropriately and adequately, the City will a...",
+        "score": 0.8458201304674149,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Over 103,000 brochures were delivered to City homes and 19 City facilities in April 2023, primarily designed for City re...",
+        "score": 0.8201845070123672,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Land acquired for road purposes during the year is initially recognised at cost, but transferred to fair value at report...",
+        "score": 0.6755916174650193,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "12": {
+    "total": 3,
+    "activities": [
+      {
+        "text": "In accordance with section 162 of the Local Government Act 1989, Council introduced a s162 Kerbside Waste Collection Ser...",
+        "score": 0.988967741727829,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Generally, fair value is the most advantageous price reasonably obtained by the seller and the most advantageous price r...",
+        "score": 0.5448231635987759,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "In accordance with ASQM 1 Quality Management for Firms that Perform Audits or Reviews of Financial Reports and Other Fin...",
+        "score": 0.7395805743336678,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "13": {
+    "total": 1,
+    "activities": [
+      {
+        "text": "5 actions complete Lessen the severity of climate change, through actions that enable Council and the community to reduc...",
+        "score": 0.909986524939537,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "14": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "15": {
+    "total": 0,
+    "true_positives": 0,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "accuracy": null,
+    "activities": []
+  },
+  "16": {
+    "total": 1,
+    "activities": [
+      {
+        "text": "an opinion on whether the financial statements present fairly the Council\u2019s financial performance and position, and thei...",
+        "score": 0.6274153342843056,
+        "assessment": "PENDING"
+      }
+    ]
+  },
+  "17": {
+    "total": 9,
+    "activities": [
+      {
+        "text": "City of Subiaco Subiaco Library restoration completed The restoration of the Subiaco (Evelyn H Parker) Library was succe...",
+        "score": 0.5117544035116832,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "A major drainage upgrade was completed on Hartington Street, Northcote, involving 270 metres completed under complex con...",
+        "score": 0.7582269112269084,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "They also promoted inclusion and participation in the community of people with disability and sought to achieve tangible...",
+        "score": 0.8492922782897949,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "committee to the Strategic Alliance established this year, continued to meet to discuss important matters relating to ro...",
+        "score": 0.6964593132336935,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Community Funding Scheme (CFS) The Community Funding Scheme supports a range of exciting projects that involve cultural ...",
+        "score": 1.0,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Dungeons and Dragons Program The value of employing people with disabilities and the availability of local service provi...",
+        "score": 0.8242487410704296,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "Business continuity plan (plan setting Business continuity plan adopted \uf0fe out the actions that will be undertaken to ens...",
+        "score": 0.7061881323655447,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "ensuring that people with disability, older residents, and individuals from culturally and linguistically diverse backgr...",
+        "score": 0.8848372101783752,
+        "assessment": "PENDING"
+      },
+      {
+        "text": "A program of content on digital screens at the Administration Centre and Operations Centre updated monthly to keep emplo...",
+        "score": 0.5474467078844707,
+        "assessment": "PENDING"
+      }
+    ]
+  }
+}

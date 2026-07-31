@@ -69,7 +69,7 @@ class TestActivityClassifierClassify:
         assert result["label_name"] == "NOT_ACTION"
 
     def test_classify_returns_required_keys(self, classifier):
-        result = classifier.classize("Test sentence")
+        result = classifier.classify("Test sentence")
         assert "label" in result
         assert "label_name" in result
         assert "confidence" in result

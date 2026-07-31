@@ -24,10 +24,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # No need to call load_dotenv here - EnvLoader auto-loads on import
 from src.config.env_loader import EnvLoader
 
-# Set HF_TOKEN from environment if available
-if os.getenv("HF_TOKEN"):
-    os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
-
 # Disable tokenizers parallelism to avoid deadlocks in multiprocessing
 # This must be set before importing transformers/tokenizers
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -76,79 +72,6 @@ logging.getLogger('matplotlib.category').setLevel(logging.WARNING)
 
 
 # Financial statement section headings to detect and exclude
-FINANCIAL_STATEMENT_HEADINGS = [
-    "financial statements",
-    "financial statement",
-    "statement of financial position",
-    "statement of comprehensive income",
-    "statement of financial performance",
-    "statement of cash flows",
-    "statement of changes in equity",
-    "notes to the financial statements",
-    "notes to financial statements",
-    "notes to and forming part of the financial statements",
-    "financial report",
-    "certified financial statements",
-    "audited financial statements",
-    "general purpose financial statements",
-    "special purpose financial statements",
-]
-
-
-def filter_financial_statements(text: str, verbose: bool = False) -> str:
-    """
-    Remove financial statements section from text.
-
-    Detects financial statement headings and removes all text after that point.
-    This is useful for focusing analysis on narrative sections rather than
-    standardized financial reporting.
-
-    Args:
-        text: The full text extracted from a PDF
-        verbose: Whether to print filtering information
-
-    Returns:
-        Text with financial statements section removed
-    """
-    if not text:
-        return text
-
-    text_lower = text.lower()
-
-    # Find the earliest occurrence of any financial statement heading
-    earliest_pos = len(text)
-    found_heading = None
-
-    for heading in FINANCIAL_STATEMENT_HEADINGS:
-        # Look for heading with various formatting patterns
-        patterns = [
-            f"\n{heading}\n",           # Heading on its own line
-            f"\n{heading}:",            # Heading with colon
-            f"\n{heading} ",            # Heading followed by space
-            f"\n{heading.upper()}\n",   # Uppercase version
-            f"\n{heading.upper()}:",    # Uppercase with colon
-            f"\n{heading.upper()} ",    # Uppercase with space
-        ]
-
-        for pattern in patterns:
-            pos = text_lower.find(pattern)
-            if pos != -1 and pos < earliest_pos:
-                earliest_pos = pos
-                found_heading = heading
-
-    if earliest_pos < len(text):
-        # Found financial statement section - remove it
-        filtered_text = text[:earliest_pos]
-        if verbose:
-            removed_chars = len(text) - len(filtered_text)
-            removed_percent = (removed_chars / len(text)) * 100 if len(text) > 0 else 0
-            print(f"  Filtered financial statements: removed {removed_chars:,} chars ({removed_percent:.1f}%)")
-            print(f"  Stopped at heading: '{found_heading}'")
-        return filtered_text
-
-    return text
-
-
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
@@ -360,13 +283,18 @@ def parse_args() -> argparse.Namespace:
         "--bert-classifier-model",
         type=str,
         default=None,
-        help="Path to BERT classifier model (default: models/activity-classifier/latest)"
+        help="Path to BERT classifier model (Hub repo ID or local path. default: voyager205/sdg-activity-classifier)"
     )
     classifier_group.add_argument(
         "--min-confidence",
         type=float,
         default=0.7,
         help="Minimum BERT classifier confidence to keep ACTION sentence (default: 0.7)"
+    )
+    classifier_group.add_argument(
+        "--require-action-verb",
+        action="store_true",
+        help="Require at least one action verb (priority or standard) in BERT-classified ACTION sentences"
     )
 
     # Cache management
@@ -625,7 +553,8 @@ def process_single_report_parallel(
     nofinancial: bool = False,
     use_bert_classifier: bool = True,
     bert_classifier_model: Optional[str] = None,
-    min_confidence: float = 0.7
+    min_confidence: float = 0.7,
+    require_action_verb: bool = False,
 ) -> Optional[dict]:
     """
     Process a single report (standalone function for parallel execution).
@@ -649,7 +578,8 @@ def process_single_report_parallel(
             nofinancial=nofinancial,
             use_bert_classifier=use_bert_classifier,
             bert_classifier_model=bert_classifier_model,
-            min_confidence=min_confidence
+            min_confidence=min_confidence,
+            require_action_verb=require_action_verb,
         )
 
         # Use HybridAlignmentEngine by default (unless disabled)
@@ -754,6 +684,7 @@ def process_sequential(
         use_bert_classifier=not getattr(args, 'no_bert_classifier', False),
         bert_classifier_model=getattr(args, 'bert_classifier_model', None),
         min_confidence=args.min_confidence,
+        require_action_verb=getattr(args, 'require_action_verb', False),
     )
 
     # Use HybridAlignmentEngine by default (unless --no-hybrid)
@@ -831,7 +762,8 @@ def process_parallel(
                 args.nofinancial,  # nofinancial
                 not getattr(args, 'no_bert_classifier', False),  # use_bert_classifier
                 getattr(args, 'bert_classifier_model', None),  # bert_classifier_model
-                args.min_confidence  # min_confidence
+                args.min_confidence,  # min_confidence
+                getattr(args, 'require_action_verb', False),  # require_action_verb
             ): pdf_path
             for pdf_path in pdf_files
         }
@@ -1013,7 +945,7 @@ def main():
         if len(running_servers) < desired_servers:
             print(f"\n{'='*60}")
             print(f"Detected {len(running_servers)}/{len(configured_hosts)} Ollama servers running")
-            print(f"Auto-starting {args.auto_start_ollama} server(s)...")
+            print(f"Auto-starting {desired_servers} server(s)...")
             print(f"{'='*60}")
 
             auto_started_hosts = start_ollama_servers(

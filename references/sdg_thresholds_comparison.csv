@@ -1,0 +1,18 @@
+SDG,SDG_Name,ST_Threshold,sdgBERT_Threshold,Hybrid_Threshold
+1,No Poverty,0.653,0.862,0.928
+2,Zero Hunger,0.564,0.890,0.820
+3,Good Health and Well-being,0.610,0.800,0.840
+4,Quality Education,0.484,0.790,0.740
+5,Gender Equality,0.631,0.770,0.830
+6,Clean Water and Sanitation,0.628,0.916,0.945
+7,Affordable and Clean Energy,0.585,0.830,0.860
+8,Decent Work and Economic Growth,0.443,0.710,0.730
+9,Industry Innovation and Infrastructure,0.459,0.630,0.691
+10,Reduced Inequalities,0.639,0.810,0.748
+11,Sustainable Cities and Communities,0.158,0.733,0.459
+12,Responsible Consumption and Production,0.615,0.860,0.738
+13,Climate Action,0.542,0.768,0.765
+14,Life Below Water,0.602,0.948,0.973
+15,Life on Land,0.641,0.944,0.869
+16,Peace Justice and Strong Institutions,0.610,0.790,0.740
+17,Partnerships for the Goals,0.036,0.550,0.059

@@ -9,17 +9,18 @@ and saves results incrementally to avoid losing progress.
 Usage:
     # Local Ollama model
     python scripts/label_sentences_batch.py --sample 500
+    python scripts/label_sentences_batch.py --sample 8000 --model kimi-k2.6:cloud
 
     # OpenRouter model
     python scripts/label_sentences_batch.py --backend openai --model google/gemma-3-27b-it --sample 500
-
+    python scripts/label_sentences_batch.py --sample 8000 --model deepseek/deepseek-v4-pro
+    
     # Label everything
     python scripts/label_sentences_batch.py --sample all
 """
 
 import argparse
 import csv
-import json
 import os
 import random
 import re
@@ -29,8 +30,6 @@ import signal
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
-import urllib.request
 
 LABEL_MAP = {"[ACTION]": "ACTION", "[POLICY]": "POLICY", "[NEUTRAL]": "NEUTRAL"}
 
@@ -71,12 +70,23 @@ LINE_PATTERN = re.compile(
 )
 
 
-class TimeoutError(Exception):
+class OllamaTimeout(Exception):
     pass
 
 
 def _timeout_handler(signum, frame):
-    raise TimeoutError("API call timed out")
+    raise OllamaTimeout("Ollama API call timed out")
+
+
+def build_user_prompt(sentences: list[str]) -> str:
+    """Build the user prompt for a batch of sentences."""
+    prompt = "Classify each sentence:\n\n"
+    for i, sent in enumerate(sentences, 1):
+        words = sent.split()
+        if len(words) > 200:
+            sent = " ".join(words[:200]) + "..."
+        prompt += f"Sentence {i}: {sent}\n\n"
+    return prompt
 
 def parse_batch_response(response_text: str, batch_size: int) -> list[dict]:
     """Parse structured batch response into per-sentence results.
@@ -133,12 +143,7 @@ def _ollama_chat(
     messages: list[dict],
     timeout: int = 600,
 ) -> str:
-    """Call Ollama chat API with think=false to disable thinking mode.
-
-    Uses raw HTTP API instead of the ollama Python SDK because the SDK
-    doesn't support the top-level 'think' parameter needed to disable
-    thinking mode on models like glm-4.7-flash, qwen3.5, etc.
-    """
+    """Call Ollama chat API with think=false to disable thinking mode."""
     import json
     import urllib.request
 
@@ -170,12 +175,7 @@ def label_batch_ollama(
     timeout: int = 600,
 ) -> list[dict]:
     """Send a batch of sentences to Ollama and parse the response."""
-    user_prompt = "Classify each sentence:\n\n"
-    for i, sent in enumerate(sentences, 1):
-        words = sent.split()
-        if len(words) > 200:
-            sent = " ".join(words[:200]) + "..."
-        user_prompt += f"Sentence {i}: {sent}\n\n"
+    user_prompt = build_user_prompt(sentences)
 
     messages = [
         {"role": "system", "content": BATCH_SYSTEM_PROMPT.format(batch_size=batch_size)},
@@ -184,29 +184,25 @@ def label_batch_ollama(
 
     for attempt in range(max_retries + 1):
         try:
-            # Set timeout alarm (Unix only; no-op on Windows)
             old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
             signal.alarm(timeout)
 
-            call_start = time.time()
             output = _ollama_chat(model_name, messages, timeout=timeout)
-            call_elapsed = time.time() - call_start
 
-            # Cancel timeout alarm
             signal.alarm(0)
             signal.signal(signal.SIGALRM, old_handler)
 
-            output = response["message"]["content"]
             parsed = parse_batch_response(output, batch_size)
 
             parse_errors = sum(1 for p in parsed if p["label"] == "PARSE_ERROR")
             if parse_errors == 0:
                 return parsed
             if attempt < max_retries:
+                time.sleep(2)
                 continue
             return parsed
 
-        except TimeoutError:
+        except OllamaTimeout:
             signal.alarm(0)
             signal.signal(signal.SIGALRM, old_handler)
             print(f"    Ollama call timed out after {timeout}s, retrying ({attempt+1}/{max_retries})...")
@@ -229,7 +225,6 @@ def label_batch_openai(
     sentences: list[str],
     batch_size: int,
     max_retries: int = 2,
-    rate_limit_rpm: float | None = None,
 ) -> list[dict]:
     """Send a batch of sentences to an OpenAI-compatible API and parse the response."""
     from openai import OpenAI
@@ -238,12 +233,7 @@ def label_batch_openai(
     api_key = os.environ.get("OPENAI_API_KEY", "")
     client = OpenAI(base_url=base_url, api_key=api_key)
 
-    user_prompt = "Classify each sentence:\n\n"
-    for i, sent in enumerate(sentences, 1):
-        words = sent.split()
-        if len(words) > 200:
-            sent = " ".join(words[:200]) + "..."
-        user_prompt += f"Sentence {i}: {sent}\n\n"
+    user_prompt = build_user_prompt(sentences)
 
     for attempt in range(max_retries + 1):
         try:
@@ -262,6 +252,7 @@ def label_batch_openai(
             if parse_errors == 0:
                 return parsed
             if attempt < max_retries:
+                time.sleep(2)
                 continue
             return parsed
 
@@ -290,12 +281,7 @@ def label_batch_google(
     api_key = os.environ.get("GOOGLE_API_KEY", "")
     client = genai.Client(api_key=api_key)
 
-    user_prompt = "Classify each sentence:\n\n"
-    for i, sent in enumerate(sentences, 1):
-        words = sent.split()
-        if len(words) > 200:
-            sent = " ".join(words[:200]) + "..."
-        user_prompt += f"Sentence {i}: {sent}\n\n"
+    user_prompt = build_user_prompt(sentences)
 
     for attempt in range(max_retries + 1):
         try:
@@ -314,6 +300,7 @@ def label_batch_google(
             if parse_errors == 0:
                 return parsed
             if attempt < max_retries:
+                time.sleep(2)
                 continue
             return parsed
 
@@ -341,7 +328,7 @@ def label_batch(
 ) -> list[dict]:
     """Send a batch of sentences to the chosen backend and parse the response."""
     if backend == "openai":
-        return label_batch_openai(model_name, sentences, batch_size, max_retries, rate_limit_rpm)
+        return label_batch_openai(model_name, sentences, batch_size, max_retries)
     elif backend == "google":
         return label_batch_google(model_name, sentences, batch_size, max_retries)
     else:
@@ -521,6 +508,12 @@ def main():
     if args.output == Path("data/processed/sentence_labels_raw.csv"):
         safe_model = args.model.replace(":", "-").replace("/", "_")
         args.output = Path(f"data/processed/sentence_labels_raw_{safe_model}.csv")
+
+    # Append date suffix to output filename: stem-YYYY-MM-DD.suffix
+    from datetime import date
+    date_suffix = date.today().strftime("%Y-%m-%d")
+    stem = args.output.stem
+    args.output = args.output.with_name(f"{stem}-{date_suffix}{args.output.suffix}")
 
     # Validate backend requirements
     if args.backend == "openai":

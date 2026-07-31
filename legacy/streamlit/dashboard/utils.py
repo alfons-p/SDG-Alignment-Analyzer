@@ -1,0 +1,164 @@
+"""Dashboard utility functions and constants."""
+
+from typing import Dict, Any
+import streamlit as st
+
+from src.config.sdg_definitions import SDG_COLORS, SDG_DATA
+
+
+def get_chart_theme_colors():
+    """Get appropriate colors based on Streamlit's theme (light/dark mode)."""
+    try:
+        # Get theme from Streamlit
+        theme = st.get_option("theme.base")
+        is_dark = theme == "dark"
+    except:
+        # Default to light if can't detect
+        is_dark = False
+
+    if is_dark:
+        return {
+            'text': '#FFFFFF',
+            'text_secondary': '#CCCCCC',
+            'grid': 'rgba(255, 255, 255, 0.2)',
+            'background': 'rgba(30, 30, 30, 0.8)',
+            'paper_bg': 'rgba(30, 30, 30, 0.3)',
+            'legend_bg': 'rgba(50, 50, 50, 0.8)'
+        }
+    else:
+        return {
+            'text': '#333333',
+            'text_secondary': '#666666',
+            'grid': 'rgba(128, 128, 128, 0.3)',
+            'background': 'rgba(255, 255, 255, 0.8)',
+            'paper_bg': 'rgba(255, 255, 255, 0.3)',
+            'legend_bg': 'rgba(255, 255, 255, 0.8)'
+        }
+
+
+def get_score_color(score: float) -> str:
+    """Get color based on score."""
+    if score >= 0.5:
+        return "#28a745"  # Green
+    elif score >= 0.3:
+        return "#ffc107"  # Yellow
+    else:
+        return "#dc3545"  # Red
+
+
+def extract_metadata_from_filename(filename: str) -> Dict[str, str]:
+    """Extract year, state, council, and urban/rural classification from filename.
+
+    Supports standardized format: {state}_{council}_{region_type}_{year}.pdf
+    Falls back to pattern matching for non-standard filenames.
+
+    Args:
+        filename: The uploaded file name
+
+    Returns:
+        Dictionary with year, state, council_name, urban_rural, and source
+    """
+    import re
+
+    metadata = {
+        'year': '',
+        'state': '',
+        'council_name': '',
+        'urban_rural': '',
+        'source': filename
+    }
+
+    # Try to extract year (4 digits)
+    year_match = re.search(r'20\d{2}', filename)
+    if year_match:
+        metadata['year'] = year_match.group(0)
+
+    # Try to extract state (common abbreviations)
+    state_patterns = ['VIC', 'NSW', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT']
+    for state in state_patterns:
+        if state in filename.upper():
+            metadata['state'] = state
+            break
+
+    # Extract urban/rural from filename
+    filename_lower = filename.lower()
+    if 'urban' in filename_lower:
+        metadata['urban_rural'] = 'Urban'
+    elif 'rural' in filename_lower:
+        metadata['urban_rural'] = 'Rural'
+
+    # Try to extract council name from standardized format: {state}_{council}_{region_type}_{year}
+    # Pattern: STATE_councilname_Urban/Rural_YEAR
+    standardized_match = re.match(
+        r'([A-Z]{2,3})_([^_]+)_(Urban|Rural|nan)_([0-9]{4})',
+        filename,
+        re.IGNORECASE
+    )
+    if standardized_match:
+        metadata['state'] = standardized_match.group(1).upper()
+        metadata['council_name'] = standardized_match.group(2).replace('_', ' ')
+        metadata['urban_rural'] = standardized_match.group(3)
+        metadata['year'] = standardized_match.group(4)
+
+    return metadata
+
+
+# Lazy imports to speed up page load
+def get_extractor(min_words: int = 20, max_words: int = 500):
+    from src.activity_extractor import ActivityExtractor
+    return ActivityExtractor(min_activity_length=min_words, max_activity_length=max_words)
+
+
+def get_engine():
+    """DEPRECATED: Use get_hybrid_engine() for V2. Kept for ST-only fallback."""
+    from src.alignment_engine import AlignmentEngine
+    return AlignmentEngine()
+
+
+def get_hybrid_engine(
+    model_name: str,
+    similarity_threshold: float,
+    ensemble_mode: str = "weighted",
+    bias_corrections: dict = None,
+    use_custom_thresholds: bool = False,
+    custom_sdg_thresholds: dict = None,
+):
+    """Initialize hybrid alignment engine with sdgBERT support (V2).
+
+    Per-SDG ensemble weights loaded from SDG_ENSEMBLE_WEIGHTS automatically.
+    """
+    from src.hybrid_alignment_engine import HybridAlignmentEngine
+
+    bias = bias_corrections or {}
+    return HybridAlignmentEngine(
+        model_name=model_name,
+        similarity_threshold=similarity_threshold,
+        use_sdg_bert=True,
+        ensemble_mode=ensemble_mode,
+        enable_sdg17_correction=bias.get(17, True),
+        enable_sdg11_correction=bias.get(11, True),
+        enable_sdg14_correction=bias.get(14, True),
+        enable_sdg4_correction=bias.get(4, True),
+        enable_sdg6_correction=bias.get(6, True),
+        enable_sdg8_correction=bias.get(8, True),
+        enable_sdg10_correction=bias.get(10, True),
+        enable_sdg12_correction=bias.get(12, True),
+        enable_sdg16_correction=bias.get(16, True),
+        use_custom_thresholds=use_custom_thresholds,
+        custom_sdg_thresholds=custom_sdg_thresholds,
+    )
+
+
+def get_reporter():
+    from src.reports import Reporter
+    return Reporter()
+
+
+def get_trend_analyzer():
+    from src.trends import TrendAnalyzer
+    return TrendAnalyzer()
+
+
+def get_sdg_reference():
+    from src.sdg_reference import SDGReference
+    return SDGReference()

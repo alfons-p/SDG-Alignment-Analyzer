@@ -3,8 +3,9 @@
 Binary DeBERTa-v3-small classifier for activity detection.
 Classifies sentences as ACTION (is_activity=True) or NOT_ACTION (is_activity=False).
 
-Trained on 8,033 LLM-labeled sentences from local government annual reports.
-Test F1 macro: 0.872, ACTION precision: 0.862, ACTION recall: 0.889.
+Trained on 8,000 consensus-labeled sentences (4-model majority vote: deepseek-v4-pro,
+glm-5.1, kimi-k2.6, minimax-m2.7). Test F1 macro: 0.868, ACTION precision: 0.849,
+ACTION recall: 0.858.
 """
 
 from pathlib import Path
@@ -25,7 +26,7 @@ LABEL_MAP = {0: "NOT_ACTION", 1: "ACTION"}
 class ActivityClassifier:
     """Binary DeBERTa-v3-small sentence classifier: ACTION vs NOT_ACTION."""
 
-    DEFAULT_MODEL_PATH = "models/activity-classifier/latest"
+    DEFAULT_MODEL_PATH = "voyager205/sdg-activity-classifier"
     MAX_LENGTH = 256
     BATCH_SIZE = 16
 
@@ -34,7 +35,8 @@ class ActivityClassifier:
         Initialize the activity classifier.
 
         Args:
-            model_path: Local path to the fine-tuned model (default: models/activity-classifier/latest)
+            model_path: HuggingFace Hub repo ID (default: voyager205/sdg-activity-classifier)
+                       or local path (e.g. models/activity-classifier/latest)
             device: Device to use ('cuda', 'mps', 'cpu', or None for auto)
         """
         self.model_path = model_path or self.DEFAULT_MODEL_PATH
@@ -56,12 +58,22 @@ class ActivityClassifier:
 
     def _load_model(self):
         """Load the fine-tuned DeBERTa-v3-small model and tokenizer."""
-        # Resolve relative paths against project root and follow symlinks
-        model_path = Path(self.model_path)
-        if not model_path.is_absolute():
-            model_path = PROJECT_ROOT / model_path
-        if model_path.is_symlink():
-            model_path = model_path.resolve()
+        model_path = self.model_path
+
+        # HuggingFace Hub repo ID (e.g. "voyager205/sdg-activity-classifier"):
+        # load directly from Hub without local path resolution.
+        # Local paths (e.g. "models/activity-classifier/latest"): resolve
+        # relative to PROJECT_ROOT and follow symlinks.
+        if "/" in model_path and not Path(model_path).exists():
+            # Hub repo ID — download/cache via transformers
+            pass
+        else:
+            path = Path(model_path)
+            if not path.is_absolute():
+                path = PROJECT_ROOT / path
+            if path.is_symlink():
+                path = path.resolve()
+            model_path = str(path)
 
         try:
             print(f"Loading activity classifier: {model_path}")

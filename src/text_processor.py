@@ -73,41 +73,17 @@ class TextProcessor:
         }
 
         self.weak_verbs = {
-            # Weak verbs that don't indicate strong action
             # State-of-being/auxiliary verbs
             "was", "were", "is", "are", "been", "be", "being",
             "had", "has", "have",
-            # Mental/cognitive verbs
-            "considered", "reviewed", "discussed", "noted", "acknowledged",
-            "recognized", "identified", "analyzed", "examined",
+            # Mental/cognitive verbs — base forms for spaCy lemma matching
+            "consider", "considered", "review", "reviewed", "discuss", "discussed",
+            "note", "noted", "acknowledge", "acknowledged",
+            "recognize", "recognized", "identify", "identified",
+            "analyze", "analyzed", "examine", "examined",
             # Passive/descriptive verbs
-            "reflected", "appeared", "seemed", "remained", "continued"
-        }
-
-        # Compile regex patterns
-        self._header_footer_pattern = re.compile(
-            r'^(?:\d+\s+of\s+\d+|page\s+\d+|\d+\s*/\s*\d+|annual\s+report\s+\d{4}[-–]?\d{2}|\d{4}[-–]\d{2}\s+annual\s+report)$',
-            re.IGNORECASE
-        )
-
-        # Pattern to detect financial tables (high number density)
-        self._table_pattern = re.compile(
-            r'^(?:\$?[\d,]+\s+){2,}|(?:[\d,]+\.\d{2}\s+){2,}',
-            re.MULTILINE
-        )
-
-        # Action verbs commonly found in activity descriptions
-        self.action_verbs = {
-            "developed", "implemented", "delivered", "completed", "achieved",
-            "established", "created", "improved", "enhanced", "expanded",
-            "launched", "initiated", "introduced", "upgraded", "renewed",
-            "constructed", "built", "designed", "planned", "strategized",
-            "managed", "coordinated", "facilitated", "supported", "provided",
-            "engaged", "collaborated", "partnered", "consulted", "involved",
-            "promoted", "encouraged", "enabled", "empowered", "strengthened",
-            "reduced", "increased", "decreased", "maintained", "preserved",
-            "protected", "conserved", "monitored", "evaluated", "assessed",
-            "prepared", "produced", "published", "released", "communicated"
+            "reflect", "reflected", "appear", "appeared", "seem", "seemed",
+            "remain", "remained", "continue", "continued",
         }
 
     def is_model_loaded(self) -> bool:
@@ -209,12 +185,15 @@ class TextProcessor:
                 return True
 
         # Check for line ending with page number (e.g., "Financial summary 42")
+        # Exclude lines where the trailing number looks like a year (4-digit starting 19/20)
         if re.search(r'\w+.*?\d+\s*$', line) and len(line) < 80:
             words_before = re.sub(r'\d+\s*$', '', line).strip()
             if words_before:
                 word_count = len(words_before.split())
                 if 2 <= word_count <= 8:
-                    # Likely a header with embedded page number
+                    # Skip if trailing number is a year (e.g. "... in 2023")
+                    if re.search(r'(?:19|20)\d{2}\s*$', line):
+                        return False
                     return True
 
         return False
@@ -386,22 +365,13 @@ class TextProcessor:
 
         return joined
 
-    def extract_candidate_sentences(self, text: str) -> List[str]:
+    def _iter_candidate_groups(self, text: str):
         """
-        Run Phase 1 only: segmentation + cleaning filters.
+        Shared segmentation pipeline: paragraph → sentence → smart join.
 
-        Returns candidate sentences that pass all cleaning filters but have NOT
-        been classified yet (no spaCy/BERT validation). These are the raw inputs
-        for Phase 2 classification.
-
-        Args:
-            text: Text to process
-
-        Returns:
-            List of candidate sentence strings
+        Yields (text, word_count) tuples for every candidate group.
+        Single source of truth for both BERT and spaCy extraction paths.
         """
-        candidates = []
-
         segments = self.segment_into_paragraphs(text)
 
         for segment in segments:
@@ -413,22 +383,32 @@ class TextProcessor:
             joined_groups = self._smart_sentence_join(sentences)
 
             for group in joined_groups:
-                group_word_count = len(group.split())
+                group_wc = len(group.split())
 
-                if group_word_count < self.min_activity_length:
+                if group_wc < self.min_activity_length:
                     continue
-                if group_word_count > self.max_activity_length:
-                    # Too long - try individual sentences
+                if group_wc > self.max_activity_length:
                     individual_sentences = self.segment_into_sentences(group, split_on_bullets=False)
                     for sent in individual_sentences:
-                        if self.min_activity_length <= len(sent.split()) <= self.max_activity_length:
-                            if self._passes_cleaning_filters(sent):
-                                candidates.append(sent)
+                        sent_wc = len(sent.split())
+                        if self.min_activity_length <= sent_wc <= self.max_activity_length:
+                            yield sent, sent_wc
                     continue
 
-                if self._passes_cleaning_filters(group):
-                    candidates.append(group)
+                yield group, group_wc
 
+    def extract_candidate_sentences(self, text: str) -> List[str]:
+        """
+        Run Phase 1 only: segmentation + cleaning filters.
+
+        Returns candidate sentences that pass all cleaning filters but have NOT
+        been classified yet (no spaCy/BERT validation). These are the raw inputs
+        for Phase 2 classification.
+        """
+        candidates = []
+        for candidate_text, _ in self._iter_candidate_groups(text):
+            if self._passes_cleaning_filters(candidate_text):
+                candidates.append(candidate_text)
         return candidates
 
     def _passes_cleaning_filters(self, text: str) -> bool:
@@ -445,6 +425,8 @@ class TextProcessor:
             return False
         if self._is_non_activity_content(text):
             return False
+        if self._is_generic_text(text):
+            return False
         return True
 
     def extract_activities(
@@ -455,55 +437,14 @@ class TextProcessor:
         """
         Extract potential activity descriptions from text.
 
-        CRITICAL FIX: Always splits into sentences first, then applies smart joining.
-        This prevents multiple unrelated activities from being merged into one.
-
-        Args:
-            text: Text to process
-            use_heuristics: Whether to use heuristic filtering
-
-        Returns:
-            List of activity dictionaries with text and metadata
+        Uses shared _iter_candidate_groups() for segmentation, then validates
+        each candidate through _create_activity (cleaning filters + spaCy structure check).
         """
         activities = []
-
-        # First segment into paragraphs
-        segments = self.segment_into_paragraphs(text)
-
-        for segment in segments:
-            # Skip if too short
-            word_count = len(segment.split())
-            if word_count < self.min_activity_length:
-                continue
-
-            # ALWAYS split into sentences first (with bullet splitting)
-            sentences = self.segment_into_sentences(segment, split_on_bullets=True)
-
-            # Apply smart joining to combine related sentences
-            joined_groups = self._smart_sentence_join(sentences)
-
-            # Validate each joined group as a potential activity
-            for group in joined_groups:
-                group_word_count = len(group.split())
-
-                # Skip if still too short or too long
-                if group_word_count < self.min_activity_length:
-                    continue
-                if group_word_count > self.max_activity_length:
-                    # Still too long - try individual sentences
-                    individual_sentences = self.segment_into_sentences(group, split_on_bullets=False)
-                    for sent in individual_sentences:
-                        if self.min_activity_length <= len(sent.split()) <= self.max_activity_length:
-                            activity = self._create_activity(sent, use_heuristics)
-                            if activity:
-                                activities.append(activity)
-                    continue
-
-                # Validate the joined group
-                activity = self._create_activity(group, use_heuristics)
-                if activity:
-                    activities.append(activity)
-
+        for candidate_text, _ in self._iter_candidate_groups(text):
+            activity = self._create_activity(candidate_text, use_heuristics)
+            if activity:
+                activities.append(activity)
         return activities
 
     def _create_activity(self, text: str, use_heuristics: bool) -> Optional[Dict[str, Any]]:
@@ -563,6 +504,21 @@ class TextProcessor:
         else:
             # Fallback to simple heuristic when spaCy not available
             return self._create_simple_activity(text, use_heuristics)
+
+    def has_action_verb_quick(self, text: str) -> bool:
+        """
+        Regex-based action verb check — no spaCy needed.
+        Returns True if text contains at least one priority or standard verb as a whole word.
+        Used as lightweight guard for BERT classifier results.
+        """
+        text_lower = text.lower()
+        for verb in self.priority_verbs:
+            if re.search(r'\b' + re.escape(verb) + r'\b', text_lower):
+                return True
+        for verb in self.standard_verbs:
+            if re.search(r'\b' + re.escape(verb) + r'\b', text_lower):
+                return True
+        return False
 
     def _validate_sentence_structure(self, text: str) -> Dict[str, Any]:
         """
@@ -870,6 +826,47 @@ class TextProcessor:
 
         return False
 
+    def _is_generic_text(self, text: str) -> bool:
+        """
+        Check if text is generic/vague — lacks both council context and SDG relevance.
+
+        Targets the top remaining quality issue: sentences with action verbs but no
+        concrete council or SDG connection. Returns True if text should be filtered.
+        """
+        text_lower = text.lower()
+
+        # Has a priority verb? Keep it.
+        for verb in self.priority_verbs:
+            if re.search(r'\b' + re.escape(verb) + r'\b', text_lower):
+                return False
+
+        # Has council context?
+        has_council = any(w in text_lower for w in self._COUNCIL_WORDS)
+        has_service = any(s in text_lower for s in self._COUNCIL_SERVICES)
+        if has_council or has_service:
+            return False
+
+        # Has SDG-relevant terms?
+        if any(term in text_lower for term in self._SDG_RELEVANT_TERMS):
+            return False
+
+        # Has quantitative outcome?
+        for pat in self._OUTCOME_PATTERNS:
+            if pat.search(text):
+                return False
+
+        # Has non-council markers? (definitely keep — we just don't want council context for these)
+        if any(m.lower() in text_lower for m in self._NON_COUNCIL_MARKERS):
+            return False
+
+        # Text has a standard verb but no council/service/SDG/outcome context → generic filler
+        for verb in self.standard_verbs:
+            if re.search(r'\b' + re.escape(verb) + r'\b', text_lower):
+                return True
+
+        # No standard verb either, but also no context at all → also generic
+        return True
+
     def _is_non_activity_content(self, text: str) -> bool:
         """
         Check if text is non-activity content (descriptive financial, audit reports, etc.).
@@ -1109,6 +1106,83 @@ class TextProcessor:
         text = ' '.join(text.split())
 
         return text
+
+    # Terms indicating council context
+    _COUNCIL_WORDS = {
+        "council", "councils", "councillor", "councillors",
+        "shire", "city", "municipality", "local government",
+        "we", "our", "mayor", "lord mayor",
+    }
+
+    _COUNCIL_SERVICES = {
+        "library", "libraries", "waste", "recycling", "roads",
+        "childcare", "planning permit", "building permit", "parking",
+        "pool", "sport", "park", "facility", "facilities",
+        "aged care", "community center", "community centre",
+        "wastewater", "sewer", "drainage", "footpath", "street",
+        "playground", "reserve", "hall", "venue", "service",
+    }
+
+    _NON_COUNCIL_MARKERS = {
+        "NBN", "Telstra", "state government", "federal government",
+        "Australian government", "NSW government", "Victorian government",
+        "Queensland government", "Services Australia", "Centrelink",
+    }
+
+    # SDG-relevant keywords (cached at class level)
+    _SDG_RELEVANT_TERMS = [
+        "sustainable", "climate", "environment", "community", "health",
+        "education", "infrastructure", "economic", "social", "partnership",
+        "innovation", "biodiversity", "renewable", "waste", "recycling",
+        "wellbeing", "inclusion", "diversity", "accessibility", "conservation"
+    ]
+
+    # Pre-compiled regex for quantitative outcomes
+    _OUTCOME_PATTERNS = [
+        re.compile(r'\d+\s*(?:percent|%|people|households|residents|jobs|tonnes|units)', re.IGNORECASE),
+        re.compile(r'\$[\d,]+(?:\.\d{2})?', re.IGNORECASE),
+        re.compile(r'(?:increased|decreased|reduced|improved)\s+by\s+\d+', re.IGNORECASE),
+    ]
+
+    def score_relevance(self, text: str) -> float:
+        """
+        Score text for SDG relevance based on keywords, specificity, and structure.
+        Pure text features — no model dependency. Returns 0-1.
+        """
+        text_lower = text.lower()
+        words = text.split()
+        if not words:
+            return 0.0
+
+        score = 0.3  # neutral base
+
+        # SDG keyword bonus
+        sdg_hits = sum(1 for term in self._SDG_RELEVANT_TERMS if term in text_lower)
+        score += min(sdg_hits * 0.04, 0.16)
+
+        # Quantitative outcome bonus
+        for pat in self._OUTCOME_PATTERNS:
+            if pat.search(text):
+                score += 0.06
+                break
+
+        # Specificity bonus (prepositions + concrete targets)
+        specificity_markers = [
+            'for', 'in', 'at', 'with', 'to',
+            'community', 'residents', 'people', 'families',
+            'area', 'region', 'town', 'city'
+        ]
+        specificity_count = sum(1 for m in specificity_markers if m in text_lower)
+        score += min(specificity_count * 0.02, 0.08)
+
+        # Number-heavy penalty (likely table or financial data)
+        number_ratio = sum(1 for w in words if any(c.isdigit() for c in w)) / len(words)
+        if number_ratio > 0.25:
+            score *= 0.6
+        elif number_ratio > 0.15:
+            score *= 0.8
+
+        return round(min(score, 1.0), 4)
 
     def detect_section_type(self, text: str) -> str:
         """

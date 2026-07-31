@@ -55,6 +55,13 @@ scripts/archive/output/
 .cache/
 .pytest_cache/
 
+# V2 backend runtime artifacts (sqlite DBs with user data, uploaded PDFs)
+backend/*.db
+backend/uploads/
+
+# Old analysis output dump (~49k files, not source)
+results-old/
+
 # Results (keep directory structure but not individual results)
 results/*.csv
 results/*.json

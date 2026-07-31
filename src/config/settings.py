@@ -57,7 +57,7 @@ class Config:
 
     # Activity classifier settings
     use_bert_classifier: bool = os.getenv("USE_BERT_CLASSIFIER", "true").lower() == "true"
-    activity_classifier_model: str = os.getenv("ACTIVITY_CLASSIFIER_MODEL", "models/activity-classifier/latest")
+    activity_classifier_model: str = os.getenv("ACTIVITY_CLASSIFIER_MODEL", "voyager205/sdg-activity-classifier")
 
     # Streamlit
     streamlit_port: int = int(os.getenv("STREAMLIT_SERVER_PORT", "8501"))

@@ -8,7 +8,6 @@ Reference:
 - Paper: Sadick et al. (2026), Journal of Construction Engineering and Management
 """
 
-import json
 import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple
@@ -22,12 +21,7 @@ from src.sdg_bert_classifier import SDGBERTClassifier
 from src.sdg_reference import SDGReference
 from src.config import Config
 from src.sdg_ensemble_weights import SDG_ENSEMBLE_WEIGHTS, DEFAULT_SDG_BERT_WEIGHT, DEFAULT_ST_WEIGHT
-from src.sdg17_bias_correction import (
-    apply_sdg17_corrections,
-    recalculate_top_sdg,
-    contains_local_keywords,
-    contains_true_sdg17_keywords
-)
+from src.sdg17_bias_correction import apply_sdg17_corrections
 from src.sdg11_bias_correction import apply_sdg11_corrections
 from src.sdg14_bias_correction import apply_sdg14_corrections
 from src.sdg4_bias_correction import apply_sdg4_corrections
@@ -73,7 +67,12 @@ SDG_KEYWORD_BOOSTS = {
 }
 
 
-def apply_keyword_boost(activity_text: str, sdg_scores: Dict[int, Dict[str, Any]], debug: bool = False) -> Dict[int, Dict[str, Any]]:
+def apply_keyword_boost(
+    activity_text: str,
+    sdg_scores: Dict[int, Dict[str, Any]],
+    get_threshold: callable = None,
+    debug: bool = False,
+) -> Dict[int, Dict[str, Any]]:
     """
     Apply keyword-based boosting to SDG scores for underrepresented SDGs.
 
@@ -104,8 +103,9 @@ def apply_keyword_boost(activity_text: str, sdg_scores: Dict[int, Dict[str, Any]
             boosted_score = min(current_score + config["boost"], 1.0)
             sdg_scores[sdg_num]['score'] = boosted_score
 
-            # Update is_aligned status based on threshold
-            sdg_scores[sdg_num]['is_aligned'] = boosted_score >= 0.3  # Lower threshold for keyword-matched
+            # Update is_aligned status based on per-SDG threshold
+            threshold = get_threshold(sdg_num) if get_threshold else 0.3
+            sdg_scores[sdg_num]['is_aligned'] = boosted_score >= threshold
 
             if debug:
                 print(f"   [BOOST DEBUG] SDG {sdg_num}: {current_score:.3f} -> {boosted_score:.3f}")
@@ -281,10 +281,6 @@ class HybridAlignmentEngine(AlignmentEngine):
         """
         return self.config.get_similarity_threshold('hybrid', sdg=sdg_num)
 
-    def _compute_sentence_transformer_scores(self, activity_text: str) -> Dict[str, Any]:
-        """Compute Sentence Transformer scores for a single activity."""
-        return super().align_activity(activity_text, return_top_n=None)
-
     def _get_sdg_weights(self, sdg_num: int) -> Tuple[float, float]:
         """
         Get ensemble weights for a specific SDG.
@@ -382,7 +378,7 @@ class HybridAlignmentEngine(AlignmentEngine):
 
         # Apply keyword boosting for underrepresented SDGs (SDG 3, 12, 13, 14)
         # This happens BEFORE the early return so all paths get the boost
-        st_result['sdg_scores'] = apply_keyword_boost(activity_text, st_result['sdg_scores'])
+        st_result['sdg_scores'] = apply_keyword_boost(activity_text, st_result['sdg_scores'], get_threshold=self.get_threshold)
 
         # Recalculate num_aligned after keyword boost
         st_result["num_aligned"] = sum(
@@ -433,13 +429,13 @@ class HybridAlignmentEngine(AlignmentEngine):
                     ensemble_scores[sdg_num] >= self.get_threshold(sdg_num)
                 )
 
-            # Update top SDG
+            # Save ST's original top prediction BEFORE ensemble overwrites it
+            st_original_top = st_result['top_sdg']
+
+            # Update top SDG to ensemble result
             st_result['top_sdg'] = ensemble_top_sdg
             st_result['top_score'] = ensemble_top_score
             st_result['top_sdg_name'] = self.sdg_reference.get_sdg_name(ensemble_top_sdg)
-
-            # Get ST's original top prediction (before ensemble)
-            st_original_top = st_result['top_sdg']
 
             # Check for model agreement
             models_agree = (st_original_top == sdg_bert_result['sdg'])
@@ -613,7 +609,7 @@ class HybridAlignmentEngine(AlignmentEngine):
 
         # If not using sdgBERT, use the parent's batch processing
         if not self.use_sdg_bert:
-            return super().align_activities(activities, show_progress, batch_size, target_boost=target_boost)
+            return super().align_activities(activities, show_progress, batch_size, use_cache=use_cache, target_boost=target_boost)
 
         # When using sdgBERT, process with batching
         results = []
