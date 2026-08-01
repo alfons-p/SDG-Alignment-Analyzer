@@ -22,6 +22,32 @@ UPLOADS_DIR = Path(os.getenv("UPLOADS_DIR", "backend/uploads"))
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _rss_mb() -> float:
+    """Resident set size of this process in MB (-1 if unavailable)."""
+    try:
+        import psutil
+        return psutil.Process().memory_info().rss / 1048576
+    except Exception:
+        return -1.0
+
+
+def _mps_mb() -> float:
+    """Current MPS (Apple GPU) allocated memory in MB (-1 if unavailable). A
+    steady climb across PDFs points to a GPU memory leak in the per-file
+    model loading."""
+    try:
+        import torch
+        if torch.backends.mps.is_available():
+            return torch.mps.current_allocated_memory() / 1048576
+    except Exception:
+        pass
+    return -1.0
+
+
+def _mem() -> str:
+    return f"rss={_rss_mb():.0f}MB mps={_mps_mb():.0f}MB"
+
+
 def _extract_activities_from_pdf(pdf_bytes: bytes, filename: str, min_words: int, max_words: int, top_activities: Optional[int], use_bert_classifier: bool = True, min_confidence: float = 0.7, spacy_model: str = "en_core_web_sm", nofinancial: bool = False, require_action_verb: bool = False, progress_callback: callable = None) -> dict:
     """Non-Streamlit version of activity extraction."""
     from src.activity_extractor import ActivityExtractor
@@ -234,6 +260,10 @@ def run_analysis_sync(analysis_id: str, db_session_factory):
             db.refresh(analysis)
             return analysis.status not in ("queued", "processing")
 
+        import time as _time
+        _t0 = _time.monotonic()
+        logger.info(f"[PROC start] {analysis.original_filename} id={analysis_id[:8]} {_mem()}")
+
         result = _process_pdf_backend(
             pdf_bytes=pdf_bytes,
             filename=analysis.original_filename,
@@ -271,8 +301,13 @@ def run_analysis_sync(analysis_id: str, db_session_factory):
 
         analysis.completed_at = datetime.now(timezone.utc)
         db.commit()
+        logger.info(
+            f"[PROC done] {analysis.original_filename} id={analysis_id[:8]} "
+            f"status={analysis.status} elapsed={_time.monotonic() - _t0:.1f}s {_mem()}"
+        )
 
     except Exception as e:
+        logger.error(f"[PROC crash] id={analysis_id[:8]} {type(e).__name__}: {e} {_mem()}")
         analysis = db.query(Analysis).filter(Analysis.id == analysis_id).first()
         if analysis:
             analysis.status = "failed"

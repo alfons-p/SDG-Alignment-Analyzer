@@ -54,16 +54,27 @@ function identKey(name: string): string | null {
   return `${council.toLowerCase()}|${(state ?? '').toLowerCase()}|${year}`
 }
 
+/** JS heap usage (Chrome only) — logged so we can see memory climb toward the
+ * limit if the tab is heading for an OOM crash. */
+function heap(): string {
+  const m = (performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory
+  if (!m) return 'heap=n/a'
+  const mb = (b: number) => Math.round(b / 1048576)
+  return `heap=${mb(m.usedJSHeapSize)}/${mb(m.jsHeapSizeLimit)}MB`
+}
+
 const POLL_MS = 3000
 const JOB_TIMEOUT_MS = 10 * 60 * 1000 // 10 min per report — guards against a job that never terminates
 
-async function waitForJob(id: string): Promise<'completed' | 'failed'> {
+async function waitForJob(id: string): Promise<{ status: 'completed' | 'failed'; error?: string }> {
   const start = Date.now()
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const job = await getJob(id)
-    if (job.status === 'completed') return 'completed'
-    if (job.status === 'failed') return 'failed'
+    if (job.status === 'completed') return { status: 'completed' }
+    // Surface the backend's error_message for a failed analysis so the log
+    // says WHY the PDF failed, not just that it did.
+    if (job.status === 'failed') return { status: 'failed', error: job.error_message ?? undefined }
     // A stuck job (backend task died, row left 'processing') must not hang the
     // whole batch forever — time out, mark it failed, and move on.
     if (Date.now() - start > JOB_TIMEOUT_MS) throw new Error(`job ${id} timed out after 10 min`)
@@ -151,6 +162,10 @@ export function UploadQueue({
     const onResume = () => beacon(tag('RESUME — tab un-frozen'))
     const onPageHide = (e: Event) => beacon(tag(`PAGEHIDE persisted=${(e as PageTransitionEvent).persisted}`))
     const onBeforeUnload = () => beacon(tag('BEFOREUNLOAD — reload or navigation'))
+    // Uncaught JS errors / promise rejections that could blank or reload the tab.
+    const onError = (e: ErrorEvent) => beacon(tag(`WINDOW ERROR: ${e.message} @ ${e.filename}:${e.lineno}:${e.colno}`))
+    const onRej = (e: PromiseRejectionEvent) =>
+      beacon(tag(`UNHANDLED REJECTION: ${e.reason instanceof Error ? e.reason.stack ?? e.reason.message : String(e.reason)}`))
     const d = document as unknown as {
       addEventListener: (t: string, l: EventListener) => void
       removeEventListener: (t: string, l: EventListener) => void
@@ -160,12 +175,16 @@ export function UploadQueue({
     d.addEventListener('resume', onResume as EventListener)
     window.addEventListener('pagehide', onPageHide)
     window.addEventListener('beforeunload', onBeforeUnload)
+    window.addEventListener('error', onError)
+    window.addEventListener('unhandledrejection', onRej)
     return () => {
       document.removeEventListener('visibilitychange', onVis)
       d.removeEventListener('freeze', onFreeze as EventListener)
       d.removeEventListener('resume', onResume as EventListener)
       window.removeEventListener('pagehide', onPageHide)
       window.removeEventListener('beforeunload', onBeforeUnload)
+      window.removeEventListener('error', onError)
+      window.removeEventListener('unhandledrejection', onRej)
     }
   }, [batchId])
 
@@ -178,52 +197,63 @@ export function UploadQueue({
     const queue = rows.filter((r) => r.status === 'pending')
     const preSkipped = rows.length - queue.length
     let done = 0, failed = 0, skipped = 0
+    let lastIdx = 0
     log(`START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped`)
-    clientLog(`upload batch ${batchId} START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped`)
+    beacon(`batch ${batchId} START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped ${heap()}`)
+
+    // Wall-clock heartbeat, independent of file completion: proves the loop is
+    // alive to ~10s precision (so we know the exact last-alive time if it dies),
+    // and logs heap so we can watch memory climb toward an OOM.
+    const hb = window.setInterval(() => {
+      beacon(`batch ${batchId} HEARTBEAT alive @ ${lastIdx}/${queue.length} — ${done} done, ${skipped} skipped, ${failed} failed ${heap()}`)
+    }, 10000)
 
     try {
-    for (let i = 0; i < queue.length; i++) {
-      const r = queue[i]
-      const at = `[${i + 1}/${queue.length}] ${r.name}`
-      update(r.key, { status: 'uploading', note: undefined })
-      log(`${at} → uploading`)
-      try {
-        const job = await uploadPDF(r.file, settings)
-        if (job.skipped) {
-          skipped++
-          update(r.key, { status: 'skipped', note: 'Already analysed', analysisId: job.existing_id ?? job.id })
-          log(`${at} → skipped (already analysed)`)
-          continue
-        }
-        update(r.key, { status: 'processing', analysisId: job.id })
-        const outcome = await waitForJob(job.id)
-        if (outcome === 'completed') {
-          done++
-          update(r.key, { status: 'done' })
-          log(`${at} → done (${job.id})`)
-        } else {
+      for (let i = 0; i < queue.length; i++) {
+        lastIdx = i + 1
+        const r = queue[i]
+        const at = `[${i + 1}/${queue.length}] ${r.name}`
+        // Durable per-file markers (beacon = survives tab teardown), so the log's
+        // last line names the exact file + step where it died — not just "±10".
+        update(r.key, { status: 'uploading', note: undefined })
+        beacon(`batch ${batchId} FILE ${at} → uploading ${heap()}`)
+        try {
+          const job = await uploadPDF(r.file, settings)
+          if (job.skipped) {
+            skipped++
+            update(r.key, { status: 'skipped', note: 'Already analysed', analysisId: job.existing_id ?? job.id })
+            beacon(`batch ${batchId} FILE ${at} → skipped (already analysed)`)
+            continue
+          }
+          update(r.key, { status: 'processing', analysisId: job.id })
+          beacon(`batch ${batchId} FILE ${at} → processing (job ${job.id})`)
+          const outcome = await waitForJob(job.id)
+          if (outcome.status === 'completed') {
+            done++
+            update(r.key, { status: 'done' })
+            beacon(`batch ${batchId} FILE ${at} → done`)
+          } else {
+            failed++
+            const note = outcome.error ?? 'Analysis failed'
+            update(r.key, { status: 'failed', note })
+            beacon(`batch ${batchId} FILE ${at} → FAILED (analysis: ${note})`)
+          }
+        } catch (e) {
           failed++
-          update(r.key, { status: 'failed', note: 'Analysis failed' })
-          log(`${at} → FAILED (job ${job.id})`, true)
-          clientLog(`upload batch ${batchId} FAILED ${at} — analysis job ${job.id} failed`, 'warning')
+          const note = e instanceof Error ? e.message : 'Upload failed'
+          update(r.key, { status: 'failed', note })
+          beacon(`batch ${batchId} FILE ${at} → FAILED (client: ${note})`)
         }
-      } catch (e) {
-        failed++
-        const note = e instanceof Error ? e.message : 'Upload failed'
-        update(r.key, { status: 'failed', note })
-        log(`${at} → FAILED (${note})`, true)
-        clientLog(`upload batch ${batchId} FAILED ${at} — ${note}`, 'warning')
       }
-      // Durable progress heartbeat: if the tab dies mid-batch, the server log
-      // still shows how far it got (and when).
-      if ((i + 1) % 10 === 0) {
-        clientLog(`upload batch ${batchId} PROGRESS ${i + 1}/${queue.length} — ${done} done, ${skipped} skipped, ${failed} failed`)
-      }
-    }
+    } catch (e) {
+      // The loop shouldn't throw (per-file try/catch), but if it ever does this
+      // is the "silent exception broke the loop" case — record it.
+      beacon(`batch ${batchId} LOOP CRASHED — ${e instanceof Error ? e.stack ?? e.message : String(e)}`)
     } finally {
+      window.clearInterval(hb)
       const summary = `${done} analysed, ${skipped} skipped, ${failed} failed of ${rows.length}`
       log(`DONE — ${summary}`)
-      clientLog(`upload batch ${batchId} DONE — ${summary}`)
+      beacon(`batch ${batchId} DONE — ${summary} ${heap()}`)
       queryClient.invalidateQueries({ queryKey: ['analyses'] })
       setBatchActive(false)
       setRunning(false)

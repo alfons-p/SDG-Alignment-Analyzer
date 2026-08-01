@@ -1497,3 +1497,14 @@
 | 20:37 | Edited frontend/src/components/analysis/UploadQueue.tsx | 12→14 lines | ~151 |
 | 20:37 | Edited backend/app/dependencies.py | 1→3 lines | ~61 |
 | 20:55 | Silent-killer fixes: waitForJob 10-min timeout (no infinite hang), axios 401 interceptor suppresses /login redirect during batch (lib/batch flag) + beacons it, JWT_EXPIRY_HOURS default 24h→168h | frontend/src/api/client.ts, frontend/src/components/analysis/UploadQueue.tsx, backend/app/dependencies.py | done, build green | ~3000 |
+| 20:38 | Session end: 70 writes across 24 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~66112 tok |
+| 20:38 | Session end: 70 writes across 24 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~66112 tok |
+| 20:39 | Session end: 70 writes across 24 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~66112 tok |
+| 20:42 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: usedJSHeapSize, jsHeapSizeLimit, b | ~156 |
+| 20:43 | Edited frontend/src/components/analysis/UploadQueue.tsx | added nullish coalescing | ~238 |
+| 20:45 | Edited backend/app/services/analysis_service.py | modified _rss_mb() | ~232 |
+| 20:45 | Edited backend/app/services/analysis_service.py | modified is_cancelled() | ~93 |
+| 20:45 | Edited backend/app/services/analysis_service.py | 9→14 lines | ~192 |
+| 20:46 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: completion, analysis, client | ~981 |
+| 20:46 | Edited frontend/src/components/analysis/UploadQueue.tsx | added nullish coalescing | ~459 |
+| 21:20 | Two-sided batch instrumentation. Backend: [PROC start/done/crash] per-PDF logs w/ RSS+MPS memory+elapsed in run_analysis_sync (catches backend leak/hang, tab-independent). Frontend: per-file durable beacons + 10s heap heartbeat + window error/unhandledrejection capture + waitForJob surfaces analysis error_message. | backend/app/services/analysis_service.py, frontend/src/components/analysis/UploadQueue.tsx | done, build green, mem probe works | ~5000 |
