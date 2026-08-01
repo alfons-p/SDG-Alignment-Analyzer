@@ -8,6 +8,31 @@ import type { ProcessingSettings } from '../../types'
 
 const newBatchId = () => Math.random().toString(36).slice(2, 8)
 
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:9000'
+
+/**
+ * Fire-and-forget log to the server that survives page unload/discard.
+ * Uses fetch keepalive (not axios) so it still flushes while the tab is being
+ * frozen or torn down — this is how we capture WHY the tab died: a dead tab
+ * can't log after the fact, but these lifecycle events fire during the kill.
+ */
+function beacon(message: string) {
+  try {
+    const token = localStorage.getItem('token')
+    fetch(`${API}/api/analysis/client-log`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ message, level: 'warning' }),
+    }).catch(() => {})
+  } catch {
+    /* never throw from a lifecycle handler */
+  }
+}
+
 type RowStatus = 'pending' | 'uploading' | 'processing' | 'done' | 'failed' | 'skipped'
 
 interface Row {
@@ -107,6 +132,36 @@ export function UploadQueue({
     clientLog(`upload batch ${batchId} ${m}`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows])
+
+  // Capture the tab's own death. These fire DURING teardown and beacon out
+  // before the JS context is gone, so the server log's last line names the
+  // cause: FREEZE = Chrome discarded the tab; BEFOREUNLOAD = reload/navigation;
+  // none of these + hard silence = renderer crash (OOM). visibility=hidden
+  // marks backgrounding, the precondition for a discard.
+  useEffect(() => {
+    const tag = (s: string) => `batch ${batchId} LIFECYCLE ${s}`
+    const onVis = () => beacon(tag(`visibility=${document.visibilityState}`))
+    const onFreeze = () => beacon(tag('FREEZE — Chrome is freezing/discarding the tab'))
+    const onResume = () => beacon(tag('RESUME — tab un-frozen'))
+    const onPageHide = (e: Event) => beacon(tag(`PAGEHIDE persisted=${(e as PageTransitionEvent).persisted}`))
+    const onBeforeUnload = () => beacon(tag('BEFOREUNLOAD — reload or navigation'))
+    const d = document as unknown as {
+      addEventListener: (t: string, l: EventListener) => void
+      removeEventListener: (t: string, l: EventListener) => void
+    }
+    document.addEventListener('visibilitychange', onVis)
+    d.addEventListener('freeze', onFreeze as EventListener)
+    d.addEventListener('resume', onResume as EventListener)
+    window.addEventListener('pagehide', onPageHide)
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => {
+      document.removeEventListener('visibilitychange', onVis)
+      d.removeEventListener('freeze', onFreeze as EventListener)
+      d.removeEventListener('resume', onResume as EventListener)
+      window.removeEventListener('pagehide', onPageHide)
+      window.removeEventListener('beforeunload', onBeforeUnload)
+    }
+  }, [batchId])
 
   async function run() {
     if (startedRef.current) return

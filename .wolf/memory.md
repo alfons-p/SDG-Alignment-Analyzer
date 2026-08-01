@@ -1480,3 +1480,10 @@
 | 18:06 | Session end: 58 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~63781 tok |
 | 18:10 | Edited backend/app/routers/analysis.py | modified client_log() | ~204 |
 | 18:10 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: heartbeat | ~170 |
+| 18:12 | Session end: 60 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~64155 tok |
+| 20:25 | Session end: 60 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~64155 tok |
+| 20:28 | Session end: 60 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~64155 tok |
+| 20:29 | Session end: 60 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~64155 tok |
+| 20:32 | Edited frontend/src/components/analysis/UploadQueue.tsx | added error handling | ~260 |
+| 20:32 | Edited frontend/src/components/analysis/UploadQueue.tsx | expanded (+30 lines) | ~522 |
+| 20:35 | Batch death forensics: UploadQueue lifecycle beacons (freeze/pagehide/beforeunload/visibilitychange via fetch keepalive) → server log names the tab-kill cause. Found last death = JS context died instantly right after /admin nav at 09:51:50Z (renderer termination, not server/sleep) | frontend/src/components/analysis/UploadQueue.tsx | done, build green | ~2000 |

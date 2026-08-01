@@ -493,6 +493,18 @@
       "action": "edit",
       "tokens": 170,
       "at": "2026-08-01T08:10:33.099Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/analysis/UploadQueue.tsx",
+      "action": "edit",
+      "tokens": 260,
+      "at": "2026-08-01T10:32:30.731Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/analysis/UploadQueue.tsx",
+      "action": "edit",
+      "tokens": 522,
+      "at": "2026-08-01T10:32:58.831Z"
     }
   ],
   "edit_counts": {
@@ -517,7 +529,7 @@
     "frontend/src/types/index.ts": 2,
     "backend/app/schemas/analysis.py": 1,
     "frontend/src/components/analysis/FileDropzone.tsx": 1,
-    "frontend/src/components/analysis/UploadQueue.tsx": 7,
+    "frontend/src/components/analysis/UploadQueue.tsx": 9,
     "frontend/src/pages/UploadPage.tsx": 1,
     "frontend/src/pages/AdminPage.tsx": 5
   },
@@ -525,5 +537,5 @@
   "anatomy_misses": 5,
   "repeated_reads_warned": 8,
   "cerebrum_warnings": 0,
-  "stop_count": 32
+  "stop_count": 36
 }

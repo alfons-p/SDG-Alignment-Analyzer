@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T08:10:33.089Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T10:32:58.822Z
 > Files: 830 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -241,7 +241,7 @@
 - `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
 - `ScoreBar.tsx` — ScoreBar (~270 tok)
 - `StatusBadge.tsx` — styles (~154 tok)
-- `UploadQueue.tsx` — Identity key for skip-if-exists, or null when identity is too weak to dedup. (~2748 tok)
+- `UploadQueue.tsx` — Fire-and-forget log to the server that survives page unload/discard. (~3474 tok)
 
 ## frontend/src/components/layout/
 
