@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
+<script src="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); }
+  a:hover { color: var(--color-accent-800); border-bottom-color: var(--color-accent); }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: var(--color-bg)">
+
+  <div style="display: flex; align-items: center; gap: 18px; padding: 16px 44px; background: var(--color-surface); box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 20">
+    <span onClick="{{ goHome }}" style="font-family: var(--font-heading); font-size: 20px; line-height: 1; cursor: pointer">SDG Alignment Analyser</span>
+    <sc-if value="{{ analysed }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; align-items: center; gap: 18px">
+        <span style="width: 1px; height: 22px; background: color-mix(in srgb, var(--color-text) 14%, transparent)"></span>
+        <div style="display: flex; gap: 5px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">
+          <sc-for list="{{ reportTabs }}" as="r" hint-placeholder-count="2">
+            <button onClick="{{ r.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 999px; background: {{ r.bg }}; color: {{ r.fg }}; box-shadow: {{ r.shadow }}" style-hover="opacity: 0.85">{{ r.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 12px">
+      <button onClick="{{ openDrawer }}" class="btn btn-ghost" style="border-radius: 999px">Method &amp; settings</button>
+      <sc-if value="{{ canUpload }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ goUpload }}" class="btn btn-secondary" style="border-radius: 999px">Analyse another</button>
+      </sc-if>
+      <sc-if value="{{ analysed }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ goExport }}" class="btn btn-primary" style="border-radius: 999px">Export</button>
+      </sc-if>
+    </div>
+  </div>
+
+  <sc-if value="{{ analysed }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; align-items: center; gap: 4px; padding: 0 36px; background: var(--color-surface); box-shadow: var(--shadow-sm); position: sticky; top: 57px; z-index: 19">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+        <button onClick="{{ n.pick }}" style="border: none; background: transparent; cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 14px 16px 12px; color: {{ n.fg }}; border-bottom: 3px solid {{ n.edge }}" style-hover="color: var(--color-text)">{{ n.label }}</button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ UPLOAD ══════════ -->
+  <sc-if value="{{ isUpload }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Upload" style="padding: 72px 44px 80px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 64px; max-width: 1320px">
+      <div style="display: flex; flex-direction: column; gap: 26px">
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">New analysis</span>
+          <h1 style="margin: 0; font-size: 54px; line-height: 1.02; max-width: 620px">Which Goals did your year's work actually meet?</h1>
+          <p style="margin: 0; font-size: 18px; line-height: 1.6; max-width: 560px; text-wrap: pretty">Upload your council's annual report. We read every activity it describes, match each one against the seventeen Goals, and keep the sentence behind every claim so you can publish it with confidence.</p>
+        </div>
+
+        <div onClick="{{ startAnalysis }}" style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 52px 40px; border-radius: 32px; background: var(--color-surface); border: 2px dashed color-mix(in srgb, var(--color-accent) 45%, transparent); cursor: pointer; max-width: 620px" style-hover="border-color: var(--color-accent); background: var(--color-accent-100)">
+          <span style="width: 60px; height: 60px; border-radius: 999px; background: var(--color-accent-100); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 26px; color: var(--color-accent-700)">+</span>
+          <span style="font-family: var(--font-heading); font-size: 22px">Drop your annual report here</span>
+          <span style="font-size: 14px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">PDF, up to 500 pages &middot; or choose a file</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 18px; padding: 18px 24px; border-radius: 24px; background: var(--color-accent-2-100); max-width: 620px">
+          <span style="font-size: 13px; line-height: 1.5; color: var(--color-accent-2-700); flex: 1 1 auto; text-wrap: pretty">Nothing to configure. Defaults are tuned on Australian council reports, and the settings that produced any result stay visible alongside it.</span>
+          <button onClick="{{ openDrawer }}" class="btn btn-ghost" style="border-radius: 999px; flex: 0 0 auto">Method &amp; settings</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 18px; padding-top: 46px">
+        <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Analysed reports</span>
+        <sc-for list="{{ recents }}" as="r" hint-placeholder-count="2">
+          <div onClick="{{ r.open }}" class="card" style="gap: 10px; padding: 22px 26px; cursor: pointer" style-hover="box-shadow: var(--shadow-md)">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px">
+              <span style="font-family: var(--font-heading); font-size: 19px">{{ r.council }}</span>
+              <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ r.year }}</span>
+            </div>
+            <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ r.summary }}</span>
+            <div style="display: flex; gap: 5px; padding-top: 4px">
+              <sc-for list="{{ r.chips }}" as="c" hint-placeholder-count="4">
+                <span style="width: 22px; height: 22px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; background: {{ c.color }}">{{ c.num }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <div onClick="{{ goCompare }}" class="card" style="gap: 8px; padding: 22px 26px; cursor: pointer; background: var(--color-accent-2-100)" style-hover="box-shadow: var(--shadow-md)">
+          <span style="font-family: var(--font-heading); font-size: 18px; color: var(--color-accent-2-700)">Compare the two &rarr;</span>
+          <span style="font-size: 13px; line-height: 1.5; color: var(--color-accent-2-700)">Melbourne and Bendigo, analysed with identical settings.</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ PROCESSING ══════════ -->
+  <sc-if value="{{ isProcessing }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Processing" style="padding: 96px 44px; display: flex; flex-direction: column; gap: 44px; max-width: 820px">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ procFile }}</span>
+        <h1 style="margin: 0; font-size: 44px; line-height: 1.05">{{ procHeadline }}</h1>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="height: 14px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent); overflow: hidden">
+          <div style="height: 100%; border-radius: 999px; background: var(--color-accent); width: {{ procPct }}; transition: width 0.4s ease"></div>
+        </div>
+        <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">{{ procPct }} complete</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 18px; padding: 18px 24px; border-radius: 26px; background: {{ s.bg }}">
+            <span style="width: 30px; height: 30px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: {{ s.dotBg }}; color: {{ s.dotFg }}">{{ s.mark }}</span>
+            <span style="font-size: 16px; font-weight: 600; flex: 1 1 auto; color: {{ s.fg }}">{{ s.label }}</span>
+            <span style="font-size: 14px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ s.detail }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ RESULTS ══════════ -->
+  <sc-if value="{{ isResults }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Results">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; padding: 34px 44px 26px; background: var(--color-accent-2-100)">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-2-700)">Annual Report Analysis</span>
+          <h1 style="margin: 0; font-size: 40px; line-height: 1.05">{{ rpt.council }}</h1>
+          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+            <div style="display: flex; gap: 5px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--color-surface) 70%, transparent)">
+              <sc-for list="{{ years }}" as="y" hint-placeholder-count="3">
+                <button onClick="{{ y.pick }}" style="border: none; cursor: {{ y.cursor }}; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; opacity: {{ y.dim }}; background: {{ y.bg }}; color: {{ y.fg }}; box-shadow: {{ y.shadow }}" style-hover="opacity: 1">{{ y.label }}</button>
+              </sc-for>
+            </div>
+            <span style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 65%, transparent)">{{ rpt.meta }}</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 34px; padding-bottom: 4px">
+          <sc-for list="{{ rpt.headline }}" as="h" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <span style="font-family: var(--font-heading); font-size: 34px; line-height: 1; color: {{ h.color }}">{{ h.value }}</span>
+              <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">{{ h.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ yearNotice }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 18px; margin: 20px 44px 0; padding: 16px 24px; border-radius: 26px; background: var(--color-accent-100)">
+          <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-800); flex: 0 0 auto">Year selected</span>
+          <span style="font-size: 14px; line-height: 1.55; color: var(--color-accent-800); flex: 1 1 auto; text-wrap: pretty">{{ yearNotice }}</span>
+          <button onClick="{{ resetYear }}" class="btn btn-secondary" style="border-radius: 999px; flex: 0 0 auto; font-size: 13px; padding: 9px 18px">{{ yearNoticeAction }}</button>
+        </div>
+      </sc-if>
+
+      <div style="padding: 18px 44px 0; display: flex; flex-direction: column; gap: 14px">
+        <button onClick="{{ ext.toggle }}" style="border: none; cursor: pointer; align-self: flex-start; display: flex; align-items: center; gap: 12px; padding: 9px 18px 9px 12px; border-radius: 999px; background: {{ ext.chipBg }}" style-hover="opacity: 0.85">
+          <span style="width: 10px; height: 10px; border-radius: 999px; background: {{ ext.dot }}"></span>
+          <span style="font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ ext.ink }}">Extraction {{ ext.grade }}</span>
+          <span style="font-family: var(--font-body); font-size: 13px; color: {{ ext.ink }}">{{ ext.chipDetail }}</span>
+          <span style="font-family: var(--font-body); font-size: 12px; color: {{ ext.ink }}; opacity: 0.7">{{ ext.caret }}</span>
+        </button>
+
+        <sc-if value="{{ ext.open }}" hint-placeholder-val="{{ false }}">
+          <div class="card elev-sm" style="padding: 30px 34px; gap: 26px">
+            <div style="display: flex; flex-direction: column; gap: 8px; max-width: 860px">
+              <h3 style="margin: 0; font-size: 22px">{{ ext.title }}</h3>
+              <p style="margin: 0; font-size: 15px; line-height: 1.6; text-wrap: pretty">{{ ext.lead }}</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+              <sc-for list="{{ ext.metrics }}" as="m" hint-placeholder-count="3">
+                <div style="display: flex; flex-direction: column; gap: 6px; padding: 20px 22px; border-radius: 24px; background: color-mix(in srgb, var(--color-text) 3.5%, transparent)">
+                  <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; color: {{ m.color }}">{{ m.value }}</span>
+                  <span style="font-size: 13px; font-weight: 600">{{ m.label }}</span>
+                  <span style="font-size: 12px; line-height: 1.45; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ m.note }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px">
+              <div style="display: flex; flex-direction: column; gap: 12px">
+                <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Which sections produced activities</span>
+                <sc-for list="{{ ext.mix }}" as="s" hint-placeholder-count="5">
+                  <div style="display: flex; align-items: center; gap: 12px">
+                    <span style="width: 104px; flex: 0 0 auto; font-size: 13px; text-transform: capitalize">{{ s.label }}</span>
+                    <div style="flex: 1 1 auto; height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden">
+                      <div style="height: 100%; border-radius: 999px; background: var(--color-accent-2-500); width: {{ s.bar }}"></div>
+                    </div>
+                    <span style="width: 64px; flex: 0 0 auto; text-align: right; font-size: 13px; font-weight: 700">{{ s.label2 }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 12px; padding: 22px 26px; border-radius: 26px; background: {{ ext.noteBg }}">
+                <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: {{ ext.noteInk }}">What to do with this</span>
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: {{ ext.noteInk }}; text-wrap: pretty">{{ ext.advice }}</p>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 24px; padding: 22px 44px 0">
+        <div style="display: flex; gap: 6px; padding: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">
+          <sc-for list="{{ views }}" as="v" hint-placeholder-count="3">
+            <button onClick="{{ v.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 10px 20px; border-radius: 999px; background: {{ v.bg }}; color: {{ v.fg }}; box-shadow: {{ v.shadow }}" style-hover="opacity: 0.88">{{ v.label }}</button>
+          </sc-for>
+        </div>
+        <span style="font-size: 13px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent); max-width: 520px; text-wrap: pretty">{{ viewNote }}</span>
+      </div>
+
+      <div style="padding: 26px 44px 56px">
+
+        <sc-if value="{{ isLedger }}" hint-placeholder-val="{{ true }}">
+          <div class="card elev-md" style="padding: 0; gap: 0; overflow: hidden">
+            <div style="padding: 34px 44px 8px; display: flex; flex-direction: column; gap: 8px">
+              <p style="margin: 0; font-family: var(--font-heading); font-size: 24px; line-height: 1.35; max-width: 900px; text-wrap: pretty">{{ rpt.ledgerLead }}</p>
+              <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Ranked by number of reported activities aligned to each goal. Click a goal to read its strongest passage.</span>
+            </div>
+            <div style="padding: 22px 44px 40px; display: flex; flex-direction: column; gap: 4px">
+              <sc-for list="{{ ledger }}" as="g" hint-placeholder-count="8">
+                <div onClick="{{ g.toggle }}" style="display: flex; flex-direction: column; cursor: pointer; border-radius: 20px; padding: 12px 16px" style-hover="background: color-mix(in srgb, var(--color-text) 4%, transparent)">
+                  <div style="display: flex; align-items: center; gap: 18px">
+                    <span style="width: 34px; height: 34px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; background: {{ g.color }}">{{ g.num }}</span>
+                    <span style="width: 210px; flex: 0 0 auto; font-size: 15px; font-weight: 600">{{ g.name }}</span>
+                    <div style="flex: 1 1 auto; height: 12px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden">
+                      <div style="height: 100%; border-radius: 999px; background: {{ g.color }}; width: {{ g.bar }}"></div>
+                    </div>
+                    <span style="width: 92px; flex: 0 0 auto; text-align: right; font-size: 15px; font-weight: 700">{{ g.countLabel }}</span>
+                    <span style="width: 132px; flex: 0 0 auto; text-align: right; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: {{ g.bandColor }}">{{ g.band }}</span>
+                  </div>
+                  <sc-if value="{{ g.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin: 12px 0 4px 52px; padding: 18px 22px; border-radius: 22px; background: var(--color-accent-2-100); display: flex; flex-direction: column; gap: 10px">
+                      <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-2-700)">{{ g.evLabel }}</span>
+                      <p style="margin: 0; font-size: 15px; line-height: 1.6; max-width: 820px; text-wrap: pretty">{{ g.quote }}</p>
+                      <div style="display: flex; align-items: center; gap: 16px">
+                        <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ g.evMeta }}</span>
+                        <button onClick="{{ g.openGoal }}" class="btn btn-ghost" style="border-radius: 999px; margin-left: auto; font-size: 13px; padding: 8px 16px">All evidence for this goal</button>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ provenance }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; align-items: center; gap: 14px; padding: 20px 44px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">
+                <span>{{ configLine }}</span>
+                <button onClick="{{ openDrawer }}" style="margin-left: auto; border: none; background: transparent; cursor: pointer; font-family: var(--font-body); font-size: 12px; color: var(--color-accent-700); border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); padding: 0" style-hover="color: var(--color-accent-800)">How this was measured</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isStatement }}" hint-placeholder-val="{{ false }}">
+          <div class="card elev-md" style="padding: 52px 60px 48px; gap: 40px">
+            <div style="display: flex; flex-direction: column; gap: 16px; max-width: 880px">
+              <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">{{ rpt.statementKicker }}</span>
+              <h1 style="margin: 0; font-size: 52px; line-height: 1.02">Where our work met the Goals</h1>
+              <p style="margin: 0; font-size: 19px; line-height: 1.65; text-wrap: pretty">{{ rpt.statementLead }}</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Every goal, sized by the work behind it</span>
+              <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px">
+                <sc-for list="{{ mosaic }}" as="m" hint-placeholder-count="17">
+                  <div onClick="{{ m.open }}" style="border-radius: 24px; padding: 18px 16px 16px; min-height: 118px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; background: {{ m.fill }}; border: 1px solid {{ m.edge }}" style-hover="box-shadow: var(--shadow-md)">
+                    <div style="display: flex; align-items: baseline; gap: 8px">
+                      <span style="font-family: var(--font-heading); font-size: 20px; line-height: 1; color: {{ m.ink }}">{{ m.num }}</span>
+                      <span style="font-size: 12px; line-height: 1.25; color: {{ m.ink }}; opacity: 0.85">{{ m.name }}</span>
+                    </div>
+                    <div style="display: flex; align-items: baseline; gap: 5px">
+                      <span style="font-family: var(--font-heading); font-size: 26px; line-height: 1; color: {{ m.ink }}">{{ m.count }}</span>
+                      <span style="font-size: 11px; color: {{ m.ink }}; opacity: 0.7">{{ m.unit }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 44px; padding-top: 8px">
+              <div style="display: flex; flex-direction: column; gap: 18px">
+                <h3 style="margin: 0; font-size: 22px">What the year evidenced</h3>
+                <sc-for list="{{ highlights }}" as="h" hint-placeholder-count="3">
+                  <div style="display: flex; gap: 16px">
+                    <span style="width: 8px; flex: 0 0 auto; border-radius: 999px; background: {{ h.color }}"></span>
+                    <div style="display: flex; flex-direction: column; gap: 6px">
+                      <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: {{ h.ink }}">{{ h.label }}</span>
+                      <p style="margin: 0; font-size: 15px; line-height: 1.6; text-wrap: pretty">{{ h.quote }}</p>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 18px; padding: 28px 30px; border-radius: 28px; background: var(--color-accent-100)">
+                <h3 style="margin: 0; font-size: 22px">Absent from this year's account</h3>
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--color-accent-800); text-wrap: pretty">{{ rpt.absentNote }}</p>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <sc-for list="{{ absent }}" as="a" hint-placeholder-count="4">
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 999px; background: var(--color-surface)">
+                      <span style="width: 24px; height: 24px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; background: {{ a.color }}">{{ a.num }}</span>
+                      <span style="font-size: 14px; font-weight: 600">{{ a.name }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ absentMore }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size: 13px; color: var(--color-accent-800)">{{ absentMoreLabel }}</span>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDepth }}" hint-placeholder-val="{{ false }}">
+          <div class="card elev-md" style="padding: 48px 56px 44px; gap: 36px">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 40px">
+              <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px">
+                <h1 style="margin: 0; font-size: 38px; line-height: 1.1">{{ rpt.depthTitle }}</h1>
+                <p style="margin: 0; font-size: 16px; line-height: 1.6; text-wrap: pretty">{{ rpt.depthLead }}</p>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 20px 24px; border-radius: 24px; background: var(--color-accent-2-100); min-width: 200px">
+                <span style="font-size: 12px; color: var(--color-accent-2-700)">Mean alignment, all goals</span>
+                <span style="font-family: var(--font-heading); font-size: 40px; line-height: 1">{{ rpt.meanAll }}</span>
+                <span style="font-size: 12px; line-height: 1.45; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Low &mdash; expected for a general annual report rather than a sustainability report.</span>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px">
+              <div style="display: flex; flex-direction: column; gap: 16px">
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <h3 style="margin: 0; font-size: 20px">Breadth</h3>
+                  <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">How many activities touch this goal</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 7px">
+                  <sc-for list="{{ breadth }}" as="b" hint-placeholder-count="9">
+                    <div style="display: flex; align-items: center; gap: 12px">
+                      <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; background: {{ b.color }}">{{ b.num }}</span>
+                      <span style="width: 148px; flex: 0 0 auto; font-size: 13px">{{ b.name }}</span>
+                      <div style="flex: 1 1 auto; height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden">
+                        <div style="height: 100%; border-radius: 999px; background: {{ b.color }}; width: {{ b.bar }}"></div>
+                      </div>
+                      <span style="width: 34px; flex: 0 0 auto; text-align: right; font-size: 13px; font-weight: 700">{{ b.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 16px">
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <h3 style="margin: 0; font-size: 20px">Depth</h3>
+                  <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">How clearly the language reads as that goal</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 7px">
+                  <sc-for list="{{ depth }}" as="b" hint-placeholder-count="9">
+                    <div style="display: flex; align-items: center; gap: 12px">
+                      <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; background: {{ b.color }}">{{ b.num }}</span>
+                      <span style="width: 148px; flex: 0 0 auto; font-size: 13px">{{ b.name }}</span>
+                      <div style="flex: 1 1 auto; height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden">
+                        <div style="height: 100%; border-radius: 999px; background: {{ b.color }}; width: {{ b.bar }}"></div>
+                      </div>
+                      <span style="width: 34px; flex: 0 0 auto; text-align: right; font-size: 13px; font-weight: 700">{{ b.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 28px; padding: 26px 30px; border-radius: 28px; background: var(--color-accent-100); align-items: center">
+              <span style="font-family: var(--font-heading); font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-800); width: 150px; flex: 0 0 auto">Read together</span>
+              <p style="margin: 0; font-size: 15px; line-height: 1.6; flex: 1 1 auto; text-wrap: pretty">{{ rpt.depthNote }}</p>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isTrend }}" hint-placeholder-val="{{ false }}">
+          <div class="card elev-md" style="padding: 48px 56px 44px; gap: 34px">
+            <div style="display: flex; flex-direction: column; gap: 12px; max-width: 760px">
+              <h1 style="margin: 0; font-size: 36px; line-height: 1.08">{{ trend.headline }}</h1>
+              <p style="margin: 0; font-size: 16px; line-height: 1.6; text-wrap: pretty">{{ trend.note }}</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px">
+              <sc-for list="{{ trend.points }}" as="p" hint-placeholder-count="3">
+                <div class="card elev-sm" style="padding: 26px 28px; gap: 14px; opacity: {{ p.opacity }}">
+                  <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+                    <span style="font-family: var(--font-heading); font-size: 20px">{{ p.year }}</span>
+                    <span style="font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: {{ p.tagColor }}">{{ p.tag }}</span>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px">
+                    <span style="font-family: var(--font-heading); font-size: 34px; line-height: 1">{{ p.goals }}</span>
+                    <div style="height: 10px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden">
+                      <div style="height: 100%; border-radius: 999px; background: {{ p.barBg }}; width: {{ p.bar }}"></div>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 3px">
+                    <span style="font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent)">{{ p.total }}</span>
+                    <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ p.share }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ trend.caveat }}" hint-placeholder-val="{{ true }}">
+              <div style="display: flex; align-items: center; gap: 16px; padding: 20px 26px; border-radius: 26px; background: var(--color-accent-100)">
+                <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-800); flex: 0 0 auto">Data note</span>
+                <span style="font-size: 14px; line-height: 1.55; color: var(--color-accent-800); text-wrap: pretty">{{ trend.caveat }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ GOAL DETAIL ══════════ -->
+  <sc-if value="{{ isGoal }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Goal detail" style="padding: 30px 44px 64px; display: flex; flex-direction: column; gap: 26px">
+      <div style="display: flex; flex-wrap: wrap; gap: 7px">
+        <sc-for list="{{ goalChips }}" as="c" hint-placeholder-count="17">
+          <button onClick="{{ c.pick }}" style="border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 7px 14px 7px 7px; border-radius: 999px; background: {{ c.bg }}; box-shadow: {{ c.shadow }}" style-hover="opacity: 0.85">
+            <span style="width: 24px; height: 24px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; background: {{ c.color }}">{{ c.num }}</span>
+            <span style="font-family: var(--font-body); font-size: 13px; font-weight: 600; color: {{ c.fg }}">{{ c.name }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: start">
+        <div class="card elev-md" style="padding: 40px 44px; gap: 30px">
+          <div style="display: flex; align-items: flex-start; gap: 22px">
+            <span style="width: 64px; height: 64px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 24px; color: #fff; background: {{ goal.color }}">{{ goal.num }}</span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <h1 style="margin: 0; font-size: 36px; line-height: 1.05">{{ goal.name }}</h1>
+              <span style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ goal.official }}</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px">
+            <sc-for list="{{ goal.stats }}" as="s" hint-placeholder-count="3">
+              <div style="flex: 1 1 0; display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; border-radius: 24px; background: var(--color-accent-2-100)">
+                <span style="font-family: var(--font-heading); font-size: 28px; line-height: 1">{{ s.value }}</span>
+                <span style="font-size: 12px; line-height: 1.35; color: var(--color-accent-2-700)">{{ s.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ goal.evidenceHeading }}</span>
+            <sc-for list="{{ goal.evidence }}" as="e" hint-placeholder-count="3">
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 22px 26px; border-radius: 26px; background: color-mix(in srgb, var(--color-text) 3.5%, transparent)">
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; text-wrap: pretty">{{ e.text }}</p>
+                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+                  <span class="tag tag-outline">{{ e.section }}</span>
+                  <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ e.also }}</span>
+                  <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
+                    <div style="width: 90px; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent); overflow: hidden">
+                      <div style="height: 100%; border-radius: 999px; background: {{ goal.color }}; width: {{ e.bar }}"></div>
+                    </div>
+                    <span style="font-size: 13px; font-weight: 700">{{ e.score }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ goal.empty }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 10px; padding: 30px 32px; border-radius: 26px; background: var(--color-accent-100)">
+                <span style="font-family: var(--font-heading); font-size: 20px; color: var(--color-accent-800)">No activity in this report aligned to this goal</span>
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: var(--color-accent-800); text-wrap: pretty">{{ goal.emptyNote }}</p>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px">
+          <div class="card" style="padding: 28px 30px; gap: 16px">
+            <h3 style="margin: 0; font-size: 19px">Explicit or inferred?</h3>
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">{{ goal.mentionNote }}</p>
+          </div>
+          <div class="card" style="padding: 28px 30px; gap: 14px">
+            <h3 style="margin: 0; font-size: 19px">Where it appears</h3>
+            <sc-for list="{{ goal.sections }}" as="s" hint-placeholder-count="4">
+              <div style="display: flex; align-items: center; gap: 12px">
+                <span style="width: 96px; flex: 0 0 auto; font-size: 13px">{{ s.label }}</span>
+                <div style="flex: 1 1 auto; height: 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent); overflow: hidden">
+                  <div style="height: 100%; border-radius: 999px; background: var(--color-accent-2-500); width: {{ s.bar }}"></div>
+                </div>
+                <span style="width: 24px; flex: 0 0 auto; text-align: right; font-size: 13px; font-weight: 700">{{ s.n }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div class="card" style="padding: 28px 30px; gap: 12px">
+            <h3 style="margin: 0; font-size: 19px">Threshold</h3>
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">{{ goal.thresholdNote }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ ACTIVITIES ══════════ -->
+  <sc-if value="{{ isActivities }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Activities" style="padding: 34px 44px 64px; display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h1 style="margin: 0; font-size: 34px; line-height: 1.05">Activity explorer</h1>
+          <span style="font-size: 15px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ actCountLabel }}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+          <input class="input" value="{{ query }}" onChange="{{ setQuery }}" placeholder="Search this report's activities" style="width: 280px; border-radius: 999px">
+          <div style="display: flex; gap: 5px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">
+            <sc-for list="{{ sectionFilters }}" as="f" hint-placeholder-count="5">
+              <button onClick="{{ f.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 999px; background: {{ f.bg }}; color: {{ f.fg }}; box-shadow: {{ f.shadow }}" style-hover="opacity: 0.85">{{ f.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div class="card elev-md" style="padding: 8px 0 0; gap: 0; overflow: hidden">
+        <table class="table" style="width: 100%">
+          <thead>
+            <tr>
+              <th style="width: 56%">Activity as described in the report</th>
+              <th>Section</th>
+              <th>Aligned goals</th>
+              <th style="text-align: right">Top score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+              <tr onClick="{{ r.openGoal }}" style="cursor: pointer">
+                <td style="font-size: 14px; line-height: 1.55">{{ r.text }}</td>
+                <td style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ r.section }}</td>
+                <td>
+                  <div style="display: flex; gap: 5px">
+                    <sc-for list="{{ r.goals }}" as="g" hint-placeholder-count="2">
+                      <span style="width: 24px; height: 24px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; background: {{ g.color }}">{{ g.num }}</span>
+                    </sc-for>
+                  </div>
+                </td>
+                <td style="text-align: right; font-size: 14px; font-weight: 700">{{ r.score }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <sc-if value="{{ noRows }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 44px; text-align: center; font-size: 15px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">No activity matches that search.</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ GAPS ══════════ -->
+  <sc-if value="{{ isGaps }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Gaps" style="padding: 34px 44px 72px; display: flex; flex-direction: column; gap: 30px; max-width: 1320px">
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 800px">
+        <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">Gaps in the account</span>
+        <h1 style="margin: 0; font-size: 40px; line-height: 1.05">{{ rpt.gapsTitle }}</h1>
+        <p style="margin: 0; font-size: 17px; line-height: 1.6; text-wrap: pretty">{{ rpt.gapsLead }}</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px">
+        <sc-for list="{{ gaps }}" as="g" hint-placeholder-count="4">
+          <div class="card elev-sm" style="padding: 32px 34px; gap: 18px">
+            <div style="display: flex; align-items: center; gap: 16px">
+              <span style="width: 44px; height: 44px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 18px; color: #fff; background: {{ g.color }}">{{ g.num }}</span>
+              <div style="display: flex; flex-direction: column; gap: 2px">
+                <span style="font-family: var(--font-heading); font-size: 22px">{{ g.name }}</span>
+                <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ g.meta }}</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Closest language found</span>
+              <p style="margin: 0; font-size: 14px; line-height: 1.6; text-wrap: pretty">{{ g.near }}</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; padding: 18px 20px; border-radius: 22px; background: var(--color-accent-2-100)">
+              <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-2-700)">To evidence it next year</span>
+              <p style="margin: 0; font-size: 14px; line-height: 1.6; text-wrap: pretty">{{ g.action }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div class="card" style="padding: 34px 38px; gap: 14px">
+        <h3 style="margin: 0; font-size: 22px">One structural note</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.65; max-width: 900px; text-wrap: pretty">{{ rpt.structuralNote }}</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ COMPARISON ══════════ -->
+  <sc-if value="{{ isCompare }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Comparison" style="padding: 34px 44px 72px; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 760px">
+          <h1 style="margin: 0; font-size: 36px; line-height: 1.05">{{ cmpTitle }}</h1>
+          <p style="margin: 0; font-size: 16px; line-height: 1.6; text-wrap: pretty">{{ cmpLead }}</p>
+        </div>
+        <div style="display: flex; gap: 6px; padding: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">
+          <sc-for list="{{ cmpModes }}" as="m" hint-placeholder-count="3">
+            <button onClick="{{ m.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: {{ m.bg }}; color: {{ m.fg }}; box-shadow: {{ m.shadow }}" style-hover="opacity: 0.88">{{ m.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div class="card elev-sm" style="padding: 24px 28px; gap: 16px">
+        <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap">
+          <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Councils in this comparison</span>
+          <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ cmpPickHint }}</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{ cmpPicker }}" as="p" hint-placeholder-count="6">
+            <button onClick="{{ p.toggle }}" style="border: 1.5px solid {{ p.edge }}; cursor: {{ p.cursor }}; display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-radius: 999px; background: {{ p.bg }}; opacity: {{ p.opacity }}" style-hover="box-shadow: var(--shadow-sm)">
+              <span style="width: 9px; height: 9px; border-radius: 999px; background: {{ p.dot }}"></span>
+              <span style="font-family: var(--font-body); font-size: 13.5px; font-weight: 600; color: var(--color-text)">{{ p.label }}</span>
+              <span style="font-family: var(--font-body); font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ p.meta }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{ cmpPeers }}" as="p" hint-placeholder-count="4">
+            <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; padding: 8px 14px; border-radius: 999px; background: {{ p.bg }}; color: {{ p.fg }}" style-hover="opacity: 0.85">{{ p.label }}</button>
+          </sc-for>
+          <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 55%, transparent); align-self: center; text-wrap: pretty">Peer groups select every published council that matches. No council is ranked above another.</span>
+        </div>
+      </div>
+
+      <div class="card elev-md" style="padding: 8px 0 0; gap: 0; overflow: hidden">
+        <table class="table" style="width: 100%">
+          <thead>
+            <tr>
+              <th style="width: 260px">Goal</th>
+              <sc-for list="{{ cmpCols }}" as="c" hint-placeholder-count="2">
+                <th style="text-align: center">
+                  <div style="display: flex; flex-direction: column; gap: 2px; align-items: center">
+                    <span>{{ c.label }}</span>
+                    <span style="font-size: 11px; font-weight: 400; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ c.meta }}</span>
+                  </div>
+                </th>
+              </sc-for>
+              <sc-if value="{{ cmpShowDiff }}" hint-placeholder-val="{{ true }}">
+                <th style="text-align: center; width: 150px">Difference</th>
+              </sc-if>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ cmpRows }}" as="r" hint-placeholder-count="12">
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 11px">
+                    <span style="width: 24px; height: 24px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; background: {{ r.color }}">{{ r.num }}</span>
+                    <span style="font-size: 13.5px; font-weight: 600">{{ r.name }}</span>
+                  </div>
+                </td>
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="2">
+                  <td style="text-align: center">
+                    <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 56px; padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; background: {{ c.bg }}; color: {{ c.fg }}">{{ c.label }}</span>
+                  </td>
+                </sc-for>
+                <sc-if value="{{ cmpShowDiff }}" hint-placeholder-val="{{ true }}">
+                  <td style="text-align: center; font-size: 12.5px; color: {{ r.diffColor }}">{{ r.diff }}</td>
+                </sc-if>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px">
+        <sc-for list="{{ cmpNotes }}" as="n" hint-placeholder-count="3">
+          <div class="card" style="padding: 26px 28px; gap: 10px">
+            <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-700)">{{ n.kicker }}</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.6; text-wrap: pretty">{{ n.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ EXPORT ══════════ -->
+  <!-- ══════════ ADMIN ══════════ -->
+  <sc-if value="{{ isAdminScreen }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Admin" style="padding: 34px 44px 72px; display: flex; flex-direction: column; gap: 26px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">Administration</span>
+          <h1 style="margin: 0; font-size: 34px; line-height: 1.05">Every council, every year</h1>
+        </div>
+        <div style="display: flex; gap: 6px; padding: 6px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">
+          <sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="3">
+            <button onClick="{{ t.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 10px 18px; border-radius: 999px; background: {{ t.bg }}; color: {{ t.fg }}; box-shadow: {{ t.shadow }}" style-hover="opacity: 0.88">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- ── Runs ── -->
+      <sc-if value="{{ isRuns }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 20px">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+            <sc-for list="{{ runStats }}" as="s" hint-placeholder-count="4">
+              <div class="card" style="padding: 18px 24px; gap: 2px; min-width: 150px">
+                <span style="font-family: var(--font-heading); font-size: 28px; line-height: 1">{{ s.value }}</span>
+                <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">{{ s.label }}</span>
+              </div>
+            </sc-for>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
+              <button class="btn btn-secondary" style="border-radius: 999px">Upload a batch</button>
+              <button class="btn btn-primary" style="border-radius: 999px">Run all outstanding</button>
+            </div>
+          </div>
+
+          <div class="card elev-md" style="padding: 8px 0 0; gap: 0; overflow: hidden">
+            <table class="table" style="width: 100%">
+              <thead>
+                <tr>
+                  <th style="width: 30%">Council</th>
+                  <th>Status</th>
+                  <th style="text-align: right">Activities</th>
+                  <th style="text-align: right">Goals</th>
+                  <th>Extraction</th>
+                  <th style="text-align: right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ runs }}" as="r" hint-placeholder-count="7">
+                  <tr>
+                    <td>
+                      <div style="display: flex; flex-direction: column; gap: 3px">
+                        <span style="font-size: 14px; font-weight: 600">{{ r.council }}</span>
+                        <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ r.meta }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div style="display: flex; flex-direction: column; gap: 5px">
+                        <span style="align-self: flex-start; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{ r.statusBg }}; color: {{ r.statusColor }}">{{ r.status }}</span>
+                        <span style="font-size: 12px; line-height: 1.4; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ r.note }}</span>
+                      </div>
+                    </td>
+                    <td style="text-align: right; font-size: 14px">{{ r.activities }}</td>
+                    <td style="text-align: right; font-size: 14px">{{ r.goals }}</td>
+                    <td style="font-size: 13px; text-transform: capitalize; color: {{ r.extColor }}">{{ r.ext }}</td>
+                    <td style="text-align: right">
+                      <button class="btn {{ r.actionKind }}" style="border-radius: 999px; font-size: 13px; padding: 8px 16px">{{ r.action }}</button>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ── Narrative review ── -->
+      <sc-if value="{{ isNarrative }}" hint-placeholder-val="{{ false }}">
+        <div style="display: grid; grid-template-columns: 1.45fr 1fr; gap: 28px; align-items: start">
+          <div class="card elev-md" style="padding: 36px 40px; gap: 26px">
+            <div style="display: flex; align-items: flex-start; gap: 16px">
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <span class="tag tag-accent">Awaiting review</span>
+                <h2 style="margin: 6px 0 0; font-size: 24px">Landing page narrative</h2>
+                <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Generated {{ draft.generated }} &middot; {{ draft.model }}</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; padding: 16px 20px; border-radius: 22px; background: var(--color-accent-2-100)">
+              <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-2-700)">Why you are being asked</span>
+              <span style="font-size: 14px; line-height: 1.55; color: var(--color-accent-2-700)">{{ draft.reason }}</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 22px 26px; border-radius: 26px; background: color-mix(in srgb, var(--color-text) 3.5%, transparent)">
+                <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Live now</span>
+                <p style="margin: 0; font-family: var(--font-heading); font-size: 20px; line-height: 1.3">{{ draft.live.headline }}</p>
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent)">{{ draft.live.lead }}</p>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px; padding: 22px 26px; border-radius: 26px; background: var(--color-accent-100); border: 2px solid var(--color-accent)">
+                <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-800)">Proposed</span>
+                <p style="margin: 0; font-family: var(--font-heading); font-size: 20px; line-height: 1.3">{{ draft.next.headline }}</p>
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--color-accent-800)">{{ draft.next.lead }}</p>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+              <button class="btn btn-primary" style="border-radius: 999px">Approve and publish</button>
+              <button class="btn btn-secondary" style="border-radius: 999px">Edit before publishing</button>
+              <button class="btn btn-ghost" style="border-radius: 999px">Keep the current text</button>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 20px">
+            <div class="card" style="padding: 28px 30px; gap: 16px">
+              <h3 style="margin: 0; font-size: 19px">Automatic checks</h3>
+              <sc-for list="{{ draftChecks }}" as="c" hint-placeholder-count="5">
+                <div style="display: flex; gap: 12px">
+                  <span style="width: 20px; height: 20px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; background: {{ c.markBg }}">{{ c.mark }}</span>
+                  <div style="display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 13.5px; font-weight: 600">{{ c.label }}</span>
+                    <span style="font-size: 12px; line-height: 1.45; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ c.detail }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div class="card" style="padding: 28px 30px; gap: 12px">
+              <h3 style="margin: 0; font-size: 19px">What the model may not do</h3>
+              <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">It writes sentences only &mdash; every figure on the page is rendered from the data, not from the model. It cannot name a council, rank one above another, or state that a council did or did not do something. Failing any check drops the draft and the current text stays live.</p>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ── Roles ── -->
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 20px; max-width: 900px">
+          <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); max-width: 640px; text-wrap: pretty">One admin account uploads and runs every report. Everyone else reads published results; the officer role is defined but not yet enabled.</p>
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <sc-for list="{{ users }}" as="u" hint-placeholder-count="4">
+              <div class="card" style="padding: 24px 28px; gap: 6px; opacity: {{ u.dim }}">
+                <div style="display: flex; align-items: center; gap: 14px">
+                  <span style="font-family: var(--font-heading); font-size: 19px">{{ u.name }}</span>
+                  <span style="padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; background: {{ u.roleBg }}">{{ u.role }}</span>
+                  <span style="margin-left: auto; font-size: 13px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">{{ u.email }}</span>
+                </div>
+                <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 65%, transparent)">{{ u.meta }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ══════════ METHOD DRAWER ══════════ -->
+  <sc-if value="{{ drawer }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 40; display: flex; justify-content: flex-end">
+      <div onClick="{{ closeDrawer }}" style="position: absolute; inset: 0; background: color-mix(in srgb, var(--color-text) 34%, transparent)"></div>
+      <div style="position: relative; width: 560px; max-width: 92vw; height: 100%; overflow-y: auto; background: var(--color-surface); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 28px; padding: 34px 38px 56px">
+        <div style="display: flex; align-items: flex-start; gap: 20px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">How this was measured</span>
+            <h2 style="margin: 0; font-size: 30px; line-height: 1.05">Method &amp; settings</h2>
+            <span style="font-size: 14px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 62%, transparent)">{{ drawerScope }}</span>
+          </div>
+          <button onClick="{{ closeDrawer }}" style="margin-left: auto; flex: 0 0 auto; border: none; cursor: pointer; width: 36px; height: 36px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); font-size: 16px; color: var(--color-text)" style-hover="background: var(--color-accent-100)">✕</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px">
+          <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Classifier</span>
+          <sc-for list="{{ settings }}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 20px">
+              <div style="display: flex; flex-direction: column; gap: 3px">
+                <span style="font-size: 14px; font-weight: 600">{{ s.label }}</span>
+                <span style="font-size: 12px; line-height: 1.45; color: color-mix(in srgb, var(--color-text) 58%, transparent)">{{ s.note }}</span>
+              </div>
+              <span class="tag tag-neutral" style="flex: 0 0 auto">{{ s.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Alignment threshold, per goal</span>
+            <span style="font-size: 13px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 62%, transparent); text-wrap: pretty">An activity aligns to a goal when its score clears that goal's threshold. These are calibrated, not uniform: generic civic language over-fires against some goals and barely touches others.</span>
+          </div>
+          <sc-for list="{{ thresholds }}" as="t" hint-placeholder-count="17">
+            <div style="display: flex; align-items: center; gap: 12px">
+              <span style="width: 24px; height: 24px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; background: {{ t.color }}">{{ t.num }}</span>
+              <span style="width: 152px; flex: 0 0 auto; font-size: 13px">{{ t.name }}</span>
+              <div style="flex: 1 1 auto; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden">
+                <div style="height: 100%; border-radius: 999px; background: {{ t.color }}; width: {{ t.bar }}"></div>
+              </div>
+              <span style="width: 44px; flex: 0 0 auto; text-align: right; font-size: 13px; font-weight: 700">{{ t.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 22px 26px; border-radius: 26px; background: var(--color-accent-2-100)">
+          <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent-2-700)">Two thresholds worth knowing</span>
+          <p style="margin: 0; font-size: 14px; line-height: 1.6; color: var(--color-accent-2-700); text-wrap: pretty">Goal 11 sits low at 0.459 and Goal 17 at 0.059, so both catch a wide net of place-based and partnership language — that is why Goal 11 dominates most council reports. Goals 6 and 14 sit above 0.94 and almost never fire. Read counts for those four goals with that in mind.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent)">What the tool does not do</span>
+          <p style="margin: 0; font-size: 14px; line-height: 1.65; color: color-mix(in srgb, var(--color-text) 70%, transparent); text-wrap: pretty">It reads only what the report describes. A Goal with no aligned activity means the report did not describe qualifying work, not that the council did none. It does not verify claims, weigh activities by size or spend, or read tables, charts and images — activities are extracted from prose only.</p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-radius: 22px; background: color-mix(in srgb, var(--color-text) 4%, transparent)">
+          <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 62%, transparent); text-wrap: pretty">Settings are fixed for this analysis. Changing them re-runs the classifier and produces a new result set rather than editing this one.</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isExport }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Export" style="padding: 44px 44px 80px; display: grid; grid-template-columns: 1fr 0.85fr; gap: 56px; max-width: 1280px">
+      <div style="display: flex; flex-direction: column; gap: 26px">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <h1 style="margin: 0; font-size: 38px; line-height: 1.05">Export this analysis</h1>
+          <p style="margin: 0; font-size: 16px; line-height: 1.6; max-width: 520px; text-wrap: pretty">Everything carries the evidence with it &mdash; each Goal's claim travels alongside the passage that produced it and its score.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <sc-for list="{{ formats }}" as="f" hint-placeholder-count="4">
+            <div onClick="{{ f.pick }}" class="card" style="padding: 24px 28px; gap: 8px; cursor: pointer; border: 2px solid {{ f.edge }}; background: {{ f.bg }}" style-hover="box-shadow: var(--shadow-md)">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px">
+                <span style="font-family: var(--font-heading); font-size: 20px">{{ f.title }}</span>
+                <span class="tag tag-neutral">{{ f.ext }}</span>
+              </div>
+              <span style="font-size: 14px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 65%, transparent)">{{ f.note }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px; padding-top: 12px">
+        <div class="card elev-sm" style="padding: 30px 32px; gap: 18px">
+          <h3 style="margin: 0; font-size: 20px">Include</h3>
+          <sc-for list="{{ includes }}" as="i" hint-placeholder-count="5">
+            <div onClick="{{ i.toggle }}" style="display: flex; align-items: center; gap: 14px; cursor: pointer">
+              <span style="width: 22px; height: 22px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: {{ i.mFg }}; background: {{ i.mBg }}">{{ i.mark }}</span>
+              <span style="font-size: 15px">{{ i.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 26px 30px; border-radius: 28px; background: var(--color-accent-2-100)">
+          <span style="font-size: 13px; line-height: 1.55; color: var(--color-accent-2-700); text-wrap: pretty">{{ exportSummary }}</span>
+          <button class="btn btn-primary" style="border-radius: 999px">Export {{ exportExt }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;viewerRole&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;guest&quot;,&quot;registered&quot;,&quot;officer&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;admin&quot;,&quot;tsType&quot;:&quot;'guest'|'registered'|'officer'|'admin'&quot;,&quot;section&quot;:&quot;Access&quot;,&quot;unit&quot;:&quot;&quot;},&quot;defaultView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ledger&quot;,&quot;statement&quot;,&quot;depth&quot;],&quot;default&quot;:&quot;statement&quot;,&quot;tsType&quot;:&quot;'ledger'|'statement'|'depth'&quot;,&quot;section&quot;:&quot;Presentation&quot;},&quot;showProvenance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presentation&quot;},&quot;showUnevidenced&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presentation&quot;}}">
+const NAMES = {1:"No Poverty",2:"Zero Hunger",3:"Good Health",4:"Quality Education",5:"Gender Equality",6:"Clean Water",7:"Clean Energy",8:"Decent Work",9:"Innovation",10:"Reduced Inequalities",11:"Sustainable Cities",12:"Responsible Consumption",13:"Climate Action",14:"Life Below Water",15:"Life on Land",16:"Peace & Justice",17:"Partnerships"};
+const OFFICIAL = {1:"End poverty in all its forms everywhere",2:"End hunger, achieve food security and improved nutrition",3:"Ensure healthy lives and well-being for all at all ages",4:"Ensure inclusive and equitable quality education",5:"Achieve gender equality and empower all women and girls",6:"Ensure availability and sustainable management of water",7:"Ensure access to affordable, reliable, sustainable energy",8:"Promote sustained, inclusive economic growth and decent work",9:"Build resilient infrastructure and foster innovation",10:"Reduce inequality within and among countries",11:"Make cities inclusive, safe, resilient and sustainable",12:"Ensure sustainable consumption and production patterns",13:"Take urgent action to combat climate change",14:"Conserve and sustainably use the oceans and marine resources",15:"Protect and restore terrestrial ecosystems",16:"Promote peaceful, inclusive societies and strong institutions",17:"Strengthen the means of implementation and global partnership"};
+const COLORS = {1:"#E5243B",2:"#DDA63A",3:"#4C9F38",4:"#C5192D",5:"#FF3A21",6:"#26BDE2",7:"#FCC30B",8:"#A21942",9:"#FD6925",10:"#DD1367",11:"#FD9D24",12:"#BF8B2E",13:"#3F7E44",14:"#0A97D9",15:"#56C02B",16:"#00689D",17:"#19486A"};
+const THRESH = {1:0.928,2:0.820,3:0.840,4:0.740,5:0.830,6:0.945,7:0.860,8:0.730,9:0.691,10:0.748,11:0.459,12:0.738,13:0.765,14:0.973,15:0.869,16:0.740,17:0.059};
+
+const MEL_ACTS = [
+  {t:"We received $4.1 million in Australian Government funding this year to help transform the Northern Undercroft beneath the Kings Way overpass into 5000 m² of public open space for Southbank.", sec:"Social", g:[11,13], s:0.712},
+  {t:"We won the 2024 Shanghai Global Award for Sustainable Development in Cities, a UN Habitat and Shanghai Municipality initiative that recognises outstanding progress in implementing the Goals.", sec:"Economic", g:[17,11], s:0.681},
+  {t:"Almost $100,000 in grant funding was provided to small businesses implementing circular economy initiatives, including a mushroom farm using cardboard packaging at an urban winery in Fishermans Bend, and a composting network in Kensington that diverts food waste from cafes and restaurants.", sec:"Environmental", g:[12,2], s:0.774},
+  {t:"We have engaged with more than 50,000 students, offering social activities, food relief, employability workshops and volunteering opportunities, reinforcing Melbourne's position as Australia's best student city.", sec:"Social", g:[4], s:0.904},
+  {t:"Our gender equality staff group met regularly throughout the year and provided strategic input into internal and external gender equity work, helping shape policies, strategies and processes that support gender equality.", sec:"General", g:[5,17], s:0.833},
+  {t:"Ten projects were funded, including bee hotels, school composting, a sustainable fashion show, a repair cafe, youth summits, hackathons, and climate workshops.", sec:"Environmental", g:[13,11], s:0.596},
+  {t:"We held an Mpox pop-up immunisation clinic at Midsumma Festival in partnership with the Victorian Department of Health, demonstrating the value of culturally safe, accessible immunisation in community settings.", sec:"Social", g:[3,17], s:0.742},
+  {t:"Through our Reconciliation Action Plan, we commissioned independent research into Council's role in colonisation, which informed our submission to Victoria's Yoorrook Justice Commission.", sec:"Governance", g:[16], s:0.658},
+  {t:"For people doing it tough, we partnered with Foodbank Victoria to improve access to fresh food for vulnerable residents.", sec:"General", g:[2,17], s:0.629},
+  {t:"We incorporated the Goals into our project management templates and our Environmental, Social and Governance Procurement Framework, and launched a pilot in partnership with a digital SDG platform.", sec:"Environmental", g:[9,17], s:0.704},
+  {t:"Planned initiatives include a three-month Reuse Pilot for 20 food vendors replacing single-use items with reusable alternatives at major events.", sec:"Environmental", g:[12,11], s:0.667},
+  {t:"We continued the Greenline Project, delivering a four-kilometre continuous walking and cycling connection along the north bank of the Yarra River — Birrarung.", sec:"Social", g:[11,15], s:0.641},
+  {t:"Council installed additional canopy trees across nine neighbourhoods as part of the Urban Forest Strategy, prioritising streets with the lowest existing shade cover.", sec:"Environmental", g:[11,13,15], s:0.612},
+  {t:"Our libraries delivered digital literacy sessions for older residents and newly arrived migrants, in partnership with community organisations.", sec:"Social", g:[4,17], s:0.588}
+];
+
+const BEN_ACTS = [
+  {t:"BREP, located in Marong, will provide a long-term pipeline of industrial land to meet growing industry needs and will secure jobs close to a growing residential population. It will also reduce land use conflicts and reduce freight movements through central Bendigo.", sec:"Social", g:[11], s:1.000},
+  {t:"Support the review and refresh of the Gender Equity Coalition Strategy. Finalise and implement the Cultural Diversity and Inclusion Plan.", sec:"Social", g:[5], s:0.930},
+  {t:"The City's in-house animal pound and shelter services completed a fifth year of operations caring for more than 2,750 animals, with animals rehomed or transferred to rescue organisations.", sec:"Governance", g:[15], s:1.000},
+  {t:"Council has promoted the principles of that Act to people in care relationships who receive Council services and to the wider community. A hierarchy of plans in the framework seeks to ensure that services are responsive to community needs.", sec:"Social", g:[5], s:0.849},
+  {t:"Provide executive support and develop regional priorities for the Loddon Campaspe Group of Councils. Education and training pathways that fulfil the city's employment needs — work with local education and training providers.", sec:"Social", g:[4], s:0.826},
+  {t:"Replace gas appliances at approximately 20 small community facilities, including early years centres, senior citizen centres and community halls. The Greater Bendigo Zero Emissions Roadmap was adopted by Council on September 25, 2023.", sec:"Social", g:[11], s:0.792},
+  {t:"Young people are supported to explore, engage and be empowered to shape the world they live in — provide support to the Greater Bendigo Youth Council, implement youth-focused actions from the Health and Wellbeing Plan, and partner with other youth services across Greater Bendigo.", sec:"Social", g:[4], s:0.788},
+  {t:"Heathcote Library will be upgraded to serve as a prominent community hub. This project, to be led by the City, will deliver community-focused infrastructure.", sec:"Social", g:[4], s:0.806},
+  {t:"Councillors engage with residents in their wards through listening posts and attending numerous events. The City also helps keep our community connected through the CONNECT Greater Bendigo website, with 304 services, groups and clubs registered and 1,200 events promoted.", sec:"Social", g:[11], s:0.710},
+  {t:"In June 2023, the Council endorsed its first Integrated Strategic Planning Framework. The following diagram provides an overview of the main legislated elements of the framework.", sec:"Governance", g:[11], s:0.705},
+  {t:"Bendigo Airport's new terminal and business park officially opened, providing an economic boost to the region. Bendigo Bowls Club and Bendigo Croquet Club will receive upgrades, and a new multipurpose pavilion at Bendigo Showgrounds is planned to draw visitors.", sec:"Economic", g:[11], s:0.628},
+  {t:"To help plan for the future of our community and direct our growth, Council released the draft Managed Growth Strategy, which sets out where an additional 87,000 people will live in Greater Bendigo.", sec:"Social", g:[11], s:0.389}
+];
+
+const REPORTS = {
+  melbourne: {
+    id:"melbourne", short:"Melbourne", council:"City of Melbourne", file:"VIC_Melbourne_Urban_2025.pdf", state:"VIC", klass:"Metro",
+    year:"2024–25", meta:"2024–25 Annual Report · Victoria · Urban · 338 pages",
+    total:176, pages:338, meanAll:"0.254", evidenced:13,
+    mix:{general:50, social:48, governance:28, environmental:27, economic:16, infrastructure:7}, barren:38,
+    series:[
+      { year:"2022–23", goals:11, total:141, pages:312, top:11, topShare:0.44, real:false },
+      { year:"2023–24", goals:12, total:159, pages:326, top:11, topShare:0.46, real:false },
+      { year:"2024–25", goals:13, total:176, pages:338, top:11, topShare:0.50, real:true }
+    ],
+    count:{1:0,2:3,3:5,4:10,5:9,6:0,7:3,8:1,9:3,10:0,11:88,12:13,13:6,14:0,15:3,16:4,17:18},
+    mean:{1:0.239,2:0.199,3:0.227,4:0.278,5:0.259,6:0.303,7:0.311,8:0.252,9:0.443,10:0.201,11:0.217,12:0.209,13:0.316,14:0.187,15:0.223,16:0.405,17:0.046},
+    acts: MEL_ACTS, named:[11,17],
+    statementKicker:"Sustainable Development Goals · City of Melbourne · 2024–25",
+    statementLead:"Of 176 activities described in this year's annual report, our analysis found evidence against 13 of the 17 Goals. The report's centre of gravity is Goal 11, Sustainable Cities and Communities: 88 activities — one in two — describe city-shaping work. Partnerships, responsible consumption and education follow. Four Goals appear nowhere in the year's account of our activities.",
+    absentNote:"No activity in the report aligned to these four Goals. That is a statement about the report, not necessarily about the work.",
+    ledgerLead:"Half of everything this council reported doing is city-shaping work — Goal 11. Almost nothing it reported touches water, poverty, inequality or the sea.",
+    depthTitle:"The report's widest goal is not its strongest goal",
+    depthLead:"Goal 11 appears in half of all reported activities but the language is generic — it ranks 12th on how clearly those activities read as sustainability work. Goal 9 is the reverse: only three activities, but they are unambiguous. Both facts matter, and they answer different questions.",
+    depthNote:"Four goals — No Poverty, Clean Water, Reduced Inequalities, Life Below Water — score in the middle on depth but have zero activities aligned. That combination means the report uses adjacent language without describing the work. It is the most useful finding on this page.",
+    gapsTitle:"Four Goals the report never evidences",
+    gapsLead:"These are gaps in reporting first. In each case the classifier found language nearby but no activity described plainly enough to align. The fix is usually a sentence, not a programme.",
+    structuralNote:"Goal 11 carries 88 of 176 activities. That concentration is partly real — this is a capital city council — and partly a language effect: almost any place-based activity reads as “sustainable cities”. Describing who benefits and what changed, rather than where it happened, would redistribute that weight to the Goals the work actually serves.",
+    gaps:[
+      {i:1, meta:"0 activities · mean 0.239 · 11th on depth", near:"Food relief and hardship support are described repeatedly, but always as services delivered, never as material hardship reduced.", action:"Report the outcome, not the service: how many households moved out of hardship, and by what measure."},
+      {i:6, meta:"0 activities · mean 0.303 · 5th on depth", near:"Stormwater, drainage and the Yarra — Birrarung appear often, framed as amenity and flood risk rather than water quality or supply.", action:"State the water outcome of drainage and waterway work: litres captured, quality improved, potable demand avoided."},
+      {i:10, meta:"0 activities · mean 0.201 · 15th on depth", near:"Inclusion, accessibility and multicultural programmes are all present, but described by activity rather than by the disparity they close.", action:"Name the group and the gap: which residents were behind, on what measure, and what moved."},
+      {i:14, meta:"0 activities · mean 0.187 · 17th on depth", near:"River and bay references are recreational. No marine or catchment-to-sea outcome is described.", action:"If litter traps or catchment work protects Port Phillip Bay, say so explicitly — that link is currently invisible."}
+    ]
+  },
+  bendigo: {
+    id:"bendigo", short:"Bendigo", council:"City of Greater Bendigo", file:"VIC_Bendigo_Urban_2024.pdf", state:"VIC", klass:"Regional",
+    year:"2023–24", meta:"2023–24 Annual Report · Victoria · Urban · 188 pages",
+    total:33, pages:188, meanAll:"0.242", evidenced:4,
+    mix:{social:15, governance:12, environmental:3, general:2, economic:1}, barren:13,
+    series:[
+      { year:"2022–23", goals:null, total:null, pages:null, top:null, topShare:null, real:false, missing:true },
+      { year:"2023–24", goals:4, total:33, pages:188, top:11, topShare:0.42, real:true },
+      { year:"2024–25", goals:null, total:null, pages:null, top:null, topShare:null, real:false, missing:true }
+    ],
+    count:{1:0,2:0,3:0,4:3,5:2,6:0,7:0,8:0,9:0,10:0,11:14,12:0,13:0,14:0,15:1,16:0,17:0},
+    mean:{1:0.241,2:0.168,3:0.196,4:0.249,5:0.275,6:0.359,7:0.275,8:0.190,9:0.427,10:0.151,11:0.219,12:0.126,13:0.307,14:0.193,15:0.230,16:0.511,17:0.000},
+    acts: BEN_ACTS, named:[],
+    statementKicker:"Sustainable Development Goals · City of Greater Bendigo · 2023–24",
+    statementLead:"Of 33 activities the analysis could extract from this year's annual report, evidence was found against 4 of the 17 Goals. Fourteen of those activities describe city-shaping work — Goal 11 — with education, gender equality and land management accounting for the remaining six. Thirteen Goals have no aligned activity. The report is written largely as plans and status tables, which yields far fewer discrete described activities than a narrative report; that shapes this result as much as the work itself does.",
+    absentNote:"Thirteen Goals have no aligned activity. For most of them the report contains related language, but not an activity described plainly enough to align.",
+    ledgerLead:"Four Goals carry the entire account, and Goal 11 carries most of it. Meanwhile the report's highest-scoring language belongs to Goal 16 — where nothing aligned at all.",
+    depthTitle:"The strongest language in this report belongs to a Goal with no evidence",
+    depthLead:"Goal 16 has the highest mean score in the report, 0.511, and not one aligned activity. The passages driving it are governance boilerplate — freedom-of-information statements, conflict-of-interest procedure, audit opinions — which read as institutional strength without describing anything the council did. Goal 9 shows the same pattern at 0.427.",
+    depthNote:"When depth is high and breadth is zero, the report is speaking the Goal's language without doing the Goal's reporting. Here that gap is concentrated in Goals 16 and 9, both driven by statutory boilerplate. Goal 11, conversely, has the widest coverage on the report's second-lowest depth score.",
+    gapsTitle:"Thirteen Goals with no aligned activity",
+    gapsLead:"Ranked by how close the report's language already comes. The top two are not delivery gaps at all — the council clearly does this work; it is described in statutory language a classifier cannot credit as activity.",
+    structuralNote:"Only 33 activities were extracted from 188 pages, against Melbourne's 176 from 338. This report is structured as objectives, action codes and status tables rather than narrative description, and most rows are too short or too fragmentary to score. Before reading anything into the low goal coverage, note that the analysis had roughly a fifth as much described activity to work with.",
+    gaps:[
+      {i:16, meta:"0 activities · mean 0.511 · highest in report", near:"Freedom-of-information reporting, conflict-of-interest declarations and audit opinions all score at ceiling — but they describe procedure, not activity.", action:"Describe the governance work as work: what the Reconciliation Plan delivered, what integrity training changed, what transparency measures were introduced."},
+      {i:9, meta:"0 activities · mean 0.427 · 2nd in report", near:"Infrastructure and asset language is everywhere — $2.9B of assets, the airport terminal, the GovHub — but framed as expenditure and amenity rather than resilience or innovation.", action:"Say what the infrastructure enables: capacity added, resilience gained, industry supported."},
+      {i:6, meta:"0 activities · mean 0.359 · 3rd in report", near:"Water appears as drainage assets and flood mitigation, without a stated water-quality or supply outcome.", action:"State the outcome of waterway and drainage work in water terms — quality, reuse, or demand avoided."},
+      {i:13, meta:"0 activities · mean 0.307 · 4th in report", near:"The Zero Emissions Roadmap and the gas-appliance replacement programme are both present, but aligned to Goal 11 rather than Goal 13 — described as facility upgrades, not emissions reduction.", action:"Lead with the emissions outcome: tonnes avoided, appliances converted, and the Roadmap target each action serves."}
+    ]
+  }
+};
+
+/* Published reports available to compare. `ready: false` entries are LGAs whose report
+   has not been analysed yet — they render disabled so the picker reflects real coverage. */
+const PUBLISHED = [
+  { id: "melbourne", label: "City of Melbourne", meta: "2024–25 · VIC · Metro", ready: true },
+  { id: "bendigo", label: "City of Greater Bendigo", meta: "2023–24 · VIC · Regional", ready: true },
+  { id: "sydney", label: "City of Sydney", meta: "2024–25 · NSW · Metro", ready: false },
+  { id: "geelong", label: "City of Greater Geelong", meta: "2024–25 · VIC · Regional", ready: false },
+  { id: "ballarat", label: "City of Ballarat", meta: "2023–24 · VIC · Regional", ready: false },
+  { id: "brisbane", label: "Brisbane City", meta: "2024–25 · QLD · Metro", ready: false }
+];
+const PEERS = [
+  { label: "All Victorian councils", match: r => r.state === "VIC" },
+  { label: "Metro", match: r => r.klass === "Metro" },
+  { label: "Regional", match: r => r.klass === "Regional" },
+  { label: "Similar report length", match: r => r.pages >= 150 }
+];
+
+const VIEWS = [
+  ["ledger","Evidence ledger","For the officer: every goal ranked, every claim opens the passage that produced it."],
+  ["statement","Published statement","For councillors and the public: reads as a page of the council's own report."],
+  ["depth","Breadth vs depth","For scrutiny: where the count and the strength of the language disagree."],
+  ["trend","Three-year trend","How this council's reporting has changed across the years analysed."]
+];
+const NAV = [["results","Results"],["goal","Goal detail"],["activities","Activities"],["gaps","Gaps"],["compare","Comparison"],["export","Export"]];
+
+/* Admin: every LGA's analysis state. status ∈ published | analysed | queued | failed | none */
+const RUNS = [
+  { council:"City of Melbourne", state:"VIC", year:"2024–25", status:"published", activities:176, goals:13, ext:"rich", note:"Published 14 Jul" },
+  { council:"City of Greater Bendigo", state:"VIC", year:"2023–24", status:"analysed", activities:33, goals:4, ext:"thin", note:"Held — thin extraction, review before publishing" },
+  { council:"City of Sydney", state:"NSW", year:"2024–25", status:"queued", activities:null, goals:null, ext:null, note:"Position 1 of 3 in queue" },
+  { council:"Brisbane City", state:"QLD", year:"2024–25", status:"failed", activities:null, goals:null, ext:null, note:"PDF is a scanned image — OCR required" },
+  { council:"City of Greater Geelong", state:"VIC", year:"2024–25", status:"queued", activities:null, goals:null, ext:null, note:"Position 2 of 3 in queue" },
+  { council:"City of Ballarat", state:"VIC", year:"2023–24", status:"none", activities:null, goals:null, ext:null, note:"No report located" },
+  { council:"City of Perth", state:"WA", year:"2024–25", status:"none", activities:null, goals:null, ext:null, note:"No report located" }
+];
+const RUN_STATUS = {
+  published: ["Published", "var(--color-accent-2-500)"],
+  analysed: ["Analysed, unpublished", "var(--color-accent-2-700)"],
+  queued: ["Queued", "var(--color-accent)"],
+  failed: ["Failed", "var(--color-accent-700)"],
+  none: ["Not analysed", "color-mix(in srgb, var(--color-text) 42%, transparent)"]
+};
+
+/* Admin: the LLM narrative awaiting review — see llm-narrative.md */
+const DRAFT = {
+  reason: "Leading Goal unchanged · Goal 11 share moved 46.2% → 48.0%",
+  generated: "31 July 2026, 14:12",
+  model: "claude-sonnet-4-6",
+  live: {
+    headline: "One Goal in every two. Australian councils describe cities well and everything else badly.",
+    lead: "Across every local government area analysed, 46% of described activity aligns to Goal 11, Sustainable Cities and Communities."
+  },
+  next: {
+    headline: "One Goal in every two. Australian councils describe cities well and everything else badly.",
+    lead: "Across every local government area analysed, 48% of described activity aligns to Goal 11, Sustainable Cities and Communities."
+  },
+  checks: [
+    ["Every figure appears in the source data", true, "48%, Goal 11 — both present"],
+    ["Length within limits", true, "Headline 14 words, lead 24 words"],
+    ["No council named", true, "0 of 566 council names found"],
+    ["No ranking or judgement language", true, "None of 7 banned terms found"],
+    ["Claim strength matches the number", true, "48% supports \u201cone in every two\u201d"]
+  ]
+};
+const USERS = [
+  { name:"Alfons P", email:"admin@sdganalyser.org", role:"Admin", meta:"Uploads and runs every LGA report · approves narrative" },
+  { name:"Guests", email:"no account", role:"Guest", meta:"Read every published result · no upload, no export history" },
+  { name:"Registered", email:"any verified email", role:"Registered", meta:"As guest, plus saved comparisons" },
+  { name:"Officers", email:"council work email", role:"Officer", meta:"Not enabled yet · will upload for their own LGA only" }
+];
+const FORMATS = [
+  ["Published statement","PDF","The public-facing page, typeset for the annual report or website."],
+  ["Evidence ledger","PDF","Every goal, every count, every supporting passage with its score."],
+  ["Activity table","CSV","One row per activity with all 17 scores — for your own analysis."],
+  ["Full result set","JSON","Everything the classifier produced, including configuration and thresholds."]
+];
+
+function band(n) {
+  if (n === 0) return ["Not evidenced","var(--color-accent-700)"];
+  if (n < 5) return ["Isolated","color-mix(in srgb, var(--color-text) 50%, transparent)"];
+  if (n < 15) return ["Emerging","var(--color-accent-2-700)"];
+  return ["Substantial","var(--color-accent-2-700)"];
+}
+function pill(on) {
+  return { bg: on ? "var(--color-surface)" : "transparent",
+    fg: on ? "var(--color-text)" : "color-mix(in srgb, var(--color-text) 62%, transparent)",
+    shadow: on ? "var(--shadow-sm)" : "none" };
+}
+function pad(i) { return String(i).padStart(2, "0"); }
+
+class Component extends DCLogic {
+  state = { screen: null, report: "melbourne", view: null, open: 11, goal: 11, progress: 0,
+    query: "", section: "All", drawer: false, format: 0, cmpMode: "share", showExt: false,
+    selected: ["melbourne", "bendigo"], adminTab: "runs", year: null,
+    includes: { statement: true, ledger: true, activities: true, gaps: true, method: false } };
+
+  componentWillUnmount() { clearInterval(this._t); }
+
+  screen() { return this.state.screen || "results"; }
+  view() { return this.state.view || this.props.defaultView || "statement"; }
+  r() { return REPORTS[this.state.report]; }
+
+  go(s) { clearInterval(this._t); this.setState({ screen: s }); }
+
+  runAnalysis() {
+    clearInterval(this._t);
+    this.setState({ screen: "processing", progress: 0 });
+    this._t = setInterval(() => {
+      this.setState(s => {
+        const p = s.progress + 3 + Math.random() * 4;
+        if (p >= 100) { clearInterval(this._t); setTimeout(() => this.setState({ screen: "results" }), 700); return { progress: 100 }; }
+        return { progress: p };
+      });
+    }, 130);
+  }
+
+  maxCount() { const c = this.r().count; return Math.max(...Object.values(c)); }
+
+  extraction() {
+    const r = this.r();
+    const density = (r.total / r.pages) * 100;
+    const mixVals = Object.values(r.mix), mixTotal = mixVals.reduce((s, x) => s + x, 0);
+    const mixMax = Math.max(...mixVals);
+    const concentration = (mixMax / mixTotal) * 100;
+    const grade = density >= 40 ? "rich" : (density >= 25 ? "adequate" : "thin");
+    const tone = { rich: ["var(--color-accent-2-500)", "var(--color-accent-2-100)", "var(--color-accent-2-700)"],
+      adequate: ["var(--color-accent-2-600)", "var(--color-accent-2-100)", "var(--color-accent-2-700)"],
+      thin: ["var(--color-accent)", "var(--color-accent-100)", "var(--color-accent-800)"] }[grade];
+    const biggest = Object.entries(r.mix).sort((a, b) => b[1] - a[1])[0];
+    return {
+      open: this.state.showExt,
+      toggle: () => this.setState(s => ({ showExt: !s.showExt })),
+      grade: grade, dot: tone[0], chipBg: tone[1], ink: tone[2],
+      caret: this.state.showExt ? "▲" : "▼",
+      chipDetail: density.toFixed(1) + " activities per 100 pages · " + r.total + " from " + r.pages,
+      title: grade === "thin"
+        ? "This report yielded far less described activity than it should"
+        : (grade === "adequate" ? "A workable but uneven extraction" : "A well-described report"),
+      lead: grade === "thin"
+        ? "Low goal coverage in a thin extraction is a document-format finding before it is a delivery finding. " + r.council + "'s report is written largely as objectives, action codes and status tables; most rows are too short or too fragmentary to read as a described activity, so they never reach the classifier."
+        : "Enough discrete activity was extracted for the goal coverage below to be read as a property of the work rather than of the document.",
+      metrics: [
+        { value: density.toFixed(1), label: "Activities per 100 pages", color: tone[0],
+          note: "Melbourne 52.1 · Bendigo 17.6. Below about 25 and goal coverage understates the work." },
+        { value: concentration.toFixed(0) + "%", label: "In the largest section", color: "var(--color-text)",
+          note: "“" + biggest[0] + "” accounts for " + biggest[1] + " of " + mixTotal + ". A lopsided mix means whole sections yielded nothing." },
+        r.barren === null
+          ? { value: "—", label: "Matched no goal", color: "color-mix(in srgb, var(--color-text) 45%, transparent)",
+              note: "Not available for this export. Re-run to capture the count of activities with num_aligned = 0." }
+          : { value: r.barren + " of " + r.total, label: "Matched no goal", color: "var(--color-accent-700)",
+              note: Math.round((r.barren / r.total) * 100) + "% of extracted activities aligned to nothing — some are genuine, some are fragments." }
+      ],
+      mix: Object.entries(r.mix).sort((a, b) => b[1] - a[1]).map(([k, n]) => ({
+        label: k, label2: n + " · " + Math.round((n / mixTotal) * 100) + "%", bar: (n / mixMax) * 100 + "%"
+      })),
+      noteBg: tone[1], noteInk: tone[2],
+      advice: grade === "thin"
+        ? "Read this report's Goal coverage as a floor, not a measure. Before comparing it to another council, check that both extractions are in the same band — and treat the Gaps screen as guidance on describing work more plainly, not as a list of things the council did not do."
+        : "Coverage here can be compared with other reports in the same band. Where a Goal is absent, the Gaps screen shows the nearest language found so you can judge whether it is a reporting gap or a real one."
+    };
+  }
+
+  ledger() {
+    const r = this.r(), zeros = this.props.showUnevidenced ?? true, max = this.maxCount();
+    let ids = Object.keys(NAMES).map(Number);
+    if (!zeros) ids = ids.filter(i => r.count[i] > 0);
+    ids.sort((a, b) => r.count[b] - r.count[a] || r.mean[b] - r.mean[a]);
+    return ids.map(i => {
+      const n = r.count[i], b = band(n);
+      const ev = r.acts.filter(a => a.g.includes(i)).sort((x, y) => y.s - x.s)[0];
+      const others = ev ? ev.g.filter(x => x !== i) : [];
+      return {
+        num: pad(i), name: NAMES[i], color: COLORS[i],
+        countLabel: n === 0 ? "—" : (n + (n === 1 ? " activity" : " activities")),
+        bar: (n === 0 ? 0 : Math.max(2, (n / max) * 100)) + "%",
+        band: b[0], bandColor: b[1], open: this.state.open === i,
+        evLabel: ev ? "Strongest passage · " + ev.sec.toLowerCase() + " section" : (n === 0 ? "No evidence found" : "Limited evidence"),
+        quote: ev ? ev.t : "No activity described in this report aligned to " + NAMES[i] + " above its threshold of " + THRESH[i].toFixed(3) + ". Mean score across all activities: " + r.mean[i].toFixed(3) + ".",
+        evMeta: ev ? ("Score " + ev.s.toFixed(3) + (others.length ? " · also aligned to Goal " + others.join(", ") : "")) : ("Threshold " + THRESH[i].toFixed(3) + " · mean " + r.mean[i].toFixed(3)),
+        toggle: () => this.setState(s => ({ open: s.open === i ? null : i })),
+        openGoal: () => this.setState({ screen: "goal", goal: i })
+      };
+    });
+  }
+
+  goalDetail() {
+    const r = this.r(), i = this.state.goal, n = r.count[i];
+    const ev = r.acts.filter(a => a.g.includes(i)).sort((x, y) => y.s - x.s);
+    const secs = {};
+    r.acts.filter(a => a.g.includes(i)).forEach(a => { secs[a.sec] = (secs[a.sec] || 0) + 1; });
+    const secMax = Math.max(1, ...Object.values(secs));
+    const gap = (r.gaps || []).find(g => g.i === i);
+    return {
+      num: pad(i), name: NAMES[i], official: OFFICIAL[i], color: COLORS[i],
+      stats: [
+        { value: n === 0 ? "—" : n, label: n === 1 ? "aligned activity" : "aligned activities" },
+        { value: r.mean[i].toFixed(3), label: "mean score across all " + r.total },
+        { value: band(n)[0], label: "coverage band" }
+      ],
+      evidenceHeading: ev.length ? "Supporting passages, strongest first" : "No passage passed this goal's threshold",
+      evidence: ev.map(a => ({
+        text: a.t, section: a.sec + " section",
+        also: a.g.length > 1 ? "also Goal " + a.g.filter(x => x !== i).join(", ") : "",
+        score: a.s.toFixed(3), bar: Math.round(a.s * 100) + "%"
+      })),
+      empty: ev.length === 0,
+      emptyNote: gap ? gap.near : "The classifier found no passage above this goal's threshold of " + THRESH[i].toFixed(3) + ". The report's mean score against it was " + r.mean[i].toFixed(3) + ".",
+      mentionNote: r.named.indexOf(i) >= 0
+        ? "This is one of the few Goals " + r.council + "'s report names directly. Most alignment elsewhere is inferred from what the activity describes rather than from any mention of the Goals."
+        : "The report never names this Goal. Alignment here is inferred entirely from the language of the activities — which is the normal case, and why the passages matter more than the score.",
+      sections: Object.keys(secs).length
+        ? Object.entries(secs).map(([k, v]) => ({ label: k, n: v, bar: (v / secMax) * 100 + "%" }))
+        : [{ label: "None", n: 0, bar: "0%" }],
+      thresholdNote: "Aligned above " + THRESH[i].toFixed(3) + ". Thresholds are per-goal and calibrated: Goal 11 sits low at 0.459 and Goal 17 at 0.059, while Goals 6 and 14 sit above 0.94 — generic civic language over-fires against some Goals and barely touches others."
+    };
+  }
+
+  rows() {
+    const q = this.state.query.trim().toLowerCase(), sec = this.state.section;
+    return this.r().acts.filter(a => (sec === "All" || a.sec === sec) && (!q || a.t.toLowerCase().includes(q)))
+      .sort((x, y) => y.s - x.s)
+      .map(a => ({
+        text: a.t.length > 190 ? a.t.slice(0, 190) + "…" : a.t,
+        section: a.sec, score: a.s.toFixed(3),
+        goals: a.g.map(g => ({ num: pad(g), color: COLORS[g] })),
+        openGoal: () => this.setState({ screen: "goal", goal: a.g[0] })
+      }));
+  }
+
+  ranked(key, fmt) {
+    const max = Math.max(...Object.values(key));
+    return Object.keys(NAMES).map(Number).sort((a, b) => key[b] - key[a]).slice(0, 9)
+      .map(i => ({ num: pad(i), name: NAMES[i], color: COLORS[i],
+        label: fmt ? key[i].toFixed(3) : (key[i] === 0 ? "—" : key[i]),
+        bar: Math.max(key[i] === 0 ? 0 : 2, (key[i] / max) * 100) + "%" }));
+  }
+
+  selected() {
+    const ids = this.state.selected.filter(id => REPORTS[id]);
+    return ids.length ? ids.map(id => REPORTS[id]) : [REPORTS.melbourne];
+  }
+
+  toggleCouncil(id) {
+    this.setState(s => {
+      const has = s.selected.indexOf(id) >= 0;
+      if (has && s.selected.length === 1) return null;
+      return { selected: has ? s.selected.filter(x => x !== id) : s.selected.concat([id]) };
+    });
+  }
+
+  comparison() {
+    const mode = this.state.cmpMode, cols = this.selected();
+    const two = cols.length === 2;
+    return Object.keys(NAMES).map(Number)
+      .sort((a, b) => {
+        const w = i => cols.reduce((s, c) => s + c.count[i] / c.total, 0);
+        return w(b) - w(a) || NAMES[a].localeCompare(NAMES[b]);
+      })
+      .map(i => {
+        const shares = cols.map(c => c.count[i] / c.total);
+        const cells = cols.map((c, k) => {
+          const v = mode === "mean" ? c.mean[i] : c.count[i];
+          const on = mode === "mean" ? true : v > 0;
+          const strength = mode === "mean" ? Math.min(1, c.mean[i] / 0.55) : Math.min(1, shares[k] / 0.5);
+          return {
+            label: mode === "count" ? (v === 0 ? "—" : v) : (mode === "share" ? (shares[k] * 100).toFixed(0) + "%" : c.mean[i].toFixed(3)),
+            bg: on ? "color-mix(in srgb, " + COLORS[i] + " " + Math.round(12 + strength * 76) + "%, var(--color-surface))" : "transparent",
+            fg: on && strength > 0.5 ? "#fff" : (on ? "var(--color-text)" : "color-mix(in srgb, var(--color-text) 40%, transparent)")
+          };
+        });
+        let diff = "", diffColor = "color-mix(in srgb, var(--color-text) 62%, transparent)";
+        if (two) {
+          const d = shares[0] - shares[1];
+          if (shares[0] === 0 && shares[1] === 0) { diff = "neither"; diffColor = "color-mix(in srgb, var(--color-text) 40%, transparent)"; }
+          else if (Math.abs(d) > 0.012) diff = (d > 0 ? cols[0].short : cols[1].short) + " +" + Math.abs(d * 100).toFixed(0) + " pts";
+          else diff = "same share";
+        }
+        return { num: pad(i), name: NAMES[i], color: COLORS[i], cells, diff, diffColor };
+      });
+  }
+
+  cmpNarrative() {
+    const cols = this.selected();
+    if (cols.length === 1) return ["Pick a second council to compare", cols[0].council + " is the only council selected. Choose one or more published reports above, or a peer group, to compare coverage goal by goal."];
+    const names = cols.map(c => c.short);
+    const last = names.pop();
+    const list = names.length ? names.join(", ") + " and " + last : last;
+    const spread = cols.map(c => c.total).sort((a, b) => b - a);
+    const uneven = spread[0] / spread[spread.length - 1] > 2;
+    return [list + ", same settings",
+      cols.length + " reports analysed with an identical classifier and thresholds. " +
+      cols.map(c => c.short + " yielded " + c.total + " activities from " + c.pages + " pages").join("; ") + ". " +
+      (uneven ? "Those extraction depths differ by more than double, so raw counts are not comparable — read the share of report instead."
+              : "Extraction depths are comparable, so raw counts can be read directly.")];
+  }
+
+  renderVals() {
+    const sc = this.screen(), v = this.view(), r = this.r(), p = Math.round(this.state.progress);
+    const role = this.props.viewerRole ?? "admin";
+    const canAdmin = role === "admin";
+    const real = r.series.find(s => s.real) || r.series[0];
+    const sel = r.series.find(s => s.year === this.state.year) || real;
+    const proc = [["Extracting text", r.pages + " pages"], ["Segmenting into activities", r.total + " found"],
+      ["Classifying against 17 Goals", (r.total * 17).toLocaleString() + " comparisons"], ["Applying per-goal thresholds", r.evidenced + " goals evidenced"]];
+    const done = proc.filter((_, k) => p >= (k + 1) * 25).length;
+    const inc = this.state.includes, fmt = FORMATS[this.state.format];
+    const absentIds = Object.keys(NAMES).map(Number).filter(i => r.count[i] === 0).sort((a, b) => r.mean[b] - r.mean[a]);
+    const max = this.maxCount();
+    return {
+      analysed: sc !== "upload" && sc !== "processing",
+      isUpload: sc === "upload", isProcessing: sc === "processing", isResults: sc === "results",
+      isGoal: sc === "goal", isActivities: sc === "activities", isGaps: sc === "gaps",
+      isCompare: sc === "compare", isExport: sc === "export",
+      canUpload: role === "admin" || role === "officer",
+      goHome: () => this.go("results"), goUpload: () => this.go("upload"),
+      goExport: () => this.go("export"), goCompare: () => this.go("compare"),
+      startAnalysis: () => this.runAnalysis(),
+      isAdminScreen: sc === "admin",
+      adminTabs: [["runs", "Analysis runs"], ["narrative", "Narrative review"], ["users", "Roles"]].map(([id, label]) =>
+        Object.assign({ label, pick: () => this.setState({ adminTab: id }) }, pill(this.state.adminTab === id))),
+      isRuns: this.state.adminTab === "runs",
+      isNarrative: this.state.adminTab === "narrative",
+      isUsers: this.state.adminTab === "users",
+      runStats: [
+        { value: "566", label: "local government areas" },
+        { value: "1", label: "published" },
+        { value: "2", label: "in the queue" },
+        { value: "1", label: "failed", accent: true }
+      ],
+      runs: RUNS.map(r => {
+        const s = RUN_STATUS[r.status];
+        return { council: r.council, meta: r.state + " · " + r.year, note: r.note,
+          status: s[0], statusColor: s[1],
+          statusBg: "color-mix(in srgb, " + s[1] + " 14%, transparent)",
+          activities: r.activities == null ? "—" : r.activities,
+          goals: r.goals == null ? "—" : r.goals + "/17",
+          ext: r.ext || "—",
+          extColor: r.ext === "thin" ? "var(--color-accent-700)" : "color-mix(in srgb, var(--color-text) 62%, transparent)",
+          action: r.status === "analysed" ? "Publish" : (r.status === "failed" ? "Retry with OCR" : (r.status === "published" ? "Unpublish" : "Run now")),
+          actionKind: r.status === "analysed" ? "btn-primary" : "btn-ghost" };
+      }),
+      draft: DRAFT,
+      draftChecks: DRAFT.checks.map(([label, ok, detail]) => ({ label, detail,
+        mark: ok ? "✓" : "✕",
+        markBg: ok ? "var(--color-accent-2-500)" : "var(--color-accent)" })),
+      users: USERS.map(u => ({ name: u.name, email: u.email, role: u.role, meta: u.meta,
+        roleBg: u.role === "Admin" ? "var(--color-accent-100)" : "color-mix(in srgb, var(--color-text) 5%, transparent)",
+        dim: u.role === "Officer" ? 0.55 : 1 })),
+      nav: (canAdmin ? NAV.concat([["admin", "Admin"]]) : NAV).map(([id, label]) => ({ label,
+        fg: sc === id ? "var(--color-text)" : "color-mix(in srgb, var(--color-text) 55%, transparent)",
+        edge: sc === id ? "var(--color-accent)" : "transparent",
+        pick: () => this.go(id) })),
+      reportTabs: ["melbourne", "bendigo"].map(id => Object.assign(
+        { label: REPORTS[id].short, pick: () => this.setState({ report: id, year: null, open: REPORTS[id].count[11] ? 11 : 4, goal: REPORTS[id].count[11] ? 11 : 4 }) },
+        pill(this.state.report === id))),
+
+      rpt: Object.assign({}, r, {
+        meta: sel.missing
+          ? sel.year + " · " + r.state + " · not analysed"
+          : sel.year + " Annual Report · " + r.state + " · " + r.klass + " · " + sel.pages + " pages",
+        headline: sel.missing
+          ? [{ value: "—", label: "no report analysed", color: "color-mix(in srgb, var(--color-text) 45%, transparent)" }]
+          : [
+            { value: sel.total, label: "activities read", color: "var(--color-text)" },
+            { value: sel.goals + "/17", label: "goals evidenced", color: "var(--color-text)" },
+            { value: 17 - sel.goals, label: "not evidenced", color: "var(--color-accent-700)" }
+          ]
+      }),
+      configLine: "voyager205/sdg-variant-finetuned · hybrid ensemble 55/45 · per-goal thresholds",
+      ext: this.extraction(),
+
+      drawer: this.state.drawer,
+      openDrawer: () => this.setState({ drawer: true }),
+      closeDrawer: () => this.setState({ drawer: false }),
+      drawerScope: sc === "upload" || sc === "processing"
+        ? "These settings will be applied to the next report you upload."
+        : "The settings that produced " + r.council + " " + r.year + ".",
+      thresholds: Object.keys(NAMES).map(Number).sort((a, b) => THRESH[b] - THRESH[a]).map(i => ({
+        num: pad(i), name: NAMES[i], color: COLORS[i],
+        value: THRESH[i].toFixed(3), bar: (THRESH[i] * 100) + "%"
+      })),
+      settings: [
+        { label: "Classifier", note: "Fine-tuned SDG variant, sentence-transformer backbone", value: "sdg-variant-finetuned" },
+        { label: "Hybrid ensemble", note: "SDG-BERT blended with sentence-transformer similarity", value: "55 / 45" },
+        { label: "Thresholds", note: "Per-goal and calibrated — 0.459 for Goal 11, 0.973 for Goal 14", value: "SDG-specific" },
+        { label: "Base similarity floor", note: "Applied before the per-goal threshold", value: "0.50" }
+      ],
+      recents: ["melbourne", "bendigo"].map(id => {
+        const x = REPORTS[id];
+        return { council: x.council, year: x.year,
+          summary: x.total + " activities · " + x.evidenced + " of 17 Goals evidenced",
+          chips: Object.keys(NAMES).map(Number).filter(i => x.count[i] > 0).sort((a, b) => x.count[b] - x.count[a]).slice(0, 6).map(i => ({ num: pad(i), color: COLORS[i] })),
+          open: () => this.setState({ report: id, screen: "results" }) };
+      }),
+
+      procFile: "Reading " + r.file,
+      procPct: p + "%",
+      procHeadline: p >= 100 ? ("Done — " + r.total + " activities, " + r.evidenced + " Goals evidenced") : (proc[Math.min(3, done)][0] + "…"),
+      steps: proc.map(([label, detail], k) => {
+        const st = done > k ? "done" : (done === k ? "live" : "wait");
+        return { label, detail: st === "wait" ? "" : detail, mark: st === "done" ? "✓" : String(k + 1),
+          bg: st === "wait" ? "transparent" : (st === "live" ? "var(--color-accent-100)" : "color-mix(in srgb, var(--color-text) 3.5%, transparent)"),
+          dotBg: st === "done" ? "var(--color-accent-2-500)" : (st === "live" ? "var(--color-accent)" : "color-mix(in srgb, var(--color-text) 9%, transparent)"),
+          dotFg: st === "wait" ? "color-mix(in srgb, var(--color-text) 50%, transparent)" : "#fff",
+          fg: st === "wait" ? "color-mix(in srgb, var(--color-text) 45%, transparent)" : "var(--color-text)" };
+      }),
+
+      years: r.series.map(s => Object.assign(
+        { label: s.year, dim: s.missing ? 0.4 : 1,
+          cursor: s.missing ? "not-allowed" : "pointer",
+          pick: () => { if (!s.missing) this.setState({ year: s.year }); } },
+        pill(s.year === sel.year))),
+      yearNotice: sel.real ? "" : (sel.missing
+        ? r.council + " has no analysed report for " + sel.year + "."
+        : sel.year + " is an illustrative placeholder for " + r.council + ". The evidence below is from " + real.year + ", the year actually analysed."),
+      yearNoticeAction: sel.real ? "" : "Show " + real.year,
+      resetYear: () => this.setState({ year: null }),
+      trend: (() => {
+        const pts = r.series.filter(s => !s.missing);
+        const maxGoals = Math.max(17, ...pts.map(s => s.goals || 0));
+        const analysed = r.series.filter(s => s.real);
+        const illustrative = pts.filter(s => !s.real);
+        const first = pts[0], last = pts[pts.length - 1];
+        return {
+          points: r.series.map(s => ({
+            year: s.year,
+            goals: s.missing ? "—" : s.goals + "/17",
+            total: s.missing ? "not analysed" : s.total + " activities",
+            share: s.missing ? "" : "Goal " + s.top + " · " + Math.round(s.topShare * 100) + "% of activity",
+            bar: s.missing ? "0%" : ((s.goals / maxGoals) * 100) + "%",
+            barBg: s.real ? "var(--color-accent)" : "color-mix(in srgb, var(--color-accent) 38%, transparent)",
+            tag: s.real ? "Analysed" : (s.missing ? "No report analysed" : "Illustrative"),
+            tagColor: s.real ? "var(--color-accent-2-700)" : "color-mix(in srgb, var(--color-text) 50%, transparent)",
+            opacity: s.missing ? 0.5 : 1
+          })),
+          single: pts.length < 2,
+          headline: pts.length < 2
+            ? "Only one year has been analysed for " + r.council
+            : (last.goals > first.goals
+              ? "Goals evidenced rose from " + first.goals + " to " + last.goals + " across three years"
+              : "Goals evidenced held at " + last.goals + " across three years"),
+          note: pts.length < 2
+            ? "A trend appears once a second year is published. " + r.council + "'s other years are not in the dataset yet."
+            : "Activities described rose from " + first.total + " to " + last.total + ", and Goal " + last.top +
+              "'s share of them moved from " + Math.round(first.topShare * 100) + "% to " + Math.round(last.topShare * 100) +
+              "% — the report grew, and grew more concentrated.",
+          caveat: illustrative.length
+            ? illustrative.map(s => s.year).join(" and ") + " are illustrative placeholders. Only " +
+              analysed.map(s => s.year).join(", ") + " has been analysed for this council."
+            : ""
+        };
+      })(),
+      views: VIEWS.map(([id, label]) => Object.assign({ label, pick: () => this.setState({ view: id }) }, pill(v === id))),
+      viewNote: (VIEWS.find(x => x[0] === v) || VIEWS[0])[2],
+      isLedger: v === "ledger", isStatement: v === "statement", isDepth: v === "depth", isTrend: v === "trend",
+      provenance: this.props.showProvenance ?? true,
+      ledger: this.ledger(),
+      mosaic: Object.keys(NAMES).map(Number).map(i => {
+        const n = r.count[i], w = n === 0 ? 0 : Math.min(1, 0.24 + Math.sqrt(n / max) * 0.76);
+        return { num: pad(i), name: NAMES[i], count: n === 0 ? "—" : n,
+          unit: n === 0 ? "none found" : (n === 1 ? "activity" : "activities"),
+          fill: n === 0 ? "transparent" : "color-mix(in srgb, " + COLORS[i] + " " + Math.round(w * 90) + "%, var(--color-surface))",
+          edge: n === 0 ? "color-mix(in srgb, var(--color-text) 18%, transparent)" : "transparent",
+          ink: n === 0 ? "color-mix(in srgb, var(--color-text) 55%, transparent)" : (w > 0.55 ? "#ffffff" : "var(--color-text)"),
+          open: () => this.setState({ screen: "goal", goal: i }) };
+      }),
+      highlights: Object.keys(NAMES).map(Number).filter(i => r.count[i] > 0)
+        .sort((a, b) => r.count[b] - r.count[a]).slice(0, 3)
+        .map(i => ({ color: COLORS[i], ink: "color-mix(in srgb, " + COLORS[i] + " 70%, var(--color-text))",
+          label: "Goal " + i + " · " + NAMES[i],
+          quote: r.acts.filter(a => a.g.includes(i)).sort((x, y) => y.s - x.s)[0].t })),
+      absent: absentIds.slice(0, 5).map(i => ({ num: pad(i), name: NAMES[i], color: COLORS[i] })),
+      absentMore: absentIds.length > 5,
+      absentMoreLabel: "…and " + (absentIds.length - 5) + " more — see Gaps",
+      breadth: this.ranked(r.count, false),
+      depth: this.ranked(r.mean, true),
+
+      goalChips: Object.keys(NAMES).map(Number).map(i => {
+        const on = this.state.goal === i;
+        return { num: pad(i), name: NAMES[i], color: COLORS[i],
+          bg: on ? "var(--color-surface)" : "color-mix(in srgb, var(--color-text) 5%, transparent)",
+          fg: on ? "var(--color-text)" : "color-mix(in srgb, var(--color-text) 62%, transparent)",
+          shadow: on ? "var(--shadow-sm)" : "none",
+          pick: () => this.setState({ goal: i }) };
+      }),
+      goal: this.goalDetail(),
+
+      query: this.state.query,
+      setQuery: e => this.setState({ query: e.target.value }),
+      sectionFilters: ["All", "Social", "Environmental", "Economic", "Governance", "General"].map(s =>
+        Object.assign({ label: s, pick: () => this.setState({ section: s }) }, pill(this.state.section === s))),
+      rows: this.rows(),
+      noRows: this.rows().length === 0,
+      actCountLabel: this.rows().length + " of " + r.total + " activities shown · the strongest passages are held in full; click any row to open its Goal",
+
+      gaps: r.gaps.map(g => ({ num: pad(g.i), name: NAMES[g.i], color: COLORS[g.i], meta: g.meta, near: g.near, action: g.action })),
+
+      cmpModes: [["count", "Activity count"], ["share", "Share of report"], ["mean", "Mean score"]].map(([id, label]) =>
+        Object.assign({ label, pick: () => this.setState({ cmpMode: id }) }, pill(this.state.cmpMode === id))),
+      cmpTitle: this.cmpNarrative()[0],
+      cmpLead: this.cmpNarrative()[1],
+      cmpShowDiff: this.selected().length === 2,
+      cmpPickHint: this.state.selected.length + " of " + PUBLISHED.filter(p => p.ready).length + " published reports selected · click to add or remove",
+      cmpPicker: PUBLISHED.map(p => {
+        const on = this.state.selected.indexOf(p.id) >= 0;
+        return { label: p.label, meta: p.ready ? p.meta : "awaiting analysis",
+          bg: on ? "var(--color-accent-100)" : "var(--color-surface)",
+          edge: on ? "var(--color-accent)" : "color-mix(in srgb, var(--color-text) 14%, transparent)",
+          dot: on ? "var(--color-accent)" : "color-mix(in srgb, var(--color-text) 18%, transparent)",
+          opacity: p.ready ? 1 : 0.45, cursor: p.ready ? "pointer" : "not-allowed",
+          toggle: () => { if (p.ready) this.toggleCouncil(p.id); } };
+      }),
+      cmpPeers: PEERS.map(g => ({ label: g.label,
+        bg: "color-mix(in srgb, var(--color-text) 5%, transparent)", fg: "var(--color-text)",
+        pick: () => {
+          const ids = PUBLISHED.filter(p => p.ready && g.match(REPORTS[p.id])).map(p => p.id);
+          if (ids.length) this.setState({ selected: ids });
+        } })),
+      cmpCols: this.selected().map(c => ({ label: c.short, meta: c.year + " · " + c.total + " activities" })),
+      cmpRows: this.comparison(),
+      cmpNotes: this.selected().length < 2 ? [] : [
+        { kicker: "Read the share, not the count", body: "Both reports put most of their aligned activity into Goal 11 — 50% of Melbourne's, 42% of Bendigo's. On that measure the two councils describe city-shaping work almost identically." },
+        { kicker: "Melbourne's breadth is real", body: "13 Goals evidenced against Bendigo's 4. Some of that is genuine range, but much of it is form: Melbourne narrates its activities, Bendigo tabulates them, and tables score poorly." },
+        { kicker: "Both hide the same work", body: "Neither report evidences Clean Water, and Bendigo's highest-scoring language — Goal 16, at 0.511 — produced no aligned activity at all. In both cases the work exists; the description does not credit it." }
+      ],
+
+      formats: FORMATS.map(([title, ext, note], k) => ({ title, ext, note,
+        edge: this.state.format === k ? "var(--color-accent)" : "transparent",
+        bg: this.state.format === k ? "var(--color-accent-100)" : "var(--color-surface)",
+        pick: () => this.setState({ format: k }) })),
+      includes: [["statement", "Published statement page"], ["ledger", "Evidence ledger, all 17 Goals"],
+        ["activities", "Every activity with its scores"], ["gaps", "Gaps and next-year actions"],
+        ["method", "Method appendix and thresholds"]].map(([id, label]) => ({ label,
+          mark: inc[id] ? "✓" : "",
+          mBg: inc[id] ? "var(--color-accent)" : "color-mix(in srgb, var(--color-text) 10%, transparent)",
+          mFg: "#fff",
+          toggle: () => this.setState(s => ({ includes: Object.assign({}, s.includes, { [id]: !s.includes[id] }) })) })),
+      exportExt: fmt[1],
+      exportSummary: fmt[0] + " · " + Object.values(inc).filter(Boolean).length + " of 5 sections included · " + r.council + " " + r.year
+    };
+  }
+}
+
+</script>
+</body>
+</html>

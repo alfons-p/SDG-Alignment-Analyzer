@@ -1,0 +1,790 @@
+{
+ "generated": "2026-07-31T06:37:17.112Z",
+ "years": [
+  2023,
+  2024,
+  2025
+ ],
+ "national": {
+  "councils": 22,
+  "reports": 52,
+  "activities": 4472,
+  "goal_shares": {
+   "1": 0,
+   "2": 0.0067,
+   "3": 0.0141,
+   "4": 0.0593,
+   "5": 0.0065,
+   "6": 0.0009,
+   "7": 0.0025,
+   "8": 0.0087,
+   "9": 0.0177,
+   "10": 0.0004,
+   "11": 0.4043,
+   "12": 0.0376,
+   "13": 0.0168,
+   "14": 0,
+   "15": 0.017,
+   "16": 0.0047,
+   "17": 0.0344
+  },
+  "median_goals_evidenced": 7.5,
+  "goals_evidenced_range": [
+   2,
+   13
+  ],
+  "median_activities_per_100_pages": 70.7,
+  "thin_reports": 3,
+  "goal_alignment_shares": {
+   "1": 0,
+   "2": 0.0106,
+   "3": 0.0223,
+   "4": 0.0938,
+   "5": 0.0103,
+   "6": 0.0014,
+   "7": 0.0039,
+   "8": 0.0138,
+   "9": 0.028,
+   "10": 0.0007,
+   "11": 0.6402,
+   "12": 0.0595,
+   "13": 0.0266,
+   "14": 0,
+   "15": 0.0269,
+   "16": 0.0074,
+   "17": 0.0545
+  },
+  "aligned_activity_counts": {
+   "1": 0,
+   "2": 30,
+   "3": 63,
+   "4": 265,
+   "5": 29,
+   "6": 4,
+   "7": 11,
+   "8": 39,
+   "9": 79,
+   "10": 2,
+   "11": 1808,
+   "12": 168,
+   "13": 75,
+   "14": 0,
+   "15": 76,
+   "16": 21,
+   "17": 154
+  },
+  "total_alignments": 2824
+ },
+ "councils": [
+  {
+   "lga_code": "10500",
+   "name": "Bayside (NSW)",
+   "state": "NSW",
+   "class": "Metro",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 10,
+     "activities": 89,
+     "pages": 169,
+     "mean_alignment": 0.2473,
+     "barren": 49,
+     "activities_per_100_pages": 52.7,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 10,
+   "years_available": 1,
+   "latest_year": 2023
+  },
+  {
+   "lga_code": "11400",
+   "name": "Cabonne",
+   "state": "NSW",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 7,
+     "activities": 75,
+     "pages": 172,
+     "mean_alignment": 0.238,
+     "barren": 39,
+     "activities_per_100_pages": 43.6,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 11,
+     "activities": 163,
+     "pages": 224,
+     "mean_alignment": 0.2461,
+     "barren": 56,
+     "activities_per_100_pages": 72.8,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 9,
+     "activities": 88,
+     "pages": 166,
+     "mean_alignment": 0.2592,
+     "barren": 38,
+     "activities_per_100_pages": 53,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 9,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "70200",
+   "name": "Alice Springs",
+   "state": "NT",
+   "class": "Metro",
+   "by_year": {
+    "2024": {
+     "goals_evidenced": 4,
+     "activities": 55,
+     "pages": 104,
+     "mean_alignment": 0.236,
+     "barren": 27,
+     "activities_per_100_pages": 52.9,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 5,
+     "activities": 51,
+     "pages": 102,
+     "mean_alignment": 0.2273,
+     "barren": 28,
+     "activities_per_100_pages": 50,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 5,
+   "years_available": 2,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "70420",
+   "name": "Barkly",
+   "state": "NT",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 7,
+     "activities": 79,
+     "pages": 96,
+     "mean_alignment": 0.2615,
+     "barren": 35,
+     "activities_per_100_pages": 82.3,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 7,
+     "activities": 80,
+     "pages": 103,
+     "mean_alignment": 0.2507,
+     "barren": 42,
+     "activities_per_100_pages": 77.7,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 6,
+     "activities": 67,
+     "pages": 84,
+     "mean_alignment": 0.2419,
+     "barren": 36,
+     "activities_per_100_pages": 79.8,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 6,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "70620",
+   "name": "Central Desert",
+   "state": "NT",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 7,
+     "activities": 130,
+     "pages": 82,
+     "mean_alignment": 0.2542,
+     "barren": 51,
+     "activities_per_100_pages": 158.5,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 9,
+     "activities": 148,
+     "pages": 86,
+     "mean_alignment": 0.2588,
+     "barren": 55,
+     "activities_per_100_pages": 172.1,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 8,
+     "activities": 170,
+     "pages": 88,
+     "mean_alignment": 0.2613,
+     "barren": 64,
+     "activities_per_100_pages": 193.2,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 8,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "70700",
+   "name": "Coomalie",
+   "state": "NT",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 8,
+     "activities": 86,
+     "pages": 76,
+     "mean_alignment": 0.2392,
+     "barren": 31,
+     "activities_per_100_pages": 113.2,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 9,
+     "activities": 110,
+     "pages": 87,
+     "mean_alignment": 0.2616,
+     "barren": 37,
+     "activities_per_100_pages": 126.4,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 9,
+   "years_available": 2,
+   "latest_year": 2024
+  },
+  {
+   "lga_code": "36300",
+   "name": "Richmond",
+   "state": "QLD",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 3,
+     "activities": 47,
+     "pages": 94,
+     "mean_alignment": 0.2271,
+     "barren": 28,
+     "activities_per_100_pages": 50,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 5,
+     "activities": 46,
+     "pages": 83,
+     "mean_alignment": 0.2311,
+     "barren": 22,
+     "activities_per_100_pages": 55.4,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 6,
+     "activities": 61,
+     "pages": 77,
+     "mean_alignment": 0.2331,
+     "barren": 27,
+     "activities_per_100_pages": 79.2,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 6,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "36370",
+   "name": "Rockhampton",
+   "state": "QLD",
+   "class": "Metro",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 6,
+     "activities": 55,
+     "pages": 136,
+     "mean_alignment": 0.2372,
+     "barren": 28,
+     "activities_per_100_pages": 40.4,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 6,
+     "activities": 90,
+     "pages": 152,
+     "mean_alignment": 0.2327,
+     "barren": 48,
+     "activities_per_100_pages": 59.2,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 5,
+     "activities": 63,
+     "pages": 145,
+     "mean_alignment": 0.2391,
+     "barren": 30,
+     "activities_per_100_pages": 43.4,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 5,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "36510",
+   "name": "Scenic Rim",
+   "state": "QLD",
+   "class": "Metro",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 10,
+     "activities": 158,
+     "pages": 115,
+     "mean_alignment": 0.2482,
+     "barren": 46,
+     "activities_per_100_pages": 137.4,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 10,
+     "activities": 171,
+     "pages": 100,
+     "mean_alignment": 0.2512,
+     "barren": 58,
+     "activities_per_100_pages": 171,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 11,
+     "activities": 219,
+     "pages": 168,
+     "mean_alignment": 0.2482,
+     "barren": 75,
+     "activities_per_100_pages": 130.4,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 11,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "36580",
+   "name": "Somerset",
+   "state": "QLD",
+   "class": "Metro",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 12,
+     "activities": 231,
+     "pages": 132,
+     "mean_alignment": 0.244,
+     "barren": 108,
+     "activities_per_100_pages": 175,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 12,
+   "years_available": 1,
+   "latest_year": 2023
+  },
+  {
+   "lga_code": "40310",
+   "name": "Barossa",
+   "state": "SA",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 7,
+     "activities": 51,
+     "pages": 66,
+     "mean_alignment": 0.232,
+     "barren": 22,
+     "activities_per_100_pages": 77.3,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 7,
+     "activities": 53,
+     "pages": 66,
+     "mean_alignment": 0.2435,
+     "barren": 17,
+     "activities_per_100_pages": 80.3,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 7,
+     "activities": 49,
+     "pages": 65,
+     "mean_alignment": 0.2424,
+     "barren": 15,
+     "activities_per_100_pages": 75.4,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 7,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "47490",
+   "name": "Streaky Bay",
+   "state": "SA",
+   "class": "Rural",
+   "by_year": {
+    "2025": {
+     "goals_evidenced": 11,
+     "activities": 133,
+     "pages": 188,
+     "mean_alignment": 0.242,
+     "barren": 62,
+     "activities_per_100_pages": 70.7,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 11,
+   "years_available": 1,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "47630",
+   "name": "Tatiara",
+   "state": "SA",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 8,
+     "activities": 75,
+     "pages": 127,
+     "mean_alignment": 0.2349,
+     "barren": 39,
+     "activities_per_100_pages": 59.1,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 8,
+     "activities": 128,
+     "pages": 150,
+     "mean_alignment": 0.2346,
+     "barren": 61,
+     "activities_per_100_pages": 85.3,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 8,
+     "activities": 145,
+     "pages": 160,
+     "mean_alignment": 0.2283,
+     "barren": 61,
+     "activities_per_100_pages": 90.6,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 8,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "47700",
+   "name": "Tea Tree Gully",
+   "state": "SA",
+   "class": "Metro",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 9,
+     "activities": 83,
+     "pages": 108,
+     "mean_alignment": 0.2374,
+     "barren": 46,
+     "activities_per_100_pages": 76.9,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 5,
+     "activities": 65,
+     "pages": 114,
+     "mean_alignment": 0.2414,
+     "barren": 38,
+     "activities_per_100_pages": 57,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 5,
+     "activities": 53,
+     "pages": 130,
+     "mean_alignment": 0.2443,
+     "barren": 30,
+     "activities_per_100_pages": 40.8,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 5,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "61510",
+   "name": "Derwent Valley",
+   "state": "TAS",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 8,
+     "activities": 91,
+     "pages": 116,
+     "mean_alignment": 0.2406,
+     "barren": 49,
+     "activities_per_100_pages": 78.4,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 8,
+     "activities": 79,
+     "pages": 105,
+     "mean_alignment": 0.2337,
+     "barren": 44,
+     "activities_per_100_pages": 75.2,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 8,
+     "activities": 124,
+     "pages": 108,
+     "mean_alignment": 0.2423,
+     "barren": 54,
+     "activities_per_100_pages": 114.8,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 8,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "61610",
+   "name": "Devonport",
+   "state": "TAS",
+   "class": "Metro",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 10,
+     "activities": 113,
+     "pages": 132,
+     "mean_alignment": 0.2274,
+     "barren": 56,
+     "activities_per_100_pages": 85.6,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 8,
+     "activities": 89,
+     "pages": 133,
+     "mean_alignment": 0.2358,
+     "barren": 33,
+     "activities_per_100_pages": 66.9,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 13,
+     "activities": 143,
+     "pages": 137,
+     "mean_alignment": 0.2372,
+     "barren": 52,
+     "activities_per_100_pages": 104.4,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 13,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "61810",
+   "name": "Dorset",
+   "state": "TAS",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 4,
+     "activities": 27,
+     "pages": 46,
+     "mean_alignment": 0.2522,
+     "barren": 10,
+     "activities_per_100_pages": 58.7,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 4,
+     "activities": 25,
+     "pages": 46,
+     "mean_alignment": 0.256,
+     "barren": 9,
+     "activities_per_100_pages": 54.3,
+     "extraction": "rich"
+    },
+    "2025": {
+     "goals_evidenced": 6,
+     "activities": 29,
+     "pages": 48,
+     "mean_alignment": 0.2688,
+     "barren": 11,
+     "activities_per_100_pages": 60.4,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 6,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "22620",
+   "name": "Greater Bendigo",
+   "state": "VIC",
+   "class": "Metro",
+   "by_year": {
+    "2024": {
+     "goals_evidenced": 4,
+     "activities": 33,
+     "pages": 188,
+     "mean_alignment": 0.2421,
+     "barren": 13,
+     "activities_per_100_pages": 17.6,
+     "extraction": "thin"
+    }
+   },
+   "goals_evidenced": 4,
+   "years_available": 1,
+   "latest_year": 2024
+  },
+  {
+   "lga_code": "24600",
+   "name": "Melbourne",
+   "state": "VIC",
+   "class": "Metro",
+   "by_year": {
+    "2025": {
+     "goals_evidenced": 13,
+     "activities": 176,
+     "pages": 338,
+     "mean_alignment": 0.2538,
+     "barren": 38,
+     "activities_per_100_pages": 52.1,
+     "extraction": "rich"
+    }
+   },
+   "goals_evidenced": 13,
+   "years_available": 1,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "55810",
+   "name": "Mount Magnet",
+   "state": "WA",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 4,
+     "activities": 53,
+     "pages": 80,
+     "mean_alignment": 0.2299,
+     "barren": 35,
+     "activities_per_100_pages": 66.3,
+     "extraction": "rich"
+    },
+    "2024": {
+     "goals_evidenced": 2,
+     "activities": 13,
+     "pages": 64,
+     "mean_alignment": 0.2243,
+     "barren": 10,
+     "activities_per_100_pages": 20.3,
+     "extraction": "thin"
+    }
+   },
+   "goals_evidenced": 2,
+   "years_available": 2,
+   "latest_year": 2024
+  },
+  {
+   "lga_code": "55880",
+   "name": "Mount Marshall",
+   "state": "WA",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 1,
+     "activities": 22,
+     "pages": 73,
+     "mean_alignment": 0.2486,
+     "barren": 14,
+     "activities_per_100_pages": 30.1,
+     "extraction": "adequate"
+    },
+    "2024": {
+     "goals_evidenced": 1,
+     "activities": 24,
+     "pages": 73,
+     "mean_alignment": 0.2509,
+     "barren": 15,
+     "activities_per_100_pages": 32.9,
+     "extraction": "adequate"
+    },
+    "2025": {
+     "goals_evidenced": 3,
+     "activities": 24,
+     "pages": 73,
+     "mean_alignment": 0.2498,
+     "barren": 15,
+     "activities_per_100_pages": 32.9,
+     "extraction": "adequate"
+    }
+   },
+   "goals_evidenced": 3,
+   "years_available": 3,
+   "latest_year": 2025
+  },
+  {
+   "lga_code": "55950",
+   "name": "Mukinbudin",
+   "state": "WA",
+   "class": "Rural",
+   "by_year": {
+    "2023": {
+     "goals_evidenced": 3,
+     "activities": 17,
+     "pages": 69,
+     "mean_alignment": 0.2148,
+     "barren": 8,
+     "activities_per_100_pages": 24.6,
+     "extraction": "thin"
+    },
+    "2024": {
+     "goals_evidenced": 4,
+     "activities": 23,
+     "pages": 77,
+     "mean_alignment": 0.2252,
+     "barren": 10,
+     "activities_per_100_pages": 29.9,
+     "extraction": "adequate"
+    }
+   },
+   "goals_evidenced": 4,
+   "years_available": 2,
+   "latest_year": 2024
+  }
+ ]
+}
