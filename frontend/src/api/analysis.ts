@@ -68,6 +68,19 @@ export async function cancelAnalysis(analysisId: string): Promise<void> {
   await api.post(`/api/analysis/${analysisId}/cancel`)
 }
 
+export async function getAdminRuns(): Promise<import('../types').AdminRun[]> {
+  const { data } = await api.get('/api/analysis/admin/runs')
+  return data
+}
+
+export async function publishAnalysis(analysisId: string): Promise<void> {
+  await api.post(`/api/analysis/${analysisId}/publish`)
+}
+
+export async function unpublishAnalysis(analysisId: string): Promise<void> {
+  await api.post(`/api/analysis/${analysisId}/unpublish`)
+}
+
 export async function exportCSV(analysisId: string): Promise<Blob> {
   const { data } = await api.get(`/api/analysis/results/${analysisId}/export/csv`, {
     responseType: 'blob',

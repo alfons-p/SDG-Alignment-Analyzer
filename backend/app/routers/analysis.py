@@ -281,6 +281,41 @@ def list_analyses(user: User = Depends(get_current_user), db: Session = Depends(
     return analyses
 
 
+@router.get("/admin/runs")
+def admin_runs(admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """Every analysis with its publish state and headline metrics, for the admin
+    runs table. Admin only (data-contract C#0)."""
+    from backend.app.services.public_data import (
+        _report_alignment,
+        _coverage,
+        _goals_evidenced,
+        _extraction_grade,
+    )
+
+    analyses = db.query(Analysis).order_by(Analysis.created_at.desc()).limit(200).all()
+    runs = []
+    for a in analyses:
+        ra = _report_alignment(a)
+        cov = _coverage(a)
+        total = int(ra.get("total_activities", 0))
+        page_count = (a.result or {}).get("metadata", {}).get("page_count") if a.result else None
+        runs.append(
+            {
+                "id": a.id,
+                "council_name": a.council_name,
+                "state": a.state,
+                "year": a.year,
+                "status": a.status,
+                "published": a.published,
+                "total_activities": total,
+                "goals_evidenced": _goals_evidenced(cov) if cov else None,
+                "extraction": _extraction_grade(total, page_count) if a.status == "completed" else None,
+                "created_at": a.created_at,
+            }
+        )
+    return runs
+
+
 @router.post("/{analysis_id}/cancel")
 def cancel_analysis(analysis_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """Cancel a running analysis."""

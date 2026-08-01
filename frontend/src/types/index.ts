@@ -131,6 +131,19 @@ export interface CompareResponse {
   sources: string[]
 }
 
+export interface AdminRun {
+  id: string
+  council_name: string | null
+  state: string | null
+  year: number | null
+  status: string
+  published: boolean
+  total_activities: number
+  goals_evidenced: number | null
+  extraction: string | null
+  created_at: string
+}
+
 export function getSDGScore(
   scores: Record<string, SDGScore> | undefined,
   sdg: number,

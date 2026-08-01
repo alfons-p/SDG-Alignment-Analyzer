@@ -1367,3 +1367,11 @@
 | 10:03 | Created frontend/src/pages/ComparePage.tsx | — | ~2592 |
 | 10:05 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/shot-compare.mjs | — | ~375 |
 | 10:07 | Rewrote Comparison in organic style: council picker, 17-goal matrix (coverage/mean modes), difference column (2 only), 3 computed notes | ComparePage.tsx, types, results.css | verified 2+3 councils | ~6000 |
+| 10:08 | Edited backend/app/routers/analysis.py | modified list_analyses() | ~470 |
+| 10:10 | Edited frontend/src/api/analysis.ts | modified getAdminRuns() | ~142 |
+| 10:10 | Edited frontend/src/types/index.ts | expanded (+13 lines) | ~101 |
+| 10:10 | Created frontend/src/pages/AdminPage.tsx | — | ~1581 |
+| 10:10 | Edited frontend/src/pages/index.ts | 2→3 lines | ~35 |
+| 10:11 | Edited frontend/src/App.tsx | 1→2 lines | ~33 |
+| 10:11 | Edited frontend/src/App.tsx | inline fix | ~45 |
+| 10:13 | Added Admin screen (runs table + publish/unpublish + stats) + admin/runs backend endpoint | AdminPage.tsx, analysis.py, api, types, App.tsx, results.css | verified 4 runs, all published | ~5000 |

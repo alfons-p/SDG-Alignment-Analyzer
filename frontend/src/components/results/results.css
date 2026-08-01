@@ -1289,3 +1289,85 @@
   font-size: 15px;
   color: color-mix(in srgb, var(--color-text) 55%, transparent);
 }
+
+/* ── Admin ── */
+.rx-admin-page {
+  padding: 34px 44px 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.rx-admin-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.rx-admin-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rx-admin-stat {
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+  background: var(--color-surface);
+  border-radius: 24px;
+}
+.rx-admin-stat .value {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  line-height: 1;
+}
+.rx-admin-stat .label {
+  font-size: 12.5px;
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+.rx-run-council {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rx-run-council .name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.rx-run-council .meta {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.rx-status {
+  align-self: flex-start;
+  display: inline-flex;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.rx-status[data-s='completed'] { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
+.rx-status[data-s='processing'], .rx-status[data-s='queued'] { background: var(--color-accent-100); color: var(--color-accent-800); }
+.rx-status[data-s='failed'] { background: color-mix(in srgb, #E5243B 16%, transparent); color: #8a1020; }
+.rx-btn {
+  border: 1px solid var(--color-divider);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+}
+.rx-btn:hover { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+.rx-btn[data-kind='primary'] {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: transparent;
+}
+.rx-btn[data-kind='primary']:hover { background: var(--color-accent-600); }
+.rx-btn:disabled { opacity: 0.5; cursor: default; }
