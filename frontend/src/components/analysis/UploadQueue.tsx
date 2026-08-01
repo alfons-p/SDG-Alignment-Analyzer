@@ -1,10 +1,12 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle2, XCircle, SkipForward, Loader2, Clock, FileText } from 'lucide-react'
-import { listAnalyses, uploadPDF, getJob } from '../../api/analysis'
+import { listAnalyses, uploadPDF, getJob, clientLog } from '../../api/analysis'
 import { parseReportName } from '../../lib/results'
 import type { ProcessingSettings } from '../../types'
+
+const newBatchId = () => Math.random().toString(36).slice(2, 8)
 
 type RowStatus = 'pending' | 'uploading' | 'processing' | 'done' | 'failed' | 'skipped'
 
@@ -50,6 +52,12 @@ export function UploadQueue({
   const [running, setRunning] = useState(false)
   const [done, setDone] = useState(false)
   const startedRef = useRef(false)
+  const batchId = useRef(newBatchId()).current
+  const log = (msg: string, warn = false) => {
+    const line = `batch ${batchId} · ${msg}`
+    if (warn) console.warn(line)
+    else console.info(line)
+  }
 
   // Existing completed council-years, for the client-side pre-check.
   const { data: analyses } = useQuery({ queryKey: ['analyses'], queryFn: listAnalyses })
@@ -86,29 +94,68 @@ export function UploadQueue({
   const update = (key: string, patch: Partial<Row>) =>
     setRows((prev) => prev.map((r) => (r.key === key ? { ...r, ...patch } : r)))
 
+  // Record the folder total (and how many are pre-skipped) as soon as files
+  // load — so the batch's shape is in the server log before Start is clicked,
+  // surviving a tab crash. Fires once per batch.
+  const loggedSelectionRef = useRef(false)
+  useEffect(() => {
+    if (loggedSelectionRef.current || !rows.length) return
+    loggedSelectionRef.current = true
+    const pend = rows.filter((r) => r.status === 'pending').length
+    const m = `selected ${rows.length} files — ${pend} to analyse, ${rows.length - pend} pre-skipped`
+    log(m)
+    clientLog(`upload batch ${batchId} ${m}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows])
+
   async function run() {
     if (startedRef.current) return
     startedRef.current = true
     setRunning(true)
     // Snapshot the queue; process sequentially, one completed job before the next.
     const queue = rows.filter((r) => r.status === 'pending')
-    for (const r of queue) {
+    const preSkipped = rows.length - queue.length
+    let done = 0, failed = 0, skipped = 0
+    log(`START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped`)
+    clientLog(`upload batch ${batchId} START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped`)
+
+    for (let i = 0; i < queue.length; i++) {
+      const r = queue[i]
+      const at = `[${i + 1}/${queue.length}] ${r.name}`
       update(r.key, { status: 'uploading', note: undefined })
+      log(`${at} → uploading`)
       try {
         const job = await uploadPDF(r.file, settings)
         if (job.skipped) {
+          skipped++
           update(r.key, { status: 'skipped', note: 'Already analysed', analysisId: job.existing_id ?? job.id })
+          log(`${at} → skipped (already analysed)`)
           continue
         }
         update(r.key, { status: 'processing', analysisId: job.id })
         const outcome = await waitForJob(job.id)
-        update(r.key, outcome === 'completed'
-          ? { status: 'done' }
-          : { status: 'failed', note: 'Analysis failed' })
+        if (outcome === 'completed') {
+          done++
+          update(r.key, { status: 'done' })
+          log(`${at} → done (${job.id})`)
+        } else {
+          failed++
+          update(r.key, { status: 'failed', note: 'Analysis failed' })
+          log(`${at} → FAILED (job ${job.id})`, true)
+          clientLog(`upload batch ${batchId} FAILED ${at} — analysis job ${job.id} failed`, 'warning')
+        }
       } catch (e) {
-        update(r.key, { status: 'failed', note: e instanceof Error ? e.message : 'Upload failed' })
+        failed++
+        const note = e instanceof Error ? e.message : 'Upload failed'
+        update(r.key, { status: 'failed', note })
+        log(`${at} → FAILED (${note})`, true)
+        clientLog(`upload batch ${batchId} FAILED ${at} — ${note}`, 'warning')
       }
     }
+
+    const summary = `${done} analysed, ${skipped} skipped, ${failed} failed of ${rows.length}`
+    log(`DONE — ${summary}`)
+    clientLog(`upload batch ${batchId} DONE — ${summary}`)
     queryClient.invalidateQueries({ queryKey: ['analyses'] })
     setRunning(false)
     setDone(true)

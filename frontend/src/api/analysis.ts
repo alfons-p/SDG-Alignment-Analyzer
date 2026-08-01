@@ -86,6 +86,15 @@ export async function publishAll(): Promise<{ published: number }> {
   return data
 }
 
+/** Record a client event in the server log. Best-effort — never throws. */
+export async function clientLog(message: string, level: 'info' | 'warning' = 'info'): Promise<void> {
+  try {
+    await api.post('/api/analysis/client-log', { message, level })
+  } catch {
+    /* logging must never break the batch */
+  }
+}
+
 export async function exportCSV(analysisId: string): Promise<Blob> {
   const { data } = await api.get(`/api/analysis/results/${analysisId}/export/csv`, {
     responseType: 'blob',

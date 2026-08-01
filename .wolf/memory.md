@@ -1463,3 +1463,17 @@
 | 15:23 | Edited frontend/src/pages/AdminPage.tsx | CSS: onPublishAll, publishAllBusy | ~138 |
 | 15:23 | Edited frontend/src/pages/AdminPage.tsx | expanded (+20 lines) | ~327 |
 | 15:45 | Admin Publish-all: bulk endpoint POST /admin/publish-all (single UPDATE) + AdminPage button showing unpublished count | backend/app/routers/analysis.py, frontend/src/pages/AdminPage.tsx | done, build green, route registered | ~2500 |
+| 15:24 | Session end: 50 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~62200 tok |
+| 17:01 | Session end: 50 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~62200 tok |
+| 18:00 | Session end: 50 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~62200 tok |
+| 18:01 | Session end: 50 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~62200 tok |
+| 18:02 | Session end: 50 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~62200 tok |
+| 18:04 | Edited backend/app/routers/analysis.py | 3→6 lines | ~74 |
+| 18:04 | Edited backend/app/routers/analysis.py | modified client_log() | ~212 |
+| 18:04 | Edited frontend/src/api/analysis.ts | added error handling | ~135 |
+| 18:04 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: msg | ~187 |
+| 18:05 | Edited frontend/src/components/analysis/UploadQueue.tsx | 5→1 lines | ~18 |
+| 18:05 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: msg | ~94 |
+| 18:05 | Edited frontend/src/components/analysis/UploadQueue.tsx | added 1 condition(s) | ~632 |
+| 18:05 | Edited frontend/src/components/analysis/UploadQueue.tsx | added 1 condition(s) | ~229 |
+| 16:10 | Batch upload observability: POST /client-log endpoint (durable server-side log) + UploadQueue logs folder count on selection, START, per-file, FAILUREs, DONE summary (console + backend) | backend/app/routers/analysis.py, frontend/src/components/analysis/UploadQueue.tsx | done, build green | ~3500 |

@@ -8,7 +8,10 @@ from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status, UploadFile, File
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger("sdg.client")
 
 from backend.app.dependencies import get_db, get_current_user, get_current_admin, SessionLocal
 from backend.app.models import Analysis, User
@@ -174,6 +177,21 @@ def upload_pdf(
     background_tasks.add_task(run_analysis_sync, analysis.id, SessionLocal)
 
     return analysis
+
+
+class ClientLog(BaseModel):
+    message: str
+    level: str = "info"
+
+
+@router.post("/client-log")
+def client_log(body: ClientLog, user: User = Depends(get_current_user)):
+    """Record a client-side event (e.g. batch-upload start/summary) in the
+    server log, so a batch's shape survives even if the browser tab dies. Also
+    means the backend log holds the file count the client never otherwise sends."""
+    msg = f"[client:{user.email}] {body.message[:500]}"
+    (logger.warning if body.level == "warning" else logger.info)(msg)
+    return {"ok": True}
 
 
 @router.get("/jobs/{analysis_id}", response_model=AnalysisJobResponse)
