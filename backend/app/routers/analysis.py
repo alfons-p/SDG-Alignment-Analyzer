@@ -31,7 +31,7 @@ from backend.app.services.pdf_service import generate_ledger_pdf, generate_state
 
 logger = logging.getLogger(__name__)
 
-MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", str(50 * 1024 * 1024)))  # 50MB default
+MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", "0"))  # 0 = no limit (Cloudflare still caps ~100MB)
 
 router = APIRouter(prefix="/api/analysis", tags=["analysis"])
 
@@ -106,7 +106,7 @@ def upload_pdf(
     content = file.file.read()
     file_size = len(content)
 
-    if file_size > MAX_UPLOAD_BYTES:
+    if MAX_UPLOAD_BYTES and file_size > MAX_UPLOAD_BYTES:
         max_mb = MAX_UPLOAD_BYTES / (1024 * 1024)
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,

@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Upload, FolderOpen, FileText } from 'lucide-react'
 
-const MAX_BYTES = 50 * 1024 * 1024
-
 // webkitdirectory is a non-standard input attribute; declare it for TS/JSX.
 declare module 'react' {
   interface InputHTMLAttributes<T> {
@@ -30,23 +28,18 @@ export function FileDropzone({ onFile, onFiles, multiple = false }: Props) {
       setError('')
       const pdfs = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'))
       const nonPdf = files.length - pdfs.length
-      const sized = pdfs.filter((f) => f.size <= MAX_BYTES)
-      const tooBig = pdfs.length - sized.length
 
-      if (!sized.length) {
-        setError(files.length ? 'No valid PDFs (must be .pdf and ≤ 50 MB)' : 'No files selected')
+      if (!pdfs.length) {
+        setError(files.length ? 'No PDF files found' : 'No files selected')
         return
       }
-      const skipped = [nonPdf && `${nonPdf} non-PDF`, tooBig && `${tooBig} over 50 MB`]
-        .filter(Boolean)
-        .join(', ')
-      if (skipped) setError(`Skipped ${skipped}.`)
+      if (nonPdf) setError(`Skipped ${nonPdf} non-PDF file${nonPdf === 1 ? '' : 's'}.`)
 
       if (multiple) {
-        onFiles?.(sized)
+        onFiles?.(pdfs)
       } else {
-        setSelected(sized[0])
-        onFile?.(sized[0])
+        setSelected(pdfs[0])
+        onFile?.(pdfs[0])
       }
     },
     [multiple, onFile, onFiles],
@@ -71,7 +64,7 @@ export function FileDropzone({ onFile, onFiles, multiple = false }: Props) {
           {multiple ? 'Drop PDFs here, or' : 'Drop PDF here or click to select'}
         </p>
         <p className="text-xs text-slate-400 mt-1">
-          {multiple ? 'a whole folder or several files · max 50 MB each' : 'Max 50MB'}
+          {multiple ? 'a whole folder or several files' : 'PDF only'}
         </p>
 
         <div className="mt-3 flex items-center justify-center gap-2">

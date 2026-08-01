@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T10:46:46.653Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T10:50:47.461Z
 > Files: 831 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -138,7 +138,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~5930 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~5940 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -237,7 +237,7 @@
 ## frontend/src/components/analysis/
 
 - `ActivityTable.tsx` — ActivityTable — renders table (~1299 tok)
-- `FileDropzone.tsx` — Single-file callback (back-compat). Receives the first accepted PDF. (~1260 tok)
+- `FileDropzone.tsx` — Single-file callback (back-compat). Receives the first accepted PDF. (~1179 tok)
 - `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
 - `ScoreBar.tsx` — ScoreBar (~270 tok)
 - `StatusBadge.tsx` — styles (~154 tok)

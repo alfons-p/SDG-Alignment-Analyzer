@@ -1508,3 +1508,11 @@
 | 20:46 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: completion, analysis, client | ~981 |
 | 20:46 | Edited frontend/src/components/analysis/UploadQueue.tsx | added nullish coalescing | ~459 |
 | 21:20 | Two-sided batch instrumentation. Backend: [PROC start/done/crash] per-PDF logs w/ RSS+MPS memory+elapsed in run_analysis_sync (catches backend leak/hang, tab-independent). Frontend: per-file durable beacons + 10s heap heartbeat + window error/unhandledrejection capture + waitForJob surfaces analysis error_message. | backend/app/services/analysis_service.py, frontend/src/components/analysis/UploadQueue.tsx | done, build green, mem probe works | ~5000 |
+| 20:48 | Session end: 77 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~75190 tok |
+| 20:49 | Session end: 77 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~75190 tok |
+| 20:50 | Edited frontend/src/components/analysis/FileDropzone.tsx | 6→4 lines | ~53 |
+| 20:50 | Edited frontend/src/components/analysis/FileDropzone.tsx | modified if() | ~148 |
+| 20:50 | Edited frontend/src/components/analysis/FileDropzone.tsx | 3→3 lines | ~39 |
+| 20:50 | Edited backend/app/routers/analysis.py | 6→6 lines | ~81 |
+| 20:50 | Edited backend/app/routers/analysis.py | inline fix | ~30 |
+| 21:35 | Removed 50MB upload cap: frontend dropzone size filter gone, backend MAX_UPLOAD_BYTES default 0=unlimited (guarded). Cloudflare edge still caps ~100MB on free plan | frontend/src/components/analysis/FileDropzone.tsx, backend/app/routers/analysis.py | done, build green | ~1500 |
