@@ -10,6 +10,9 @@
 
 ## Key Learnings
 
+- **SDG colour source of truth (frontend):** the canonical UN Goal palette is `frontend/src/constants/sdg-colors.ts` (Goal 11 = #FD9D24). `SDG_DEFINITIONS[n]["color"]` in `src/config/sdg_definitions.py` is DIFFERENT/wrong (Goal 11 = #FD6925) — for anything that must match the UI (e.g. PDF export), use the frontend hexes, not SDG_DEFINITIONS colours. Names in SDG_DEFINITIONS are fine.
+- **Per-report Goal count = round(coverage[n] * total_activities):** `coverage` in `report_alignment` is a FRACTION; the UI shows counts (`frontend/src/lib/results.ts` goalCount). Coverage bands: 0 Not evidenced, <5 Isolated, <15 Emerging, ≥15 Substantial. Leading Goal = highest coverage share. Reuse these in any new consumer (backend PDF does).
+- **reportlab (PDF export):** installed as `reportlab` (requirements.txt). Gotcha: a 2-column Table `[stripe, body]` with an explicit narrow first colWidth mis-sizes and throws `negative availWidth` — use a single-cell Table with a coloured `LINEBEFORE` for a left accent stripe instead. Page background: BaseDocTemplate + PageTemplate onPage callback drawing a filled rect. Caprasimo/Figtree aren't available to reportlab (Google Fonts), so PDFs use Helvetica.
 - **Project:** sdg-alignment-analyzer
 - **Description:** A Python-based data analytics project that uses Natural Language Processing (NLP) to assess how well city council annual reports align with the 17 UN Sustainable Development Goals (SDGs).
 - **AidData benchmark dataset:** Located at `data/external/30015124/Chinese_Development_Finance_SDG_Categorizations_2000-2021.xlsx`. Two worksheets: "Centralized ver." and "Extended ver." ~20,985 rows each. Columns: Description (text), SDG1-SDG17 (binary). Ground truth for multi-label SDG classification.

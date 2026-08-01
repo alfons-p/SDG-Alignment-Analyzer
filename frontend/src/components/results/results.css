@@ -269,6 +269,14 @@
 .rx-ev-link:hover {
   background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
+.rx-spin {
+  animation: rx-spin 0.8s linear infinite;
+}
+@keyframes rx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* — provenance strip — */
 .rx-provenance {

@@ -1670,6 +1670,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-01T09:58:13.846971"
+    },
+    {
+      "id": "bug-104",
+      "timestamp": "2026-08-01T13:58:12.965573",
+      "error_message": "reportlab ValueError: flowable given negative availWidth=-2 width=6 \u2014 building statement PDF highlight rows",
+      "file": "backend/app/services/pdf_service.py",
+      "root_cause": "Two-column Table [stripe, body] with colWidths=[6, doc.width-12] mis-sized: reportlab put the paragraph flowable in the 6pt stripe column, so available width went negative.",
+      "fix": "Dropped the 2-col stripe layout; render each highlight as a single-cell Table with a colored LINEBEFORE (left border) instead of a separate stripe column.",
+      "tags": [
+        "reportlab",
+        "pdf",
+        "table",
+        "export",
+        "layout"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-01T13:58:12.965573"
     }
   ]
 }

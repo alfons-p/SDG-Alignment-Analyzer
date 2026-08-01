@@ -16,7 +16,7 @@ export function RegisterPage() {
     try {
       const { access_token } = await register(email, password)
       localStorage.setItem('token', access_token)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err: any) {
       const detail = err.response?.data?.detail
       if (Array.isArray(detail)) {

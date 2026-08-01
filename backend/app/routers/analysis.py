@@ -24,6 +24,7 @@ from backend.app.schemas.analysis import (
 )
 from backend.app.services.analysis_service import run_analysis_sync, UPLOADS_DIR
 from backend.app.services.export_service import generate_csv_bytes, generate_json_bytes
+from backend.app.services.pdf_service import generate_ledger_pdf, generate_statement_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -267,6 +268,29 @@ def export_results_json(analysis_id: str, user: User = Depends(get_current_user)
     buf = generate_json_bytes(analysis.result)
     filename = Path(analysis.original_filename).stem + "_alignment.json"
     return StreamingResponse(buf, media_type="application/json", headers={"Content-Disposition": f"attachment; filename={filename}"})
+
+
+def _pdf_response(analysis: Analysis, buf, suffix: str) -> StreamingResponse:
+    filename = Path(analysis.original_filename).stem + f"_{suffix}.pdf"
+    return StreamingResponse(buf, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename={filename}"})
+
+
+@router.get("/results/{analysis_id}/export/pdf/statement")
+def export_results_pdf_statement(analysis_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    analysis = _get_user_analysis(analysis_id, user, db)
+    if analysis.status != "completed" or not analysis.result:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Results not available — status: {analysis.status}")
+    buf = generate_statement_pdf(analysis.result, analysis.council_name, analysis.state, analysis.year, analysis.original_filename)
+    return _pdf_response(analysis, buf, "statement")
+
+
+@router.get("/results/{analysis_id}/export/pdf/ledger")
+def export_results_pdf_ledger(analysis_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    analysis = _get_user_analysis(analysis_id, user, db)
+    if analysis.status != "completed" or not analysis.result:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Results not available — status: {analysis.status}")
+    buf = generate_ledger_pdf(analysis.result, analysis.council_name, analysis.state, analysis.year, analysis.original_filename)
+    return _pdf_response(analysis, buf, "ledger")
 
 
 @router.get("", response_model=list[AnalysisListItem])

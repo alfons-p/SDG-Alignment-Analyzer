@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T00:11:07.941Z
-> Files: 824 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T03:58:45.114Z
+> Files: 829 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
@@ -23,7 +23,7 @@
 ## ../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/
 
 - `bert_activity_classifier_model_research.md` — BERT Activity Classifier — Model Selection Research (~952 tok)
-- `frontend-redesign-pending.md` (~392 tok)
+- `frontend-redesign-pending.md` — Declares HTML (~819 tok)
 - `MEMORY.md` — Memory Index (~70 tok)
 - `v2-persistent-deployment.md` (~353 tok)
 
@@ -138,7 +138,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~4798 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~5253 tok)
 - `auth.py` — Auth router — register, login. (~1022 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -157,6 +157,7 @@
 - `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~3087 tok)
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
 - `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
+- `pdf_service.py` — PDF export — the two document types the Export screen offers (design_handoff (~4338 tok)
 - `public_data.py` — Aggregate published analyses into the public coverage payload the landing (~1107 tok)
 
 ## backend/tests/
@@ -216,15 +217,16 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~374 tok)
+- `App.tsx` — App (~418 tok)
 - `index.css` — Styles: 2 rules, 22 vars (~394 tok)
 - `main.tsx` — queryClient (~172 tok)
 
 ## frontend/src/api/
 
-- `analysis.ts` — API routes: POST, GET, DELETE (12 endpoints) (~866 tok)
+- `analysis.ts` — API routes: POST, GET, DELETE (13 endpoints) (~934 tok)
 - `auth.ts` — API routes: POST, GET (3 endpoints) (~159 tok)
 - `client.ts` — Declares api (~194 tok)
+- `public.ts` — Exports CouncilYear, Council, National, Narrative + 2 more (~315 tok)
 - `reference.ts` — API routes: GET (3 endpoints) (~147 tok)
 - `results.ts` — API routes: POST (1 endpoints) (~78 tok)
 
@@ -245,12 +247,12 @@
 - `AppLayout.tsx` — AppLayout (~78 tok)
 - `AuthLayout.tsx` — AuthLayout (~172 tok)
 - `index.ts` (~24 tok)
-- `Sidebar.tsx` — links (~551 tok)
+- `Sidebar.tsx` — links (~556 tok)
 
 ## frontend/src/components/results/
 
 - `EvidenceLedger.tsx` — Evidence ledger — all 17 Goals ranked by aligned-activity count. A row expands (~1487 tok)
-- `results.css` — Styles: 49 rules (~1898 tok)
+- `results.css` — Styles: 97 rules (~7909 tok)
 - `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~648 tok)
 - `ResultsModes.tsx` — A factual "read together" note: the Goal that reads clearly but is rarely described. (~3514 tok)
 - `ViewSwitcher.tsx` — VIEWS (~377 tok)
@@ -276,12 +278,15 @@
 - `AdminPage.tsx` — AdminPage — renders table (~1581 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
+- `ExportPage.tsx` — FORMATS (~2023 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
-- `index.ts` (~127 tok)
-- `LoginPage.tsx` — LoginPage — renders form (~662 tok)
-- `RegisterPage.tsx` — RegisterPage — renders form (~755 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3339 tok)
+- `index.ts` (~151 tok)
+- `landing.css` — Styles: 44 rules (~1390 tok)
+- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~9415 tok)
+- `LoginPage.tsx` — LoginPage — renders form (~665 tok)
+- `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3180 tok)
 - `UploadPage.tsx` — defaultSettings (~761 tok)
 
 ## frontend/src/types/
@@ -1060,4 +1065,3 @@
 
 - `test_activity_classifier.py` — Tests for ActivityClassifier module. (~1410 tok)
 - `test_app_live.py` — Comprehensive tests for app.py and its dependencies. (~5214 tok)
-- frontend/src/pages/AdminPage.tsx — Admin: runs table (council/status/activities/goals/extraction/publish), stats, tabs (runs built; narrative/roles stubbed). 403-gated. Route /admin. Backend GET /api/analysis/admin/runs.

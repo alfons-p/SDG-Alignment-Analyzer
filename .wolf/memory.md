@@ -1375,3 +1375,40 @@
 | 10:11 | Edited frontend/src/App.tsx | 1→2 lines | ~33 |
 | 10:11 | Edited frontend/src/App.tsx | inline fix | ~45 |
 | 10:13 | Added Admin screen (runs table + publish/unpublish + stats) + admin/runs backend endpoint | AdminPage.tsx, analysis.py, api, types, App.tsx, results.css | verified 4 runs, all published | ~5000 |
+| 10:15 | Session end: 85 writes across 38 files (dependencies.py, sdg-analyzer.yml, vite.config.ts, com.sdg.tunnel.plist, com.sdg.backend.plist) | 25 reads | ~55716 tok |
+| 10:17 | Session end: 85 writes across 38 files (dependencies.py, sdg-analyzer.yml, vite.config.ts, com.sdg.tunnel.plist, com.sdg.backend.plist) | 25 reads | ~55716 tok |
+
+## Session: 2026-08-01 10:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:30 | Created frontend/src/api/public.ts | — | ~315 |
+| 10:49 | Created frontend/src/pages/landing.css | — | ~1390 |
+| 10:52 | Created frontend/src/pages/LandingPage.tsx | — | ~9415 |
+| 10:52 | Edited frontend/src/pages/index.ts | 1→2 lines | ~24 |
+| 10:53 | Edited frontend/src/App.tsx | modified App() | ~184 |
+| 10:53 | Edited frontend/src/pages/LoginPage.tsx | "/" → "/dashboard" | ~8 |
+| 10:53 | Edited frontend/src/pages/RegisterPage.tsx | "/" → "/dashboard" | ~8 |
+| 10:53 | Edited frontend/src/pages/ResultsPage.tsx | "/" → "/dashboard" | ~39 |
+| 10:53 | Edited frontend/src/pages/ResultsPage.tsx | inline fix | ~23 |
+| 10:53 | Edited frontend/src/components/layout/Sidebar.tsx | "/" → "/dashboard" | ~19 |
+| 10:53 | Edited frontend/src/components/layout/Sidebar.tsx | "/" → "/dashboard" | ~11 |
+| 11:00 | V2 Landing screen: LandingPage.tsx + landing.css + api/public.ts, d3/topojson deps, topojson→public/data/, route Landing→/ (Dashboard→/dashboard) | frontend/src/pages/LandingPage.tsx, App.tsx | done, dev 200, live coverage API 4 councils | ~9500 |
+| 11:11 | Edited ../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/frontend-redesign-pending.md | "d3" → "frontend/src/pages/Landin" | ~312 |
+| 11:11 | Session end: 12 writes across 10 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 10 reads | ~25858 tok |
+| 11:42 | Created backend/app/services/pdf_service.py | — | ~4368 |
+| 11:43 | Edited backend/app/routers/analysis.py | added 1 import(s) | ~51 |
+| 11:43 | Edited backend/app/routers/analysis.py | modified _pdf_response() | ~502 |
+| 11:44 | Edited backend/app/services/pdf_service.py | 17→16 lines | ~202 |
+| 13:12 | Edited frontend/src/api/analysis.ts | modified exportJSON() | ~127 |
+| 13:13 | Created frontend/src/pages/ExportPage.tsx | — | ~2023 |
+| 13:13 | Edited frontend/src/components/results/results.css | CSS: animation, transform | ~62 |
+| 13:13 | Edited frontend/src/pages/index.ts | 1→2 lines | ~23 |
+| 13:13 | Edited frontend/src/App.tsx | inline fix | ~52 |
+| 13:13 | Edited frontend/src/App.tsx | 1→2 lines | ~39 |
+| 13:13 | Edited frontend/src/pages/ResultsPage.tsx | handleExport() → navigate() | ~38 |
+| 13:13 | Edited frontend/src/pages/ResultsPage.tsx | removed 15 lines | ~3 |
+| 13:13 | Edited frontend/src/pages/ResultsPage.tsx | inline fix | ~20 |
+| 11:40 | V2 Export screen (last screen): pdf_service.py (statement+ledger PDFs, reportlab) + 2 backend routes + reqs; ExportPage.tsx 4 cards + route /results/:id/export; swapped ResultsPage inline CSV/JSON for single Export link | backend/app/services/pdf_service.py, frontend/src/pages/ExportPage.tsx | done, PDFs render, tsc clean, routes 401 | ~12000 |
+| 13:58 | Edited ../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/frontend-redesign-pending.md | inline fix | ~206 |
+| 13:59 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |

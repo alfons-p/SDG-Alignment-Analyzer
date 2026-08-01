@@ -94,3 +94,10 @@ export async function exportJSON(analysisId: string): Promise<Blob> {
   })
   return data
 }
+
+export async function exportPDF(analysisId: string, kind: 'statement' | 'ledger'): Promise<Blob> {
+  const { data } = await api.get(`/api/analysis/results/${analysisId}/export/pdf/${kind}`, {
+    responseType: 'blob',
+  })
+  return data
+}

@@ -4,7 +4,7 @@ import { LayoutDashboard, Upload, BarChart3, GitCompare, LogOut } from 'lucide-r
 import { getMe } from '../../api/auth'
 
 const links = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/upload', icon: Upload, label: 'Upload' },
   { to: '/compare', icon: GitCompare, label: 'Compare' },
 ]
@@ -25,7 +25,7 @@ export function Sidebar() {
           <NavLink
             key={to}
             to={to}
-            end={to === '/'}
+            end={to === '/dashboard'}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                 isActive ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'

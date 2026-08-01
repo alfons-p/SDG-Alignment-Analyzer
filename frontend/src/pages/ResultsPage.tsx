@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, XCircle, Loader2 } from 'lucide-react'
-import { getResults, getJob, exportCSV, exportJSON, cancelAnalysis } from '../api/analysis'
+import { getResults, getJob, cancelAnalysis } from '../api/analysis'
 import { ResultsHeader } from '../components/results/ResultsHeader'
 import { ViewSwitcher, type ResultsView } from '../components/results/ViewSwitcher'
 import { EvidenceLedger } from '../components/results/EvidenceLedger'
@@ -90,7 +90,7 @@ export function ResultsPage() {
   if (job?.status === 'failed' || result?.status === 'failed') {
     return (
       <div>
-        <button onClick={() => navigate('/')} className="text-sm text-blue-600 hover:underline mb-4 flex items-center gap-1">
+        <button onClick={() => navigate('/dashboard')} className="text-sm text-blue-600 hover:underline mb-4 flex items-center gap-1">
           <ArrowLeft size={14} /> Back to dashboard
         </button>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
@@ -114,24 +114,10 @@ export function ResultsPage() {
     navigate(`/results/${id}/goal/${sdg}`)
   }
 
-  async function handleExport(format: 'csv' | 'json') {
-    try {
-      const blob = format === 'csv' ? await exportCSV(id!) : await exportJSON(id!)
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${result!.original_filename.replace(/\.pdf$/i, '')}_alignment.${format}`
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch {
-      // ignore
-    }
-  }
-
   return (
     <div className="organic">
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <button className="rx-backlink" onClick={() => navigate('/')}>
+        <button className="rx-backlink" onClick={() => navigate('/dashboard')}>
           <ArrowLeft size={14} /> Back to dashboard
         </button>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, padding: '16px 44px 0' }}>
@@ -141,11 +127,8 @@ export function ResultsPage() {
           <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/gaps`)}>
             Gaps
           </button>
-          <button className="rx-ev-link" onClick={() => handleExport('csv')}>
-            Export CSV
-          </button>
-          <button className="rx-ev-link" onClick={() => handleExport('json')}>
-            Export JSON
+          <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/export`)}>
+            Export
           </button>
         </div>
       </div>

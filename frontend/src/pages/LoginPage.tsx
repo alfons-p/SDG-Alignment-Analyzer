@@ -16,7 +16,7 @@ export function LoginPage() {
     try {
       const { access_token } = await login(email, password)
       localStorage.setItem('token', access_token)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err: any) {
       setError(err.response?.data?.detail ?? 'Login failed')
     } finally {
