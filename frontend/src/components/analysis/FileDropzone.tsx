@@ -1,28 +1,55 @@
 import { useCallback, useState } from 'react'
-import { Upload, FileText } from 'lucide-react'
+import { Upload, FolderOpen, FileText } from 'lucide-react'
 
 const MAX_BYTES = 50 * 1024 * 1024
 
-export function FileDropzone({ onFile }: { onFile: (file: File) => void }) {
+// webkitdirectory is a non-standard input attribute; declare it for TS/JSX.
+declare module 'react' {
+  interface InputHTMLAttributes<T> {
+    webkitdirectory?: string
+    directory?: string
+  }
+}
+
+type Props = {
+  /** Single-file callback (back-compat). Receives the first accepted PDF. */
+  onFile?: (file: File) => void
+  /** Multi-file callback. Receives all accepted PDFs (used in batch mode). */
+  onFiles?: (files: File[]) => void
+  /** Allow selecting many files / a folder. */
+  multiple?: boolean
+}
+
+export function FileDropzone({ onFile, onFiles, multiple = false }: Props) {
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState('')
   const [selected, setSelected] = useState<File | null>(null)
 
-  const handle = useCallback(
-    (file: File) => {
+  const accept = useCallback(
+    (files: File[]) => {
       setError('')
-      if (!file.name.toLowerCase().endsWith('.pdf')) {
-        setError('Only PDF files are supported')
+      const pdfs = files.filter((f) => f.name.toLowerCase().endsWith('.pdf'))
+      const nonPdf = files.length - pdfs.length
+      const sized = pdfs.filter((f) => f.size <= MAX_BYTES)
+      const tooBig = pdfs.length - sized.length
+
+      if (!sized.length) {
+        setError(files.length ? 'No valid PDFs (must be .pdf and ≤ 50 MB)' : 'No files selected')
         return
       }
-      if (file.size > MAX_BYTES) {
-        setError('File too large. Maximum is 50MB')
-        return
+      const skipped = [nonPdf && `${nonPdf} non-PDF`, tooBig && `${tooBig} over 50 MB`]
+        .filter(Boolean)
+        .join(', ')
+      if (skipped) setError(`Skipped ${skipped}.`)
+
+      if (multiple) {
+        onFiles?.(sized)
+      } else {
+        setSelected(sized[0])
+        onFile?.(sized[0])
       }
-      setSelected(file)
-      onFile(file)
     },
-    [onFile],
+    [multiple, onFile, onFiles],
   )
 
   return (
@@ -33,36 +60,60 @@ export function FileDropzone({ onFile }: { onFile: (file: File) => void }) {
         onDrop={(e) => {
           e.preventDefault()
           setDragOver(false)
-          const file = e.dataTransfer.files[0]
-          if (file) handle(file)
+          accept(Array.from(e.dataTransfer.files))
         }}
-        className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors ${
+        className={`relative border-2 border-dashed rounded-xl p-10 text-center transition-colors ${
           dragOver ? 'border-blue-400 bg-blue-50' : 'border-slate-300'
         }`}
       >
         <Upload className="mx-auto text-slate-400 mb-3" size={36} />
-        <p className="text-sm text-slate-600 font-medium">Drop PDF here or click to select</p>
-        <p className="text-xs text-slate-400 mt-1">Max 50MB</p>
+        <p className="text-sm text-slate-600 font-medium">
+          {multiple ? 'Drop PDFs here, or' : 'Drop PDF here or click to select'}
+        </p>
+        <p className="text-xs text-slate-400 mt-1">
+          {multiple ? 'a whole folder or several files · max 50 MB each' : 'Max 50MB'}
+        </p>
+
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <label
+            htmlFor="file-upload"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg cursor-pointer hover:bg-blue-700 transition-colors"
+          >
+            <FileText size={14} /> {multiple ? 'Select PDFs' : 'Browse files'}
+          </label>
+          {multiple && (
+            <label
+              htmlFor="folder-upload"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-slate-100 text-slate-700 text-sm rounded-lg cursor-pointer hover:bg-slate-200 transition-colors"
+            >
+              <FolderOpen size={14} /> Pick folder
+            </label>
+          )}
+        </div>
+
         <input
           type="file"
           accept=".pdf"
-          className="absolute inset-0 opacity-0 cursor-pointer"
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (file) handle(file)
-          }}
-          style={{ display: 'none' }}
+          multiple={multiple}
+          className="hidden"
           id="file-upload"
+          onChange={(e) => { accept(Array.from(e.target.files ?? [])); e.target.value = '' }}
         />
-        <label
-          htmlFor="file-upload"
-          className="mt-3 inline-block px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg cursor-pointer hover:bg-blue-700 transition-colors"
-        >
-          Browse files
-        </label>
+        {multiple && (
+          <input
+            type="file"
+            webkitdirectory=""
+            directory=""
+            multiple
+            className="hidden"
+            id="folder-upload"
+            onChange={(e) => { accept(Array.from(e.target.files ?? [])); e.target.value = '' }}
+          />
+        )}
       </div>
-      {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
-      {selected && !error && (
+
+      {error && <p className="text-amber-600 text-xs mt-2">{error}</p>}
+      {!multiple && selected && (
         <div className="flex items-center gap-2 mt-3 text-sm text-slate-700 bg-slate-50 p-2 rounded-lg">
           <FileText size={16} className="text-blue-600" />
           <span className="truncate">{selected.name}</span>

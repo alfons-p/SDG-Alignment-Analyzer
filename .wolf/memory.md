@@ -1436,3 +1436,16 @@
 | 14:39 | Edited frontend/src/types/index.ts | 5→6 lines | ~28 |
 | 14:39 | Edited frontend/src/components/layout/Sidebar.tsx | added optional chaining | ~164 |
 | 14:45 | Admin role in /me + gate admin nav: UserResponse.is_admin, get_me computes it, Sidebar shows Admin link only for admins | backend/app/routers/auth.py, frontend/src/components/layout/Sidebar.tsx | done, build green, serialization verified | ~1500 |
+| 14:42 | Session end: 36 writes across 17 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 22 reads | ~46853 tok |
+| 14:46 | Session end: 36 writes across 17 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 22 reads | ~46853 tok |
+| 14:47 | Session end: 36 writes across 17 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 22 reads | ~46853 tok |
+| 14:49 | Session end: 36 writes across 17 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 22 reads | ~46853 tok |
+| 14:53 | Session end: 36 writes across 17 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 22 reads | ~46853 tok |
+| 14:55 | Edited backend/app/schemas/analysis.py | modified AnalysisJobResponse() | ~164 |
+| 14:55 | Edited backend/app/routers/analysis.py | expanded (+24 lines) | ~334 |
+| 14:55 | Edited backend/app/routers/analysis.py | 4→3 lines | ~22 |
+| 14:56 | Edited frontend/src/types/index.ts | 10→14 lines | ~132 |
+| 14:56 | Created frontend/src/components/analysis/FileDropzone.tsx | — | ~1260 |
+| 14:57 | Created frontend/src/components/analysis/UploadQueue.tsx | — | ~2063 |
+| 14:57 | Created frontend/src/pages/UploadPage.tsx | — | ~952 |
+| 15:20 | Sequential folder uploader + skip-if-exists: backend skip guard in upload_pdf (per-user completed council-year dedup, returns skipped flag) + AnalysisJobResponse.skipped/existing_id; frontend FileDropzone multi/folder, UploadQueue sequential driver, UploadPage batch mode | backend/app/routers/analysis.py, frontend/src/components/analysis/UploadQueue.tsx | done, build green, dedup query verified | ~9000 |

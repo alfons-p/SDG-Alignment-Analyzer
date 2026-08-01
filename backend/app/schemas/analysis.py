@@ -28,6 +28,11 @@ class AnalysisJobResponse(BaseModel):
     error_message: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime] = None
+    # Set by the upload route when a completed analysis for the same council-year
+    # already exists (skip-if-exists); no new analysis is created. Always
+    # false/None on the job and results routes.
+    skipped: bool = False
+    existing_id: Optional[str] = None
 
     model_config = {"from_attributes": True}
 

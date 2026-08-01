@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T04:39:40.765Z
-> Files: 829 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T04:57:31.371Z
+> Files: 830 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
@@ -138,7 +138,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~5253 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~5538 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -147,7 +147,7 @@
 ## backend/app/schemas/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Pydantic: ProcessingSettingsSchema (~633 tok)
+- `analysis.py` — Pydantic: ProcessingSettingsSchema (~710 tok)
 - `auth.py` — Declares UserRegister (~139 tok)
 
 ## backend/app/services/
@@ -237,10 +237,11 @@
 ## frontend/src/components/analysis/
 
 - `ActivityTable.tsx` — ActivityTable — renders table (~1299 tok)
-- `FileDropzone.tsx` — MAX_BYTES (~728 tok)
+- `FileDropzone.tsx` — Single-file callback (back-compat). Receives the first accepted PDF. (~1260 tok)
 - `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
 - `ScoreBar.tsx` — ScoreBar (~270 tok)
 - `StatusBadge.tsx` — styles (~154 tok)
+- `UploadQueue.tsx` — Identity key for skip-if-exists, or null when identity is too weak to dedup. (~2063 tok)
 
 ## frontend/src/components/layout/
 
@@ -287,11 +288,11 @@
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
 - `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3180 tok)
-- `UploadPage.tsx` — defaultSettings (~761 tok)
+- `UploadPage.tsx` — defaultSettings (~952 tok)
 
 ## frontend/src/types/
 
-- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 13 more (~937 tok)
+- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 13 more (~994 tok)
 
 ## logs/
 

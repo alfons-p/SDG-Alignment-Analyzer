@@ -54,6 +54,10 @@ export interface AnalysisJob {
   error_message: string | null
   created_at: string
   completed_at: string | null
+  // Set by the upload route when a completed analysis for the same council-year
+  // already existed; no new analysis was created (skip-if-exists).
+  skipped?: boolean
+  existing_id?: string | null
 }
 
 export interface SDGScore {

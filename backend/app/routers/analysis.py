@@ -110,6 +110,30 @@ def upload_pdf(
             detail=f"File too large. Maximum size is {max_mb:.0f}MB",
         )
 
+    # Skip-if-exists: if this user already has a COMPLETED analysis for the same
+    # council-year (parsed from the filename), don't create a duplicate. Only
+    # dedup when identity is strong enough (year + council). Failed/queued runs
+    # are not a match, so a re-drop retries them. Checked before writing the file
+    # so skipped uploads leave nothing on disk.
+    ident = parse_report_identity(file.filename)
+    if ident["year"] and ident["council_name"]:
+        dup_q = db.query(Analysis).filter(
+            Analysis.user_id == user.id,
+            Analysis.status == "completed",
+            Analysis.council_name == ident["council_name"],
+            Analysis.year == ident["year"],
+        )
+        dup_q = (
+            dup_q.filter(Analysis.state == ident["state"])
+            if ident["state"]
+            else dup_q.filter(Analysis.state.is_(None))
+        )
+        existing = dup_q.first()
+        if existing:
+            existing.skipped = True
+            existing.existing_id = existing.id
+            return existing
+
     # Use cryptographic hash for stable dedup across processes
     file_hash = hashlib.sha256(content).hexdigest()[:12]
     file_path = UPLOADS_DIR / f"{Path(file.filename).stem}_{file_hash}.pdf"
@@ -132,7 +156,6 @@ def upload_pdf(
         nofinancial=nofinancial,
     )
 
-    ident = parse_report_identity(file.filename)
     analysis = Analysis(
         user_id=user.id,
         status="queued",
