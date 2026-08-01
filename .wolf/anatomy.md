@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T10:32:58.822Z
-> Files: 830 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T10:37:15.635Z
+> Files: 831 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
@@ -125,7 +125,7 @@
 ## backend/app/
 
 - `__init__.py` (~0 tok)
-- `dependencies.py` — get_db, init_db, hash_password, verify_password (~1466 tok)
+- `dependencies.py` — get_db, init_db, hash_password, verify_password (~1510 tok)
 - `main.py` — FastAPI application entry point. (~479 tok)
 
 ## backend/app/models/
@@ -225,7 +225,7 @@
 
 - `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1069 tok)
 - `auth.ts` — API routes: POST, GET (3 endpoints) (~159 tok)
-- `client.ts` — Declares api (~194 tok)
+- `client.ts` — Declares api (~441 tok)
 - `public.ts` — Exports CouncilYear, Council, National, Narrative + 2 more (~315 tok)
 - `reference.ts` — API routes: GET (3 endpoints) (~147 tok)
 - `results.ts` — API routes: POST (1 endpoints) (~78 tok)
@@ -241,7 +241,7 @@
 - `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
 - `ScoreBar.tsx` — ScoreBar (~270 tok)
 - `StatusBadge.tsx` — styles (~154 tok)
-- `UploadQueue.tsx` — Fire-and-forget log to the server that survives page unload/discard. (~3474 tok)
+- `UploadQueue.tsx` — Fire-and-forget log to the server that survives page unload/discard. (~3640 tok)
 
 ## frontend/src/components/layout/
 
@@ -270,6 +270,7 @@
 
 ## frontend/src/lib/
 
+- `batch.ts` — Whether a bulk upload batch is currently running. Read by the axios 401 (~100 tok)
 - `results.ts` — Two-digit goal label, e.g. 3 -> "03". (~1524 tok)
 - `utils.ts` — Exports cn (~48 tok)
 

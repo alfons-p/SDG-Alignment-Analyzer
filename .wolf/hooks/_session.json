@@ -505,6 +505,54 @@
       "action": "edit",
       "tokens": 522,
       "at": "2026-08-01T10:32:58.831Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/lib/batch.ts",
+      "action": "create",
+      "tokens": 100,
+      "at": "2026-08-01T10:35:59.863Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/client.ts",
+      "action": "edit",
+      "tokens": 63,
+      "at": "2026-08-01T10:36:20.865Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/client.ts",
+      "action": "edit",
+      "tokens": 320,
+      "at": "2026-08-01T10:36:28.987Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/analysis/UploadQueue.tsx",
+      "action": "edit",
+      "tokens": 67,
+      "at": "2026-08-01T10:36:35.388Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/analysis/UploadQueue.tsx",
+      "action": "edit",
+      "tokens": 210,
+      "at": "2026-08-01T10:36:40.389Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/analysis/UploadQueue.tsx",
+      "action": "edit",
+      "tokens": 203,
+      "at": "2026-08-01T10:36:51.067Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/analysis/UploadQueue.tsx",
+      "action": "edit",
+      "tokens": 151,
+      "at": "2026-08-01T10:37:07.719Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/dependencies.py",
+      "action": "edit",
+      "tokens": 61,
+      "at": "2026-08-01T10:37:15.645Z"
     }
   ],
   "edit_counts": {
@@ -529,13 +577,16 @@
     "frontend/src/types/index.ts": 2,
     "backend/app/schemas/analysis.py": 1,
     "frontend/src/components/analysis/FileDropzone.tsx": 1,
-    "frontend/src/components/analysis/UploadQueue.tsx": 9,
+    "frontend/src/components/analysis/UploadQueue.tsx": 13,
     "frontend/src/pages/UploadPage.tsx": 1,
-    "frontend/src/pages/AdminPage.tsx": 5
+    "frontend/src/pages/AdminPage.tsx": 5,
+    "frontend/src/lib/batch.ts": 1,
+    "frontend/src/api/client.ts": 2,
+    "backend/app/dependencies.py": 1
   },
   "anatomy_hits": 20,
   "anatomy_misses": 5,
   "repeated_reads_warned": 8,
   "cerebrum_warnings": 0,
-  "stop_count": 36
+  "stop_count": 37
 }

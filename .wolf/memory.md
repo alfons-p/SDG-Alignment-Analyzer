@@ -1487,3 +1487,13 @@
 | 20:32 | Edited frontend/src/components/analysis/UploadQueue.tsx | added error handling | ~260 |
 | 20:32 | Edited frontend/src/components/analysis/UploadQueue.tsx | expanded (+30 lines) | ~522 |
 | 20:35 | Batch death forensics: UploadQueue lifecycle beacons (freeze/pagehide/beforeunload/visibilitychange via fetch keepalive) → server log names the tab-kill cause. Found last death = JS context died instantly right after /admin nav at 09:51:50Z (renderer termination, not server/sleep) | frontend/src/components/analysis/UploadQueue.tsx | done, build green | ~2000 |
+| 20:34 | Session end: 62 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~64937 tok |
+| 20:35 | Created frontend/src/lib/batch.ts | — | ~100 |
+| 20:36 | Edited frontend/src/api/client.ts | added 1 import(s) | ~63 |
+| 20:36 | Edited frontend/src/api/client.ts | added nullish coalescing | ~320 |
+| 20:36 | Edited frontend/src/components/analysis/UploadQueue.tsx | added 1 import(s) | ~67 |
+| 20:36 | Edited frontend/src/components/analysis/UploadQueue.tsx | added 1 condition(s) | ~210 |
+| 20:36 | Edited frontend/src/components/analysis/UploadQueue.tsx | modified run() | ~203 |
+| 20:37 | Edited frontend/src/components/analysis/UploadQueue.tsx | 12→14 lines | ~151 |
+| 20:37 | Edited backend/app/dependencies.py | 1→3 lines | ~61 |
+| 20:55 | Silent-killer fixes: waitForJob 10-min timeout (no infinite hang), axios 401 interceptor suppresses /login redirect during batch (lib/batch flag) + beacons it, JWT_EXPIRY_HOURS default 24h→168h | frontend/src/api/client.ts, frontend/src/components/analysis/UploadQueue.tsx, backend/app/dependencies.py | done, build green | ~3000 |

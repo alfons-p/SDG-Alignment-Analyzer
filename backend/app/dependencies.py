@@ -29,7 +29,9 @@ if not JWT_SECRET:
     JWT_SECRET = "dev-secret-change-in-production"
 
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-JWT_EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", "24"))
+# 7 days by default so a long bulk-upload batch never ages out mid-run (a 401
+# mid-batch used to hard-redirect to /login and silently kill the batch).
+JWT_EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", "168"))
 
 # Admin accounts (comma-separated emails) may publish/unpublish and upload for
 # any council. Read of published results needs no account. See data-contract C#0.

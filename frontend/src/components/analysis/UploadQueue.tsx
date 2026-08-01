@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle2, XCircle, SkipForward, Loader2, Clock, FileText } from 'lucide-react'
 import { listAnalyses, uploadPDF, getJob, clientLog } from '../../api/analysis'
 import { parseReportName } from '../../lib/results'
+import { setBatchActive } from '../../lib/batch'
 import type { ProcessingSettings } from '../../types'
 
 const newBatchId = () => Math.random().toString(36).slice(2, 8)
@@ -54,13 +55,18 @@ function identKey(name: string): string | null {
 }
 
 const POLL_MS = 3000
+const JOB_TIMEOUT_MS = 10 * 60 * 1000 // 10 min per report — guards against a job that never terminates
 
 async function waitForJob(id: string): Promise<'completed' | 'failed'> {
+  const start = Date.now()
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const job = await getJob(id)
     if (job.status === 'completed') return 'completed'
     if (job.status === 'failed') return 'failed'
+    // A stuck job (backend task died, row left 'processing') must not hang the
+    // whole batch forever — time out, mark it failed, and move on.
+    if (Date.now() - start > JOB_TIMEOUT_MS) throw new Error(`job ${id} timed out after 10 min`)
     await new Promise((r) => setTimeout(r, POLL_MS))
   }
 }
@@ -167,6 +173,7 @@ export function UploadQueue({
     if (startedRef.current) return
     startedRef.current = true
     setRunning(true)
+    setBatchActive(true) // tells the 401 interceptor not to hard-redirect mid-batch
     // Snapshot the queue; process sequentially, one completed job before the next.
     const queue = rows.filter((r) => r.status === 'pending')
     const preSkipped = rows.length - queue.length
@@ -174,6 +181,7 @@ export function UploadQueue({
     log(`START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped`)
     clientLog(`upload batch ${batchId} START — ${rows.length} files, ${queue.length} to analyse, ${preSkipped} pre-skipped`)
 
+    try {
     for (let i = 0; i < queue.length; i++) {
       const r = queue[i]
       const at = `[${i + 1}/${queue.length}] ${r.name}`
@@ -212,13 +220,15 @@ export function UploadQueue({
         clientLog(`upload batch ${batchId} PROGRESS ${i + 1}/${queue.length} — ${done} done, ${skipped} skipped, ${failed} failed`)
       }
     }
-
-    const summary = `${done} analysed, ${skipped} skipped, ${failed} failed of ${rows.length}`
-    log(`DONE — ${summary}`)
-    clientLog(`upload batch ${batchId} DONE — ${summary}`)
-    queryClient.invalidateQueries({ queryKey: ['analyses'] })
-    setRunning(false)
-    setDone(true)
+    } finally {
+      const summary = `${done} analysed, ${skipped} skipped, ${failed} failed of ${rows.length}`
+      log(`DONE — ${summary}`)
+      clientLog(`upload batch ${batchId} DONE — ${summary}`)
+      queryClient.invalidateQueries({ queryKey: ['analyses'] })
+      setBatchActive(false)
+      setRunning(false)
+      setDone(true)
+    }
   }
 
   const counts = rows.reduce(
