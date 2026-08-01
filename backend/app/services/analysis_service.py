@@ -10,6 +10,7 @@ import tempfile
 import threading
 import traceback
 import logging
+import multiprocessing as _mp
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Optional
@@ -133,6 +134,47 @@ def _cleanup_after_file():
             torch.cuda.empty_cache()
     except Exception:
         pass
+
+
+# ── Worker-process recycling ────────────────────────────────────────────────
+# Profiling proved the per-PDF memory growth (~150MB/file, RSS 1GB→8GB over a
+# batch, then the box swaps and stalls) is NATIVE allocator memory from repeated
+# torch/numpy inference — not any Python object, so gc/empty_cache can't reclaim
+# it in-process. The only reliable fix is to run the analysis in a child process
+# and recycle it every N files: the OS reclaims everything when the child exits.
+# The backend (parent) process therefore stays small; peak memory is bounded to
+# ~one model set + N files' worth, then resets.
+BATCH_WORKER_RECYCLE = int(os.getenv("BATCH_WORKER_RECYCLE", "20"))  # 0 = run inline (no subprocess)
+_PROJECT_ROOT = str(Path(__file__).resolve().parents[3])
+_pool = None
+_pool_lock = threading.Lock()
+
+
+def _get_pool():
+    global _pool
+    if _pool is None:
+        # A spawned child is a fresh interpreter that must be able to import the
+        # `backend` / `src` packages — put the project root on PYTHONPATH so it
+        # inherits it. (spawn, not fork: safe with torch/MPS already imported.)
+        pp = os.environ.get("PYTHONPATH", "")
+        if _PROJECT_ROOT not in pp.split(os.pathsep):
+            os.environ["PYTHONPATH"] = _PROJECT_ROOT + (os.pathsep + pp if pp else "")
+        ctx = _mp.get_context("spawn")
+        _pool = ctx.Pool(processes=1, maxtasksperchild=BATCH_WORKER_RECYCLE)
+        logger.info(f"[pool] spawned analysis worker, recycle every {BATCH_WORKER_RECYCLE} files")
+    return _pool
+
+
+def _run_in_worker(kwargs: dict) -> dict:
+    """Entry point executed in the recycled child process. No DB, no progress
+    callback (not picklable) — pure PDF→result computation. Returns the child's
+    RSS under the reserved key `_worker_rss_mb` for leak monitoring."""
+    result = _process_pdf_backend(**kwargs)
+    try:
+        result["_worker_rss_mb"] = round(_rss_mb())
+    except Exception:
+        pass
+    return result
 
 
 def _extract_activities_from_pdf(pdf_bytes: bytes, filename: str, min_words: int, max_words: int, top_activities: Optional[int], use_bert_classifier: bool = True, min_confidence: float = 0.7, spacy_model: str = "en_core_web_sm", nofinancial: bool = False, require_action_verb: bool = False, progress_callback: callable = None) -> dict:
@@ -322,7 +364,7 @@ def run_analysis_sync(analysis_id: str, db_session_factory):
         _t0 = _time.monotonic()
         logger.info(f"[PROC start] {analysis.original_filename} id={analysis_id[:8]} {_mem()}")
 
-        result = _process_pdf_backend(
+        proc_kwargs = dict(
             pdf_bytes=pdf_bytes,
             filename=analysis.original_filename,
             model_name=settings.get("model_name", "voyager205/sdg-variant-finetuned"),
@@ -340,8 +382,20 @@ def run_analysis_sync(analysis_id: str, db_session_factory):
             spacy_model=settings.get("spacy_model", "en_core_web_sm"),
             nofinancial=settings.get("nofinancial", False),
             require_action_verb=settings.get("require_action_verb", False),
-            progress_callback=progress_callback,
         )
+
+        if BATCH_WORKER_RECYCLE > 0:
+            # Run in the recycled child process — bounds native memory. Progress
+            # callbacks don't cross the process boundary, so the bar jumps
+            # 0→100 per file; the job status transitions still work.
+            with _pool_lock:
+                pool = _get_pool()
+            result = pool.apply(_run_in_worker, (proc_kwargs,))
+            worker_rss = result.pop("_worker_rss_mb", None) if isinstance(result, dict) else None
+            if worker_rss is not None:
+                logger.info(f"[PROC worker] id={analysis_id[:8]} child_rss={worker_rss}MB")
+        else:
+            result = _process_pdf_backend(progress_callback=progress_callback, **proc_kwargs)
 
         if is_cancelled():
             return  # status already set by cancel endpoint

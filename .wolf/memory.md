@@ -1524,3 +1524,22 @@
 | 08:42 | Edited backend/app/services/analysis_service.py | reduced (-22 lines) | ~593 |
 | 08:42 | Edited backend/app/services/analysis_service.py | 2→3 lines | ~18 |
 | 2026-08-02 | ROOT CAUSE + FIX: batch stalls were backend memory leak (RSS 834MB→8GB, ~35MB/PDF) from rebuilding ActivityExtractor+HybridAlignmentEngine every file → Mac swaps → stalls (client heap was flat 23MB, tab fine). Fix: model caching (_get_extractor/_get_engine keyed by params), _PIPELINE_LOCK serializes work, _cleanup_after_file (gc+mps/cuda empty_cache) per PDF | backend/app/services/analysis_service.py | done, imports clean, validate via [PROC] rss trend next run | ~4000 |
+| 08:47 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 08:51 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 08:52 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 08:54 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 08:56 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 08:57 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 08:59 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 09:01 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 09:04 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 09:05 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 09:06 | Session end: 87 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~78182 tok |
+| 09:10 | Edited backend/app/services/analysis_service.py | added 1 import(s) | ~44 |
+| 09:10 | Edited backend/app/services/analysis_service.py | modified _cleanup_after_file() | ~545 |
+| 09:11 | Edited backend/app/services/analysis_service.py | modified is_cancelled() | ~571 |
+| 09:11 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/leaktest.py | — | ~228 |
+| 09:13 | Session end: 91 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80372 tok |
+| 09:14 | Edited backend/app/services/analysis_service.py | modified _get_pool() | ~263 |
+| 09:48 | Session end: 92 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80635 tok |
+| 2026-08-02 | LEAK FIXED (proven): native torch/numpy allocator growth ~150MB/PDF (not Python objects — spaCy/engine/graph all ruled out via probes) → run analysis in spawn multiprocessing.Pool(1, maxtasksperchild=20); child recycles, OS reclaims. Test recycle=8: child RSS saw-tooth (2445→937 reset at file17), parent flat ~290MB. BATCH_WORKER_RECYCLE env (0=inline). Progress callback dropped in child (coarse bar). | backend/app/services/analysis_service.py | done, proven | ~8000 |
