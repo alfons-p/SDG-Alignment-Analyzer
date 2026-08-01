@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T10:50:47.461Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T22:42:17.698Z
 > Files: 831 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -154,7 +154,7 @@
 
 - `__init__.py` (~0 tok)
 - `aggregation.py` — Standalone aggregation functions — extracted logic, no Reporter dependency. (~935 tok)
-- `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~3414 tok)
+- `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~4216 tok)
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
 - `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
 - `pdf_service.py` — PDF export — the two document types the Export screen offers (design_handoff (~4338 tok)

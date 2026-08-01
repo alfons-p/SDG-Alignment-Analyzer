@@ -1516,3 +1516,11 @@
 | 20:50 | Edited backend/app/routers/analysis.py | 6→6 lines | ~81 |
 | 20:50 | Edited backend/app/routers/analysis.py | inline fix | ~30 |
 | 21:35 | Removed 50MB upload cap: frontend dropzone size filter gone, backend MAX_UPLOAD_BYTES default 0=unlimited (guarded). Cloudflare edge still caps ~100MB on free plan | frontend/src/components/analysis/FileDropzone.tsx, backend/app/routers/analysis.py | done, build green | ~1500 |
+| 20:51 | Session end: 82 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~75933 tok |
+| 08:39 | Session end: 82 writes across 25 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~75933 tok |
+| 08:41 | Edited backend/app/services/analysis_service.py | added 2 import(s) | ~36 |
+| 08:41 | Edited backend/app/services/analysis_service.py | modified _mem() | ~1109 |
+| 08:41 | Edited backend/app/services/analysis_service.py | ActivityExtractor() → _get_extractor() | ~166 |
+| 08:42 | Edited backend/app/services/analysis_service.py | reduced (-22 lines) | ~593 |
+| 08:42 | Edited backend/app/services/analysis_service.py | 2→3 lines | ~18 |
+| 2026-08-02 | ROOT CAUSE + FIX: batch stalls were backend memory leak (RSS 834MB→8GB, ~35MB/PDF) from rebuilding ActivityExtractor+HybridAlignmentEngine every file → Mac swaps → stalls (client heap was flat 23MB, tab fine). Fix: model caching (_get_extractor/_get_engine keyed by params), _PIPELINE_LOCK serializes work, _cleanup_after_file (gc+mps/cuda empty_cache) per PDF | backend/app/services/analysis_service.py | done, imports clean, validate via [PROC] rss trend next run | ~4000 |

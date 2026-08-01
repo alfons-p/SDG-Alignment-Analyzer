@@ -4,8 +4,10 @@ No Streamlit dependencies. Pure file-based processing with DB-backed progress.
 """
 
 import os
+import gc
 import shutil
 import tempfile
+import threading
 import traceback
 import logging
 from pathlib import Path
@@ -48,18 +50,23 @@ def _mem() -> str:
     return f"rss={_rss_mb():.0f}MB mps={_mps_mb():.0f}MB"
 
 
-def _extract_activities_from_pdf(pdf_bytes: bytes, filename: str, min_words: int, max_words: int, top_activities: Optional[int], use_bert_classifier: bool = True, min_confidence: float = 0.7, spacy_model: str = "en_core_web_sm", nofinancial: bool = False, require_action_verb: bool = False, progress_callback: callable = None) -> dict:
-    """Non-Streamlit version of activity extraction."""
-    from src.activity_extractor import ActivityExtractor
+# ── Model caching ──────────────────────────────────────────────────────────
+# The heavy objects (ActivityExtractor = BERT + spaCy; alignment engine =
+# sentence-transformer + sdgBERT) were rebuilt for EVERY PDF, which leaked
+# memory (RSS climbed ~35MB/file to 8GB over a batch, then the box swapped and
+# stalled). Cache them keyed by their construction params — a batch reuses one
+# instance — and serialize processing so only one PDF uses the models at a time.
+_extractor_cache: dict = {}
+_engine_cache: dict = {}
+_PIPELINE_LOCK = threading.Lock()
 
-    tmp_path = None
-    try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-            tmp_file.write(pdf_bytes)
-            tmp_path = tmp_file.name
 
-        metadata = _extract_metadata_from_filename(filename)
-        extractor = ActivityExtractor(
+def _get_extractor(min_words, max_words, use_bert_classifier, min_confidence, spacy_model, nofinancial, require_action_verb):
+    key = (min_words, max_words, use_bert_classifier, round(min_confidence, 4), spacy_model, nofinancial, require_action_verb)
+    ex = _extractor_cache.get(key)
+    if ex is None:
+        from src.activity_extractor import ActivityExtractor
+        ex = ActivityExtractor(
             min_activity_length=min_words,
             max_activity_length=max_words,
             use_bert_classifier=use_bert_classifier,
@@ -67,6 +74,79 @@ def _extract_activities_from_pdf(pdf_bytes: bytes, filename: str, min_words: int
             spacy_model=spacy_model,
             nofinancial=nofinancial,
             require_action_verb=require_action_verb,
+        )
+        _extractor_cache[key] = ex
+        logger.info(f"[cache] built ActivityExtractor {key} {_mem()}")
+    return ex
+
+
+def _get_engine(use_hybrid, model_name, similarity_threshold, ensemble_mode, bias, use_custom_thresholds, sdg_thresholds):
+    key = (
+        use_hybrid, model_name, round(similarity_threshold, 4), ensemble_mode,
+        tuple(sorted((bias or {}).items())), use_custom_thresholds,
+        tuple(sorted((sdg_thresholds or {}).items())),
+    )
+    eng = _engine_cache.get(key)
+    if eng is None:
+        if use_hybrid:
+            from src.hybrid_alignment_engine import HybridAlignmentEngine
+            eng = HybridAlignmentEngine(
+                model_name=model_name,
+                similarity_threshold=similarity_threshold,
+                use_sdg_bert=True,
+                ensemble_mode=ensemble_mode,
+                enable_sdg17_correction=(bias or {}).get(17, True),
+                enable_sdg11_correction=(bias or {}).get(11, True),
+                enable_sdg14_correction=(bias or {}).get(14, True),
+                enable_sdg4_correction=(bias or {}).get(4, True),
+                enable_sdg6_correction=(bias or {}).get(6, True),
+                enable_sdg8_correction=(bias or {}).get(8, True),
+                enable_sdg10_correction=(bias or {}).get(10, True),
+                enable_sdg12_correction=(bias or {}).get(12, True),
+                enable_sdg16_correction=(bias or {}).get(16, True),
+                use_custom_thresholds=use_custom_thresholds,
+                custom_sdg_thresholds=sdg_thresholds,
+            )
+        else:
+            from src.alignment_engine import AlignmentEngine
+            eng = AlignmentEngine(
+                model_name=model_name,
+                enable_sdg17_correction=(bias or {}).get(17, True),
+                enable_sdg11_correction=(bias or {}).get(11, True),
+                use_custom_thresholds=use_custom_thresholds,
+                custom_sdg_thresholds=sdg_thresholds,
+            )
+            eng.similarity_threshold = similarity_threshold
+        _engine_cache[key] = eng
+        logger.info(f"[cache] built alignment engine (hybrid={use_hybrid}) {_mem()}")
+    return eng
+
+
+def _cleanup_after_file():
+    """Free per-PDF intermediates (not the cached models) after each analysis."""
+    gc.collect()
+    try:
+        import torch
+        if torch.backends.mps.is_available():
+            torch.mps.empty_cache()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass
+
+
+def _extract_activities_from_pdf(pdf_bytes: bytes, filename: str, min_words: int, max_words: int, top_activities: Optional[int], use_bert_classifier: bool = True, min_confidence: float = 0.7, spacy_model: str = "en_core_web_sm", nofinancial: bool = False, require_action_verb: bool = False, progress_callback: callable = None) -> dict:
+    """Non-Streamlit version of activity extraction."""
+    tmp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+            tmp_file.write(pdf_bytes)
+            tmp_path = tmp_file.name
+
+        metadata = _extract_metadata_from_filename(filename)
+        extractor = _get_extractor(
+            min_words, max_words, use_bert_classifier, min_confidence,
+            spacy_model, nofinancial, require_action_verb,
         )
         activities_data = extractor.extract_from_pdf(tmp_path, progress_callback=progress_callback)
         activities_data["source"] = filename
@@ -146,76 +226,54 @@ def _process_pdf_backend(
     """Process a PDF through the full pipeline — no Streamlit/DB. Returns result dict."""
     import time
 
-    from src.hybrid_alignment_engine import HybridAlignmentEngine
-
     bias = bias_corrections or {}
     cb = progress_callback or (lambda p, s: None)
 
-    # Step 1-2: Extract text from PDF and split into activities
-    cb(5.0, "Starting activity extraction...")
-    activities_data = _extract_activities_from_pdf(
-        pdf_bytes=pdf_bytes,
-        filename=filename,
-        min_words=min_words,
-        max_words=max_words,
-        top_activities=top_activities,
-        use_bert_classifier=use_bert_classifier,
-        min_confidence=min_confidence,
-        spacy_model=spacy_model,
-        nofinancial=nofinancial,
-        require_action_verb=require_action_verb,
-        progress_callback=cb,
-    )
-
-    if "error" in activities_data:
-        return activities_data
-
-    if activities_data.get("total_activities", 0) == 0:
-        return {"error": "No activities found in document"}
-
-    # Step 3: Load alignment model
-    num_activities = activities_data.get("total_activities", 0)
-    cb(20.0, f"Loading SDG alignment model...")
-
-    start_time = time.time()
-
-    cb(30.0, f"Aligning {num_activities} activities with SDGs...")
-
-    if use_hybrid:
-        engine = HybridAlignmentEngine(
-            model_name=model_name,
-            similarity_threshold=similarity_threshold,
-            use_sdg_bert=True,
-            ensemble_mode=ensemble_mode,
-            enable_sdg17_correction=bias.get(17, True),
-            enable_sdg11_correction=bias.get(11, True),
-            enable_sdg14_correction=bias.get(14, True),
-            enable_sdg4_correction=bias.get(4, True),
-            enable_sdg6_correction=bias.get(6, True),
-            enable_sdg8_correction=bias.get(8, True),
-            enable_sdg10_correction=bias.get(10, True),
-            enable_sdg12_correction=bias.get(12, True),
-            enable_sdg16_correction=bias.get(16, True),
-            use_custom_thresholds=use_custom_thresholds,
-            custom_sdg_thresholds=sdg_thresholds,
+    # Serialize the model-heavy work: only one PDF uses the cached models at a
+    # time. Bounds memory and prevents concurrent model use across overlapping
+    # background tasks.
+    with _PIPELINE_LOCK:
+        # Step 1-2: Extract text from PDF and split into activities
+        cb(5.0, "Starting activity extraction...")
+        activities_data = _extract_activities_from_pdf(
+            pdf_bytes=pdf_bytes,
+            filename=filename,
+            min_words=min_words,
+            max_words=max_words,
+            top_activities=top_activities,
+            use_bert_classifier=use_bert_classifier,
+            min_confidence=min_confidence,
+            spacy_model=spacy_model,
+            nofinancial=nofinancial,
+            require_action_verb=require_action_verb,
+            progress_callback=cb,
         )
-    else:
-        from src.alignment_engine import AlignmentEngine
-        engine = AlignmentEngine(
-            model_name=model_name,
-            enable_sdg17_correction=bias.get(17, True),
-            enable_sdg11_correction=bias.get(11, True),
-            use_custom_thresholds=use_custom_thresholds,
-            custom_sdg_thresholds=sdg_thresholds,
+
+        if "error" in activities_data:
+            return activities_data
+
+        if activities_data.get("total_activities", 0) == 0:
+            return {"error": "No activities found in document"}
+
+        # Step 3: Load alignment model (cached across PDFs)
+        num_activities = activities_data.get("total_activities", 0)
+        cb(20.0, "Loading SDG alignment model...")
+
+        start_time = time.time()
+
+        cb(30.0, f"Aligning {num_activities} activities with SDGs...")
+
+        engine = _get_engine(
+            use_hybrid, model_name, similarity_threshold, ensemble_mode,
+            bias, use_custom_thresholds, sdg_thresholds,
         )
-        engine.similarity_threshold = similarity_threshold
 
-    cb(50.0, f"Computing SDG scores for {num_activities} activities...")
-    results = engine.align_report(activities_data, show_progress=False, use_cache=True)
+        cb(50.0, f"Computing SDG scores for {num_activities} activities...")
+        results = engine.align_report(activities_data, show_progress=False, use_cache=True)
 
-    cb(95.0, "Generating summary and statistics...")
-    elapsed = time.time() - start_time
-    logger.info(f"Processed {filename}: {len(results.get('activities', []))} activities in {elapsed:.1f}s")
+        cb(95.0, "Generating summary and statistics...")
+        elapsed = time.time() - start_time
+        logger.info(f"Processed {filename}: {len(results.get('activities', []))} activities in {elapsed:.1f}s")
 
     return results
 
@@ -315,4 +373,5 @@ def run_analysis_sync(analysis_id: str, db_session_factory):
             analysis.completed_at = datetime.now(timezone.utc)
             db.commit()
     finally:
+        _cleanup_after_file()
         db.close()
