@@ -1477,3 +1477,6 @@
 | 18:05 | Edited frontend/src/components/analysis/UploadQueue.tsx | added 1 condition(s) | ~632 |
 | 18:05 | Edited frontend/src/components/analysis/UploadQueue.tsx | added 1 condition(s) | ~229 |
 | 16:10 | Batch upload observability: POST /client-log endpoint (durable server-side log) + UploadQueue logs folder count on selection, START, per-file, FAILUREs, DONE summary (console + backend) | backend/app/routers/analysis.py, frontend/src/components/analysis/UploadQueue.tsx | done, build green | ~3500 |
+| 18:06 | Session end: 58 writes across 21 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 26 reads | ~63781 tok |
+| 18:10 | Edited backend/app/routers/analysis.py | modified client_log() | ~204 |
+| 18:10 | Edited frontend/src/components/analysis/UploadQueue.tsx | CSS: heartbeat | ~170 |

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T08:05:56.871Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T08:10:33.089Z
 > Files: 830 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -138,7 +138,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~5866 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~5930 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -241,7 +241,7 @@
 - `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
 - `ScoreBar.tsx` — ScoreBar (~270 tok)
 - `StatusBadge.tsx` — styles (~154 tok)
-- `UploadQueue.tsx` — Identity key for skip-if-exists, or null when identity is too weak to dedup. (~2662 tok)
+- `UploadQueue.tsx` — Identity key for skip-if-exists, or null when identity is too weak to dedup. (~2748 tok)
 
 ## frontend/src/components/layout/
 

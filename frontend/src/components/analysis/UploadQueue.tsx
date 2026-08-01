@@ -151,6 +151,11 @@ export function UploadQueue({
         log(`${at} → FAILED (${note})`, true)
         clientLog(`upload batch ${batchId} FAILED ${at} — ${note}`, 'warning')
       }
+      // Durable progress heartbeat: if the tab dies mid-batch, the server log
+      // still shows how far it got (and when).
+      if ((i + 1) % 10 === 0) {
+        clientLog(`upload batch ${batchId} PROGRESS ${i + 1}/${queue.length} — ${done} done, ${skipped} skipped, ${failed} failed`)
+      }
     }
 
     const summary = `${done} analysed, ${skipped} skipped, ${failed} failed of ${rows.length}`

@@ -188,8 +188,12 @@ class ClientLog(BaseModel):
 def client_log(body: ClientLog, user: User = Depends(get_current_user)):
     """Record a client-side event (e.g. batch-upload start/summary) in the
     server log, so a batch's shape survives even if the browser tab dies. Also
-    means the backend log holds the file count the client never otherwise sends."""
-    msg = f"[client:{user.email}] {body.message[:500]}"
+    means the backend log holds the file count the client never otherwise sends.
+    Each line is stamped with the server's UTC time since the default log format
+    carries no timestamp."""
+    from datetime import datetime, timezone
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%SZ")
+    msg = f"[client:{user.email} {ts}] {body.message[:500]}"
     (logger.warning if body.level == "warning" else logger.info)(msg)
     return {"ok": True}
 
