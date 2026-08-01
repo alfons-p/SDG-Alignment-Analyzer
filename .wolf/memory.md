@@ -1424,3 +1424,15 @@
 | 14:22 | Edited frontend/src/components/sdg/SDGBarChart.tsx | inline fix | ~15 |
 | 14:22 | Edited frontend/src/components/layout/Sidebar.tsx | inline fix | ~22 |
 | 14:22 | Edited frontend/src/pages/ExportPage.tsx | 4→4 lines | ~46 |
+| 14:23 | Session end: 31 writes across 16 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 17 reads | ~42943 tok |
+| 14:25 | Session end: 31 writes across 16 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 17 reads | ~42943 tok |
+| 14:27 | Session end: 31 writes across 16 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 17 reads | ~42943 tok |
+| 14:29 | Session end: 31 writes across 16 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 17 reads | ~42943 tok |
+| 14:30 | Session end: 31 writes across 16 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 17 reads | ~42943 tok |
+| 14:35 | Session end: 31 writes across 16 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 20 reads | ~44540 tok |
+| 14:39 | Edited backend/app/schemas/auth.py | modified UserResponse() | ~45 |
+| 14:39 | Edited backend/app/routers/auth.py | 3→3 lines | ~38 |
+| 14:39 | Edited backend/app/routers/auth.py | modified get_me() | ~85 |
+| 14:39 | Edited frontend/src/types/index.ts | 5→6 lines | ~28 |
+| 14:39 | Edited frontend/src/components/layout/Sidebar.tsx | added optional chaining | ~164 |
+| 14:45 | Admin role in /me + gate admin nav: UserResponse.is_admin, get_me computes it, Sidebar shows Admin link only for admins | backend/app/routers/auth.py, frontend/src/components/layout/Sidebar.tsx | done, build green, serialization verified | ~1500 |

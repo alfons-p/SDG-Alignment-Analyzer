@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from backend.app.dependencies import (
-    get_db, get_current_user, hash_password, verify_password, create_access_token,
+    get_db, get_current_user, hash_password, verify_password, create_access_token, is_admin,
 )
 from backend.app.models import User
 from backend.app.schemas.auth import UserRegister, UserLogin, TokenResponse, UserResponse
@@ -85,4 +85,7 @@ def login(body: UserLogin, request: Request, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):
+    # is_admin is computed from the ADMIN_EMAILS allow-list, not stored on the
+    # user; attach it so the client can gate admin-only navigation.
+    user.is_admin = is_admin(user)
     return user

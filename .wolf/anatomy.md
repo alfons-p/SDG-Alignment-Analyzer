@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T04:22:18.580Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T04:39:40.765Z
 > Files: 829 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -139,7 +139,7 @@
 
 - `__init__.py` (~0 tok)
 - `analysis.py` — Analysis router — upload, jobs, results, export. (~5253 tok)
-- `auth.py` — Auth router — register, login. (~1022 tok)
+- `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
 - `results.py` — Results router — compare, list all results. (~490 tok)
@@ -148,7 +148,7 @@
 
 - `__init__.py` (~0 tok)
 - `analysis.py` — Pydantic: ProcessingSettingsSchema (~633 tok)
-- `auth.py` — Declares UserRegister (~131 tok)
+- `auth.py` — Declares UserRegister (~139 tok)
 
 ## backend/app/services/
 
@@ -247,7 +247,7 @@
 - `AppLayout.tsx` — AppLayout (~78 tok)
 - `AuthLayout.tsx` — AuthLayout (~172 tok)
 - `index.ts` (~24 tok)
-- `Sidebar.tsx` — links (~553 tok)
+- `Sidebar.tsx` — baseLinks (~590 tok)
 
 ## frontend/src/components/results/
 
@@ -291,7 +291,7 @@
 
 ## frontend/src/types/
 
-- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 13 more (~931 tok)
+- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 13 more (~937 tok)
 
 ## logs/
 

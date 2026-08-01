@@ -1,9 +1,9 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { LayoutDashboard, Upload, GitCompare, LogOut } from 'lucide-react'
+import { LayoutDashboard, Upload, GitCompare, Shield, LogOut } from 'lucide-react'
 import { getMe } from '../../api/auth'
 
-const links = [
+const baseLinks = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/upload', icon: Upload, label: 'Upload' },
   { to: '/compare', icon: GitCompare, label: 'Compare' },
@@ -12,6 +12,9 @@ const links = [
 export function Sidebar() {
   const navigate = useNavigate()
   const { data: user } = useQuery({ queryKey: ['me'], queryFn: getMe })
+  const links = user?.is_admin
+    ? [...baseLinks, { to: '/admin', icon: Shield, label: 'Admin' }]
+    : baseLinks
 
   return (
     <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-0">
