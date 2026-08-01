@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T03:58:45.114Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T04:22:18.580Z
 > Files: 829 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -247,7 +247,7 @@
 - `AppLayout.tsx` — AppLayout (~78 tok)
 - `AuthLayout.tsx` — AuthLayout (~172 tok)
 - `index.ts` (~24 tok)
-- `Sidebar.tsx` — links (~556 tok)
+- `Sidebar.tsx` — links (~553 tok)
 
 ## frontend/src/components/results/
 
@@ -260,7 +260,7 @@
 ## frontend/src/components/sdg/
 
 - `CoverageChart.tsx` — CoverageChart (~305 tok)
-- `SDGBarChart.tsx` — SDGBarChart (~434 tok)
+- `SDGBarChart.tsx` — SDGBarChart (~437 tok)
 - `SDGColorBadge.tsx` — SDGColorBadge (~156 tok)
 
 ## frontend/src/constants/
@@ -278,7 +278,7 @@
 - `AdminPage.tsx` — AdminPage — renders table (~1581 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
-- `ExportPage.tsx` — FORMATS (~2023 tok)
+- `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
 - `index.ts` (~151 tok)

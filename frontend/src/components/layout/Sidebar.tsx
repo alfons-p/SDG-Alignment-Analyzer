@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { LayoutDashboard, Upload, BarChart3, GitCompare, LogOut } from 'lucide-react'
+import { LayoutDashboard, Upload, GitCompare, LogOut } from 'lucide-react'
 import { getMe } from '../../api/auth'
 
 const links = [

@@ -54,7 +54,7 @@ export function ExportPage() {
   })
 
   if (!id) return null
-  if (!result) return <div className="organic" style={{ padding: 44 }}>Loading…</div>
+  if (!result || !result.summary) return <div className="organic" style={{ padding: 44 }}>Loading…</div>
 
   const summary = result.summary
   const filename = result.original_filename

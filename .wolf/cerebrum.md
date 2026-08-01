@@ -58,6 +58,7 @@
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 
+- [2026-08-01] Frontend: `npx tsc --noEmit` (root tsconfig) is LOOSER than the build. `npm run build` runs `tsc -b` against the referenced app tsconfig, catching `noUnusedLocals` and stricter null-safety (e.g. `result.summary` is `AnalysisSummary | null`). Verify frontend changes with `npm run build`, not just `tsc --noEmit`.
 - [2026-04-17] sentence-transformers v5.3 `SentenceTransformer.fit()` does NOT work with custom `batch_sampler` or `NoDuplicatesDataLoader`. When a `batch_sampler` is provided, PyTorch sets `DataLoader.batch_size=None`, and `fit()` tries `len(dataset) // batch_size` which fails with TypeError. `steps_per_epoch` parameter doesn't override this for `epochs > 1`. Fix: use standard `DataLoader(shuffle=True, batch_size=N)`. NoDuplicatesDataLoader was removed in v3+.
 - [2026-04-18] When updating default weights, check ALL locations that contain them. `get_embedding_info()` in `sdg_reference.py` had hardcoded old weights separate from `_combine_embeddings()` defaults and cache metadata. Always grep for all occurrences of weight values when they change.
 - [2026-04-20] SDG 8 ensemble weights `(0.15, 0.52)` summed to 0.67 not 1.0. Always verify weight pairs sum to 1.0 when reviewing/creating ensemble weights.

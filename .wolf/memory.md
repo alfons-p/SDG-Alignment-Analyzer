@@ -1412,3 +1412,15 @@
 | 11:40 | V2 Export screen (last screen): pdf_service.py (statement+ledger PDFs, reportlab) + 2 backend routes + reqs; ExportPage.tsx 4 cards + route /results/:id/export; swapped ResultsPage inline CSV/JSON for single Export link | backend/app/services/pdf_service.py, frontend/src/pages/ExportPage.tsx | done, PDFs render, tsc clean, routes 401 | ~12000 |
 | 13:58 | Edited ../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/frontend-redesign-pending.md | inline fix | ~206 |
 | 13:59 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:07 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:17 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:17 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:18 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:19 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:20 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:21 | Session end: 26 writes across 15 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 16 reads | ~42389 tok |
+| 14:21 | Edited frontend/src/components/sdg/SDGBarChart.tsx | 3→4 lines | ~17 |
+| 14:22 | Edited frontend/src/components/sdg/SDGBarChart.tsx | inline fix | ~20 |
+| 14:22 | Edited frontend/src/components/sdg/SDGBarChart.tsx | inline fix | ~15 |
+| 14:22 | Edited frontend/src/components/layout/Sidebar.tsx | inline fix | ~22 |
+| 14:22 | Edited frontend/src/pages/ExportPage.tsx | 4→4 lines | ~46 |

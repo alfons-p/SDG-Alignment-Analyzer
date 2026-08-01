@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from 'recharts'
 import { getSDGColor } from '../../constants/sdg-colors'
 
@@ -37,12 +38,12 @@ export function SDGBarChart({ data, title }: Props) {
             tickFormatter={(v) => v.toFixed(1)}
           />
           <Tooltip
-            formatter={(value: number) => [value.toFixed(3), 'Score']}
+            formatter={(value) => [Number(value).toFixed(3), 'Score']}
             labelFormatter={(label) => `SDG ${label}`}
           />
           <Bar dataKey="score" fill="#3b82f6" radius={[2, 2, 0, 0]}>
             {chartData.map((entry, idx) => (
-              <cell key={idx} fill={entry.fill} />
+              <Cell key={idx} fill={entry.fill} />
             ))}
           </Bar>
         </BarChart>
