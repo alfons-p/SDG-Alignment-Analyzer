@@ -81,6 +81,11 @@ export async function unpublishAnalysis(analysisId: string): Promise<void> {
   await api.post(`/api/analysis/${analysisId}/unpublish`)
 }
 
+export async function publishAll(): Promise<{ published: number }> {
+  const { data } = await api.post('/api/analysis/admin/publish-all')
+  return data
+}
+
 export async function exportCSV(analysisId: string): Promise<Blob> {
   const { data } = await api.get(`/api/analysis/results/${analysisId}/export/csv`, {
     responseType: 'blob',

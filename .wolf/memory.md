@@ -1449,3 +1449,17 @@
 | 14:57 | Created frontend/src/components/analysis/UploadQueue.tsx | — | ~2063 |
 | 14:57 | Created frontend/src/pages/UploadPage.tsx | — | ~952 |
 | 15:20 | Sequential folder uploader + skip-if-exists: backend skip guard in upload_pdf (per-user completed council-year dedup, returns skipped flag) + AnalysisJobResponse.skipped/existing_id; frontend FileDropzone multi/folder, UploadQueue sequential driver, UploadPage batch mode | backend/app/routers/analysis.py, frontend/src/components/analysis/UploadQueue.tsx | done, build green, dedup query verified | ~9000 |
+| 15:15 | Session end: 43 writes across 20 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 25 reads | ~58427 tok |
+| 15:16 | Session end: 43 writes across 20 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 25 reads | ~58427 tok |
+| 15:16 | Session end: 43 writes across 20 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 25 reads | ~58427 tok |
+| 15:19 | Session end: 43 writes across 20 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 25 reads | ~58427 tok |
+| 15:20 | Session end: 43 writes across 20 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 25 reads | ~58427 tok |
+| 15:21 | Session end: 43 writes across 20 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 25 reads | ~58427 tok |
+| 15:22 | Edited backend/app/routers/analysis.py | modified publish_all() | ~191 |
+| 15:23 | Edited frontend/src/api/analysis.ts | modified unpublishAnalysis() | ~84 |
+| 15:23 | Edited frontend/src/pages/AdminPage.tsx | inline fix | ~27 |
+| 15:23 | Edited frontend/src/pages/AdminPage.tsx | modified publishAnalysis() | ~128 |
+| 15:23 | Edited frontend/src/pages/AdminPage.tsx | expanded (+6 lines) | ~78 |
+| 15:23 | Edited frontend/src/pages/AdminPage.tsx | CSS: onPublishAll, publishAllBusy | ~138 |
+| 15:23 | Edited frontend/src/pages/AdminPage.tsx | expanded (+20 lines) | ~327 |
+| 15:45 | Admin Publish-all: bulk endpoint POST /admin/publish-all (single UPDATE) + AdminPage button showing unpublished count | backend/app/routers/analysis.py, frontend/src/pages/AdminPage.tsx | done, build green, route registered | ~2500 |

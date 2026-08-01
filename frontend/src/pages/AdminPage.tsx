@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getAdminRuns, publishAnalysis, unpublishAnalysis } from '../api/analysis'
+import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll } from '../api/analysis'
 import type { AdminRun } from '../types'
 import '../components/results/results.css'
 
@@ -20,6 +20,14 @@ export function AdminPage() {
     mutationFn: ({ id, next }: { id: string; next: boolean }) =>
       next ? publishAnalysis(id) : unpublishAnalysis(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-runs'] }),
+  })
+
+  const publishAllM = useMutation({
+    mutationFn: publishAll,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-runs'] })
+      qc.invalidateQueries({ queryKey: ['analyses'] })
+    },
   })
 
   const isForbidden = (error as { response?: { status?: number } } | null)?.response?.status === 403
@@ -48,7 +56,13 @@ export function AdminPage() {
         ) : isLoading ? (
           <div className="rx-cmp-empty">Loading…</div>
         ) : tab === 'runs' ? (
-          <RunsTab runs={runs ?? []} onToggle={(id, next) => publishM.mutate({ id, next })} busy={publishM.isPending} />
+          <RunsTab
+            runs={runs ?? []}
+            onToggle={(id, next) => publishM.mutate({ id, next })}
+            busy={publishM.isPending}
+            onPublishAll={() => publishAllM.mutate()}
+            publishAllBusy={publishAllM.isPending}
+          />
         ) : (
           <div className="rx-cmp-empty">
             {tab === 'narrative'
@@ -65,13 +79,18 @@ function RunsTab({
   runs,
   onToggle,
   busy,
+  onPublishAll,
+  publishAllBusy,
 }: {
   runs: AdminRun[]
   onToggle: (id: string, next: boolean) => void
   busy: boolean
+  onPublishAll: () => void
+  publishAllBusy: boolean
 }) {
   const completed = runs.filter((r) => r.status === 'completed')
   const published = completed.filter((r) => r.published)
+  const unpublished = completed.length - published.length
   const activities = completed.reduce((s, r) => s + r.total_activities, 0)
 
   const stats = [
@@ -88,6 +107,26 @@ function RunsTab({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <span style={{ fontSize: 13, color: 'color-mix(in srgb, var(--color-text) 60%, transparent)' }}>
+          {unpublished > 0
+            ? `${unpublished} completed ${unpublished === 1 ? 'analysis is' : 'analyses are'} not yet public.`
+            : 'All completed analyses are public.'}
+        </span>
+        <button
+          onClick={onPublishAll}
+          disabled={unpublished === 0 || publishAllBusy}
+          style={{
+            marginLeft: 'auto', border: 'none', cursor: unpublished === 0 || publishAllBusy ? 'default' : 'pointer',
+            fontFamily: 'var(--font-heading)', fontSize: 13, padding: '9px 18px', borderRadius: 999,
+            background: 'var(--color-accent)', color: 'var(--color-bg)',
+            opacity: unpublished === 0 || publishAllBusy ? 0.5 : 1,
+          }}
+        >
+          {publishAllBusy ? 'Publishing…' : `Publish all${unpublished ? ` (${unpublished})` : ''}`}
+        </button>
+      </div>
+
       <div className="rx-admin-stats">
         {stats.map((s, i) => (
           <div key={i} className="rx-admin-stat">

@@ -390,6 +390,19 @@ def publish_analysis(analysis_id: str, admin: User = Depends(get_current_admin),
     return {"id": analysis.id, "published": True}
 
 
+@router.post("/admin/publish-all")
+def publish_all(admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """Publish every completed, not-yet-published analysis in one call. Single
+    bulk UPDATE so it scales to large batches. Admin only."""
+    count = (
+        db.query(Analysis)
+        .filter(Analysis.status == "completed", Analysis.published.is_(False))
+        .update({Analysis.published: True}, synchronize_session=False)
+    )
+    db.commit()
+    return {"published": count}
+
+
 @router.post("/{analysis_id}/unpublish")
 def unpublish_analysis(analysis_id: str, admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
     analysis = db.query(Analysis).filter(Analysis.id == analysis_id).first()

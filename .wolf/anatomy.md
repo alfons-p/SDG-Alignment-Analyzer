@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T04:57:31.371Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T05:23:46.587Z
 > Files: 830 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
@@ -138,7 +138,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~5538 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~5685 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -223,7 +223,7 @@
 
 ## frontend/src/api/
 
-- `analysis.ts` — API routes: POST, GET, DELETE (13 endpoints) (~934 tok)
+- `analysis.ts` — API routes: POST, GET, DELETE (14 endpoints) (~978 tok)
 - `auth.ts` — API routes: POST, GET (3 endpoints) (~159 tok)
 - `client.ts` — Declares api (~194 tok)
 - `public.ts` — Exports CouncilYear, Council, National, Narrative + 2 more (~315 tok)
@@ -276,7 +276,7 @@
 ## frontend/src/pages/
 
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
-- `AdminPage.tsx` — AdminPage — renders table (~1581 tok)
+- `AdminPage.tsx` — AdminPage — renders table (~2022 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
