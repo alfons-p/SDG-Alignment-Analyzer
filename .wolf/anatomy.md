@@ -1,10 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-31T23:55:17.488Z
-> Files: 822 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T00:05:18.290Z
+> Files: 823 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
+- `shot-compare.mjs` — Declares CHROME (~375 tok)
 - `shot-goal.mjs` — Declares CHROME (~332 tok)
 - `shot-path.mjs` — Declares CHROME (~306 tok)
 - `shot.mjs` — Declares CHROME (~401 tok)
@@ -272,7 +273,7 @@
 ## frontend/src/pages/
 
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
-- `ComparePage.tsx` — ComparePage (~1701 tok)
+- `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
@@ -284,7 +285,7 @@
 
 ## frontend/src/types/
 
-- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 12 more (~845 tok)
+- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 12 more (~855 tok)
 
 ## logs/
 

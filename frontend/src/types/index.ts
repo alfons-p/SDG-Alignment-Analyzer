@@ -122,6 +122,7 @@ export interface CompareResult {
   total_activities: number
   mean_alignment_score: number
   mean_scores: Record<number, number>
+  coverage: Record<number, number>
   top_sdgs: SDGTopItem[]
 }
 
