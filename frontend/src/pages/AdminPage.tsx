@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll } from '../api/analysis'
-import type { AdminRun } from '../types'
+import type { AdminRun, AdminStats } from '../types'
 import '../components/results/results.css'
 
 type Tab = 'runs' | 'narrative' | 'roles'
@@ -10,7 +10,7 @@ export function AdminPage() {
   const [tab, setTab] = useState<Tab>('runs')
   const qc = useQueryClient()
 
-  const { data: runs, error, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ['admin-runs'],
     queryFn: getAdminRuns,
     retry: false,
@@ -57,7 +57,8 @@ export function AdminPage() {
           <div className="rx-cmp-empty">Loading…</div>
         ) : tab === 'runs' ? (
           <RunsTab
-            runs={runs ?? []}
+            runs={data?.runs ?? []}
+            stats={data?.stats}
             onToggle={(id, next) => publishM.mutate({ id, next })}
             busy={publishM.isPending}
             onPublishAll={() => publishAllM.mutate()}
@@ -77,33 +78,59 @@ export function AdminPage() {
 
 function RunsTab({
   runs,
+  stats: s,
   onToggle,
   busy,
   onPublishAll,
   publishAllBusy,
 }: {
   runs: AdminRun[]
+  stats?: AdminStats
   onToggle: (id: string, next: boolean) => void
   busy: boolean
   onPublishAll: () => void
   publishAllBusy: boolean
 }) {
-  const completed = runs.filter((r) => r.status === 'completed')
-  const published = completed.filter((r) => r.published)
-  const unpublished = completed.length - published.length
-  const activities = completed.reduce((s, r) => s + r.total_activities, 0)
+  // Prefer the DB-wide stats from the backend; fall back to the (capped) rows.
+  const total = s?.total ?? runs.length
+  const publishedN = s?.published ?? runs.filter((r) => r.status === 'completed' && r.published).length
+  const completedN = s?.completed ?? runs.filter((r) => r.status === 'completed').length
+  const activities = s?.activities ?? runs.reduce((acc, r) => acc + r.total_activities, 0)
+  const avgGoals = s?.avg_goals
+  const unpublished = completedN - publishedN
 
   const stats = [
-    { value: String(runs.length), label: 'analyses' },
-    { value: String(published.length), label: 'published' },
+    { value: total.toLocaleString(), label: 'analyses' },
+    { value: publishedN.toLocaleString(), label: 'published' },
     { value: activities.toLocaleString(), label: 'activities' },
-    {
-      value: completed.length
-        ? (completed.reduce((s, r) => s + (r.goals_evidenced ?? 0), 0) / completed.length).toFixed(1)
-        : '—',
-      label: 'avg goals evidenced',
-    },
+    { value: avgGoals != null ? avgGoals.toFixed(1) : '—', label: 'avg goals evidenced' },
   ]
+
+  // ── sortable table ──
+  type SortKey = 'council_name' | 'status' | 'total_activities' | 'goals_evidenced' | 'extraction'
+  const [sort, setSort] = useState<{ key: SortKey; dir: 'asc' | 'desc' } | null>(null)
+  const toggleSort = (key: SortKey) =>
+    setSort((s) => (s && s.key === key ? { key, dir: s.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'asc' }))
+  const arrow = (key: SortKey) => (sort?.key === key ? (sort.dir === 'asc' ? ' ↑' : ' ↓') : '')
+
+  const sortedRuns = useMemo(() => {
+    if (!sort) return runs
+    const dir = sort.dir === 'asc' ? 1 : -1
+    const rank = (e: string | null) => (({ thin: 1, moderate: 2, rich: 3 }) as Record<string, number>)[e ?? ''] ?? 0
+    const val = (r: AdminRun): string | number => {
+      switch (sort.key) {
+        case 'council_name': return (r.council_name ?? '').toLowerCase()
+        case 'status': return r.status
+        case 'total_activities': return r.total_activities
+        case 'goals_evidenced': return r.goals_evidenced ?? -1
+        case 'extraction': return rank(r.extraction)
+      }
+    }
+    return [...runs].sort((a, b) => {
+      const av = val(a), bv = val(b)
+      return av < bv ? -dir : av > bv ? dir : 0
+    })
+  }, [runs, sort])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -140,16 +167,16 @@ function RunsTab({
         <table className="rx-table">
           <thead>
             <tr>
-              <th style={{ width: '30%' }}>Council</th>
-              <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Activities</th>
-              <th style={{ textAlign: 'right' }}>Goals</th>
-              <th>Extraction</th>
+              <th style={{ width: '30%', cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('council_name')}>Council{arrow('council_name')}</th>
+              <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('status')}>Status{arrow('status')}</th>
+              <th style={{ textAlign: 'right', cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('total_activities')}>Activities{arrow('total_activities')}</th>
+              <th style={{ textAlign: 'right', cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('goals_evidenced')}>Goals{arrow('goals_evidenced')}</th>
+              <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => toggleSort('extraction')}>Extraction{arrow('extraction')}</th>
               <th style={{ textAlign: 'right' }}>Action</th>
             </tr>
           </thead>
           <tbody>
-            {runs.map((r) => (
+            {sortedRuns.map((r) => (
               <tr key={r.id}>
                 <td>
                   <div className="rx-run-council">

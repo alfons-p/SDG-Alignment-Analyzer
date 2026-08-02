@@ -51,6 +51,28 @@ def get_db() -> Generator[Session, None, None]:
 def init_db():
     Base.metadata.create_all(bind=engine)
     _migrate_analysis_columns()
+    _fail_orphaned_analyses()
+
+
+def _fail_orphaned_analyses():
+    """Any analysis left `queued`/`processing` is orphaned — its BackgroundTask
+    did not survive the last shutdown/restart. At startup nothing is running yet,
+    so flip them to `failed` so they read correctly and a re-drop retries them
+    (skip-if-exists only skips `completed`)."""
+    from sqlalchemy import text
+    from datetime import datetime, timezone
+    with engine.begin() as conn:
+        res = conn.execute(
+            text(
+                "UPDATE analyses SET status='failed', "
+                "error_message='Interrupted by a server restart', completed_at=:t "
+                "WHERE status IN ('queued','processing')"
+            ),
+            {"t": datetime.now(timezone.utc)},
+        )
+        if res.rowcount:
+            import logging
+            logging.getLogger(__name__).info(f"[startup] failed {res.rowcount} orphaned analyses")
 
 
 # New columns added to `analyses` after the table first shipped. create_all does

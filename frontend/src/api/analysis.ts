@@ -68,7 +68,7 @@ export async function cancelAnalysis(analysisId: string): Promise<void> {
   await api.post(`/api/analysis/${analysisId}/cancel`)
 }
 
-export async function getAdminRuns(): Promise<import('../types').AdminRun[]> {
+export async function getAdminRuns(): Promise<import('../types').AdminRunsResponse> {
   const { data } = await api.get('/api/analysis/admin/runs')
   return data
 }

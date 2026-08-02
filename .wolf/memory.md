@@ -1543,3 +1543,19 @@
 | 09:14 | Edited backend/app/services/analysis_service.py | modified _get_pool() | ~263 |
 | 09:48 | Session end: 92 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80635 tok |
 | 2026-08-02 | LEAK FIXED (proven): native torch/numpy allocator growth ~150MB/PDF (not Python objects — spaCy/engine/graph all ruled out via probes) → run analysis in spawn multiprocessing.Pool(1, maxtasksperchild=20); child recycles, OS reclaims. Test recycle=8: child RSS saw-tooth (2445→937 reset at file17), parent flat ~290MB. BATCH_WORKER_RECYCLE env (0=inline). Progress callback dropped in child (coarse bar). | backend/app/services/analysis_service.py | done, proven | ~8000 |
+| 09:49 | Session end: 92 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80635 tok |
+| 09:51 | Session end: 92 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80635 tok |
+| 09:52 | Session end: 92 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80635 tok |
+| 09:53 | Session end: 92 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~80635 tok |
+| 09:55 | Edited backend/app/dependencies.py | modified init_db() | ~291 |
+| 09:55 | Edited backend/app/routers/analysis.py | modified admin_runs() | ~742 |
+| 09:56 | Edited frontend/src/types/index.ts | expanded (+13 lines) | ~136 |
+| 09:56 | Edited frontend/src/api/analysis.ts | modified getAdminRuns() | ~47 |
+| 09:56 | Edited frontend/src/pages/AdminPage.tsx | 2→2 lines | ~42 |
+| 09:56 | Edited frontend/src/pages/AdminPage.tsx | 5→5 lines | ~37 |
+| 09:56 | Edited frontend/src/pages/AdminPage.tsx | added optional chaining | ~89 |
+| 09:56 | Edited frontend/src/pages/AdminPage.tsx | added optional chaining | ~298 |
+| 09:59 | Edited frontend/src/pages/AdminPage.tsx | 2→2 lines | ~34 |
+| 09:59 | Edited frontend/src/pages/AdminPage.tsx | added optional chaining | ~433 |
+| 09:59 | Edited frontend/src/pages/AdminPage.tsx | 12→12 lines | ~280 |
+| 2026-08-02 | Admin: DB-wide stat tiles (was capped at 200-row query → showed 200 not 509; now func.count over all, table capped 500) via {stats,runs} response; startup orphan cleanup (queued/processing→failed on boot, flipped East Arnhem); sortable admin table headers (council/status/activities/goals/extraction) | backend/app/routers/analysis.py, backend/app/dependencies.py, frontend/src/pages/AdminPage.tsx | done, build green, cleanup ran (1 orphan) | ~4000 |

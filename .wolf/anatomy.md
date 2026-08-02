@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T23:14:12.899Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T23:59:20.549Z
 > Files: 832 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -129,7 +129,7 @@
 ## backend/app/
 
 - `__init__.py` (~0 tok)
-- `dependencies.py` — get_db, init_db, hash_password, verify_password (~1510 tok)
+- `dependencies.py` — get_db, init_db, hash_password, verify_password (~1775 tok)
 - `main.py` — FastAPI application entry point. (~479 tok)
 
 ## backend/app/models/
@@ -142,7 +142,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~5940 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~6309 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -227,7 +227,7 @@
 
 ## frontend/src/api/
 
-- `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1069 tok)
+- `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1071 tok)
 - `auth.ts` — API routes: POST, GET (3 endpoints) (~159 tok)
 - `client.ts` — Declares api (~441 tok)
 - `public.ts` — Exports CouncilYear, Council, National, Narrative + 2 more (~315 tok)
@@ -281,7 +281,7 @@
 ## frontend/src/pages/
 
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
-- `AdminPage.tsx` — AdminPage — renders table (~2022 tok)
+- `AdminPage.tsx` — AdminPage — renders table (~2587 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
@@ -297,7 +297,7 @@
 
 ## frontend/src/types/
 
-- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 13 more (~994 tok)
+- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 15 more (~1053 tok)
 
 ## logs/
 

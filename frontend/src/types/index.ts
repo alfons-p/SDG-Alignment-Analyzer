@@ -149,6 +149,19 @@ export interface AdminRun {
   created_at: string
 }
 
+export interface AdminStats {
+  total: number
+  completed: number
+  published: number
+  activities: number
+  avg_goals: number
+}
+
+export interface AdminRunsResponse {
+  stats: AdminStats
+  runs: AdminRun[]
+}
+
 export function getSDGScore(
   scores: Record<string, SDGScore> | undefined,
   sdg: number,

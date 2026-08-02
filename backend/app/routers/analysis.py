@@ -350,10 +350,16 @@ def list_analyses(user: User = Depends(get_current_user), db: Session = Depends(
     return analyses
 
 
+ADMIN_RUNS_LIMIT = 500  # table cap; stats below are computed DB-wide
+
+
 @router.get("/admin/runs")
 def admin_runs(admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
-    """Every analysis with its publish state and headline metrics, for the admin
-    runs table. Admin only (data-contract C#0)."""
+    """Admin runs table + DB-wide summary stats. The table is capped at
+    ADMIN_RUNS_LIMIT rows, but `stats` counts EVERY analysis (previously the
+    tiles were computed only from the capped rows and under-reported). Admin
+    only (data-contract C#0)."""
+    from sqlalchemy import func
     from backend.app.services.public_data import (
         _report_alignment,
         _coverage,
@@ -361,12 +367,37 @@ def admin_runs(admin: User = Depends(get_current_admin), db: Session = Depends(g
         _extraction_grade,
     )
 
-    analyses = db.query(Analysis).order_by(Analysis.created_at.desc()).limit(200).all()
+    # Cheap DB-wide counts.
+    total = db.query(func.count(Analysis.id)).scalar() or 0
+    completed_count = db.query(func.count(Analysis.id)).filter(Analysis.status == "completed").scalar() or 0
+    published_count = db.query(func.count(Analysis.id)).filter(Analysis.published.is_(True)).scalar() or 0
+
+    # Activities + avg goals need the result JSON — computed over completed rows.
+    activities_sum = 0
+    goals_vals: list[int] = []
+    for a in db.query(Analysis).filter(Analysis.status == "completed").all():
+        ra = _report_alignment(a)
+        activities_sum += int(ra.get("total_activities", 0))
+        cov = _coverage(a)
+        if cov:
+            goals_vals.append(_goals_evidenced(cov))
+    avg_goals = round(sum(goals_vals) / len(goals_vals), 1) if goals_vals else 0.0
+
+    stats = {
+        "total": total,
+        "completed": completed_count,
+        "published": published_count,
+        "activities": activities_sum,
+        "avg_goals": avg_goals,
+    }
+
+    # Recent rows for the table.
+    analyses = db.query(Analysis).order_by(Analysis.created_at.desc()).limit(ADMIN_RUNS_LIMIT).all()
     runs = []
     for a in analyses:
         ra = _report_alignment(a)
         cov = _coverage(a)
-        total = int(ra.get("total_activities", 0))
+        total_a = int(ra.get("total_activities", 0))
         page_count = (a.result or {}).get("metadata", {}).get("page_count") if a.result else None
         runs.append(
             {
@@ -376,13 +407,13 @@ def admin_runs(admin: User = Depends(get_current_admin), db: Session = Depends(g
                 "year": a.year,
                 "status": a.status,
                 "published": a.published,
-                "total_activities": total,
+                "total_activities": total_a,
                 "goals_evidenced": _goals_evidenced(cov) if cov else None,
-                "extraction": _extraction_grade(total, page_count) if a.status == "completed" else None,
+                "extraction": _extraction_grade(total_a, page_count) if a.status == "completed" else None,
                 "created_at": a.created_at,
             }
         )
-    return runs
+    return {"stats": stats, "runs": runs}
 
 
 @router.post("/{analysis_id}/cancel")
