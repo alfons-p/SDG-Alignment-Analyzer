@@ -1559,3 +1559,11 @@
 | 09:59 | Edited frontend/src/pages/AdminPage.tsx | added optional chaining | ~433 |
 | 09:59 | Edited frontend/src/pages/AdminPage.tsx | 12→12 lines | ~280 |
 | 2026-08-02 | Admin: DB-wide stat tiles (was capped at 200-row query → showed 200 not 509; now func.count over all, table capped 500) via {stats,runs} response; startup orphan cleanup (queued/processing→failed on boot, flipped East Arnhem); sortable admin table headers (council/status/activities/goals/extraction) | backend/app/routers/analysis.py, backend/app/dependencies.py, frontend/src/pages/AdminPage.tsx | done, build green, cleanup ran (1 orphan) | ~4000 |
+| 10:13 | Session end: 103 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~83617 tok |
+| 10:15 | Session end: 103 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~83617 tok |
+| 10:48 | Session end: 103 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~83617 tok |
+| 14:41 | Session end: 103 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~83617 tok |
+| 14:42 | Edited backend/app/services/analysis_service.py | 4→6 lines | ~126 |
+| 14:43 | Edited backend/app/services/analysis_service.py | modified _run_in_worker() | ~486 |
+| 14:43 | Edited backend/app/services/analysis_service.py | 12→11 lines | ~204 |
+| 2026-08-02 | Pool hang fix: memory fix worked (child_rss saw-tooth ~2GB) but a single PDF hung the processes=1 worker (zombie pid alive 4.5h, 0%CPU, blocked whole batch — got 208/1530, 12 new done). Added _run_in_pool: apply_async(...).get(timeout=BATCH_TASK_TIMEOUT=600s); on timeout terminate+recreate pool (kills hung worker) so one bad PDF fails not freezes. _pool_use_lock serializes. Killed orphaned worker + restarted. | backend/app/services/analysis_service.py | done | ~3000 |

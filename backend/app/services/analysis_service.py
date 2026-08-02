@@ -145,9 +145,11 @@ def _cleanup_after_file():
 # The backend (parent) process therefore stays small; peak memory is bounded to
 # ~one model set + N files' worth, then resets.
 BATCH_WORKER_RECYCLE = int(os.getenv("BATCH_WORKER_RECYCLE", "20"))  # 0 = run inline (no subprocess)
+BATCH_TASK_TIMEOUT = int(os.getenv("BATCH_TASK_TIMEOUT", "600"))  # per-PDF hard cap (s); hung worker is killed
 _PROJECT_ROOT = str(Path(__file__).resolve().parents[3])
 _pool = None
-_pool_lock = threading.Lock()
+_pool_lock = threading.Lock()       # guards pool create/destroy
+_pool_use_lock = threading.Lock()   # serializes use so one PDF holds the worker at a time
 
 
 def _get_pool():
@@ -175,6 +177,39 @@ def _run_in_worker(kwargs: dict) -> dict:
     except Exception:
         pass
     return result
+
+
+def _recreate_pool():
+    """Terminate the current worker (kills a hung child) and drop the pool so
+    the next call spawns a fresh one."""
+    global _pool
+    with _pool_lock:
+        if _pool is not None:
+            try:
+                _pool.terminate()
+                _pool.join()
+            except Exception:
+                pass
+            _pool = None
+            logger.warning("[pool] terminated and reset worker")
+
+
+def _run_in_pool(kwargs: dict) -> dict:
+    """Run one analysis in the worker with a hard timeout. If a single PDF
+    exceeds BATCH_TASK_TIMEOUT the worker is killed and the pool recreated, so
+    one bad file fails instead of freezing the whole batch (processes=1 means a
+    hung worker blocks everything). Serialized: one PDF holds the worker at a
+    time."""
+    with _pool_use_lock:
+        with _pool_lock:
+            pool = _get_pool()
+        async_res = pool.apply_async(_run_in_worker, (kwargs,))
+        try:
+            return async_res.get(timeout=BATCH_TASK_TIMEOUT)
+        except _mp.TimeoutError:
+            logger.error(f"[pool] analysis exceeded {BATCH_TASK_TIMEOUT}s — killing hung worker")
+            _recreate_pool()
+            raise TimeoutError(f"Analysis exceeded {BATCH_TASK_TIMEOUT}s (worker killed)")
 
 
 def _extract_activities_from_pdf(pdf_bytes: bytes, filename: str, min_words: int, max_words: int, top_activities: Optional[int], use_bert_classifier: bool = True, min_confidence: float = 0.7, spacy_model: str = "en_core_web_sm", nofinancial: bool = False, require_action_verb: bool = False, progress_callback: callable = None) -> dict:
@@ -385,12 +420,11 @@ def run_analysis_sync(analysis_id: str, db_session_factory):
         )
 
         if BATCH_WORKER_RECYCLE > 0:
-            # Run in the recycled child process — bounds native memory. Progress
-            # callbacks don't cross the process boundary, so the bar jumps
-            # 0→100 per file; the job status transitions still work.
-            with _pool_lock:
-                pool = _get_pool()
-            result = pool.apply(_run_in_worker, (proc_kwargs,))
+            # Run in the recycled child process — bounds native memory, with a
+            # hard per-file timeout that kills a hung worker. Progress callbacks
+            # don't cross the process boundary, so the bar jumps 0→100 per file;
+            # the job status transitions still work.
+            result = _run_in_pool(proc_kwargs)
             worker_rss = result.pop("_worker_rss_mb", None) if isinstance(result, dict) else None
             if worker_rss is not None:
                 logger.info(f"[PROC worker] id={analysis_id[:8]} child_rss={worker_rss}MB")
