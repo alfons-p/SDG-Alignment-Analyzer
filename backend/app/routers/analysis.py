@@ -103,6 +103,10 @@ def upload_pdf(
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only PDF files are supported")
 
+    # Folder uploads (webkitdirectory) can send a relative path as the filename;
+    # store only the basename so identity parses cleanly and names stay tidy.
+    filename = Path(file.filename).name
+
     content = file.file.read()
     file_size = len(content)
 
@@ -118,7 +122,7 @@ def upload_pdf(
     # dedup when identity is strong enough (year + council). Failed/queued runs
     # are not a match, so a re-drop retries them. Checked before writing the file
     # so skipped uploads leave nothing on disk.
-    ident = parse_report_identity(file.filename)
+    ident = parse_report_identity(filename)
     if ident["year"] and ident["council_name"]:
         dup_q = db.query(Analysis).filter(
             Analysis.user_id == user.id,
@@ -139,7 +143,7 @@ def upload_pdf(
 
     # Use cryptographic hash for stable dedup across processes
     file_hash = hashlib.sha256(content).hexdigest()[:12]
-    file_path = UPLOADS_DIR / f"{Path(file.filename).stem}_{file_hash}.pdf"
+    file_path = UPLOADS_DIR / f"{Path(filename).stem}_{file_hash}.pdf"
     file_path.write_bytes(content)
 
     settings = _validate_settings(
@@ -162,7 +166,7 @@ def upload_pdf(
     analysis = Analysis(
         user_id=user.id,
         status="queued",
-        original_filename=file.filename,
+        original_filename=filename,
         file_path=str(file_path),
         file_size=file_size,
         settings=settings,

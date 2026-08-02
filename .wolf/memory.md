@@ -1567,3 +1567,17 @@
 | 14:43 | Edited backend/app/services/analysis_service.py | modified _run_in_worker() | ~486 |
 | 14:43 | Edited backend/app/services/analysis_service.py | 12→11 lines | ~204 |
 | 2026-08-02 | Pool hang fix: memory fix worked (child_rss saw-tooth ~2GB) but a single PDF hung the processes=1 worker (zombie pid alive 4.5h, 0%CPU, blocked whole batch — got 208/1530, 12 new done). Added _run_in_pool: apply_async(...).get(timeout=BATCH_TASK_TIMEOUT=600s); on timeout terminate+recreate pool (kills hung worker) so one bad PDF fails not freezes. _pool_use_lock serializes. Killed orphaned worker + restarted. | backend/app/services/analysis_service.py | done | ~3000 |
+| 14:44 | Session end: 106 writes across 26 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~84433 tok |
+| 14:45 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/timeouttest.py | — | ~415 |
+| 14:47 | Session end: 107 writes across 27 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~84848 tok |
+| 14:48 | Session end: 107 writes across 27 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~84848 tok |
+| 14:58 | Session end: 107 writes across 27 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~84848 tok |
+| 15:02 | Session end: 107 writes across 27 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~84848 tok |
+| 15:07 | Session end: 107 writes across 27 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~84848 tok |
+| 15:16 | Created scripts/batch_ingest.py | — | ~1692 |
+| 15:18 | Edited backend/app/routers/analysis.py | modified endswith() | ~118 |
+| 15:18 | Edited backend/app/routers/analysis.py | inline fix | ~13 |
+| 15:18 | Edited backend/app/routers/analysis.py | "{Path(file.filename).stem" → "{Path(filename).stem}_{fi" | ~20 |
+| 15:18 | Edited backend/app/routers/analysis.py | inline fix | ~10 |
+| 15:20 | Session end: 112 writes across 28 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~87070 tok |
+| 2026-08-02 | Server-side batch runner scripts/batch_ingest.py: walks folder, skip-if-exists (council+year), run_analysis_sync (pool-isolated/timeout), owned by admin, --publish/--limit/--dry-run, nohup-able, resumable. Fixed data bug: browser webkitdirectory stored FULL PATH as filename → council_name=raw/2023/NSW/... state=None (502 rows) → backfilled 514 rows to basename identity + upload_pdf now stores Path(filename).name. Tested: dry-run skips work, real ingest 1 PDF completed. | scripts/batch_ingest.py, backend/app/routers/analysis.py | done, tested | ~6000 |

@@ -1,11 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T04:43:16.225Z
-> Files: 832 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T05:18:26.683Z
+> Files: 834 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
 - `leaktest.py` — main (~228 tok)
+- `timeouttest.py` — main (~415 tok)
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/9cc0e608-59db-4440-b4e2-d3c3c9c74fbd/scratchpad/
 
@@ -142,7 +143,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~6309 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~6362 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -993,6 +994,7 @@
 
 - `aiddata_accuracy.py` — Compute AidData multi-label accuracy metrics for all models. (~3113 tok)
 - `analyze_target_boost_fp.py` — Analyze target boost false positives. (~3376 tok)
+- `batch_ingest.py` — Server-side batch ingest. (~1692 tok)
 - `benchmark_aiddata.py` — Benchmark SDG Alignment Engines against AidData Chinese Development Finance Dataset. (~7460 tok)
 - `benchmark_all_models.py` — Benchmark all fine-tuned ST and BERT models on the same out-of-sample data. (~4323 tok)
 - `benchmark_sdganalyzer.py` — Benchmark production models on the sdganalyzer domain-labeled data. (~2849 tok)
