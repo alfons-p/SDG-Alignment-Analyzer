@@ -99,6 +99,11 @@ export async function cancelIngest(): Promise<void> {
   await api.post('/api/analysis/admin/ingest/cancel')
 }
 
+export async function browseFolder(path = ''): Promise<import('../types').BrowseResult> {
+  const { data } = await api.get('/api/analysis/admin/browse', { params: { path } })
+  return data
+}
+
 /** Record a client event in the server log. Best-effort — never throws. */
 export async function clientLog(message: string, level: 'info' | 'warning' = 'info'): Promise<void> {
   try {

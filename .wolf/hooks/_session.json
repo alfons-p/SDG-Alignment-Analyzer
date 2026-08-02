@@ -875,6 +875,72 @@
       "action": "create",
       "tokens": 342,
       "at": "2026-08-02T05:30:03.112Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/services/batch_ingest_service.py",
+      "action": "edit",
+      "tokens": 424,
+      "at": "2026-08-02T07:25:36.891Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/routers/analysis.py",
+      "action": "edit",
+      "tokens": 136,
+      "at": "2026-08-02T07:25:46.774Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/types/index.ts",
+      "action": "edit",
+      "tokens": 58,
+      "at": "2026-08-02T07:26:01.915Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/analysis.ts",
+      "action": "edit",
+      "tokens": 86,
+      "at": "2026-08-02T07:26:04.245Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/AdminPage.tsx",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-08-02T07:26:30.393Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/AdminPage.tsx",
+      "action": "edit",
+      "tokens": 707,
+      "at": "2026-08-02T07:26:48.653Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/AdminPage.tsx",
+      "action": "edit",
+      "tokens": 232,
+      "at": "2026-08-02T07:27:05.054Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/AdminPage.tsx",
+      "action": "edit",
+      "tokens": 77,
+      "at": "2026-08-02T07:27:10.949Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/services/batch_ingest_service.py",
+      "action": "edit",
+      "tokens": 297,
+      "at": "2026-08-02T07:28:19.195Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/types/index.ts",
+      "action": "edit",
+      "tokens": 51,
+      "at": "2026-08-02T07:28:27.161Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/AdminPage.tsx",
+      "action": "edit",
+      "tokens": 58,
+      "at": "2026-08-02T07:28:29.961Z"
     }
   ],
   "edit_counts": {
@@ -889,19 +955,19 @@
     "frontend/src/components/layout/Sidebar.tsx": 4,
     "../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/frontend-redesign-pending.md": 2,
     "backend/app/services/pdf_service.py": 2,
-    "backend/app/routers/analysis.py": 16,
-    "frontend/src/api/analysis.ts": 5,
+    "backend/app/routers/analysis.py": 17,
+    "frontend/src/api/analysis.ts": 6,
     "frontend/src/pages/ExportPage.tsx": 2,
     "frontend/src/components/results/results.css": 1,
     "frontend/src/components/sdg/SDGBarChart.tsx": 3,
     "backend/app/schemas/auth.py": 1,
     "backend/app/routers/auth.py": 2,
-    "frontend/src/types/index.ts": 4,
+    "frontend/src/types/index.ts": 6,
     "backend/app/schemas/analysis.py": 1,
     "frontend/src/components/analysis/FileDropzone.tsx": 4,
     "frontend/src/components/analysis/UploadQueue.tsx": 17,
     "frontend/src/pages/UploadPage.tsx": 1,
-    "frontend/src/pages/AdminPage.tsx": 16,
+    "frontend/src/pages/AdminPage.tsx": 21,
     "frontend/src/lib/batch.ts": 1,
     "frontend/src/api/client.ts": 2,
     "backend/app/dependencies.py": 2,
@@ -909,12 +975,12 @@
     "../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/leaktest.py": 1,
     "../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/timeouttest.py": 1,
     "scripts/batch_ingest.py": 2,
-    "backend/app/services/batch_ingest_service.py": 1,
+    "backend/app/services/batch_ingest_service.py": 3,
     "../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/svctest.py": 1
   },
   "anatomy_hits": 22,
   "anatomy_misses": 5,
   "repeated_reads_warned": 22,
   "cerebrum_warnings": 0,
-  "stop_count": 75
+  "stop_count": 77
 }

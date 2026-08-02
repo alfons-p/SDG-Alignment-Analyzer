@@ -1595,3 +1595,17 @@
 | 15:30 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/svctest.py | — | ~342 |
 | 15:35 | Session end: 122 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~92462 tok |
 | 2026-08-02 | Admin-triggered server-side ingest: batch_ingest_service.py (shared core ingest_folder + background-thread job w/ progress state + cancel + INGEST_ROOT fence). Endpoints POST /admin/ingest, GET /admin/ingest/status, POST /admin/ingest/cancel. AdminPage IngestPanel (folder path + publish + Start/Cancel + live progress bar, polls status 2s). CLI refactored to reuse core. Browser only fires the command; server runs loop (tab-independent). Tested: service end-to-end 1 PDF completed. | backend/app/services/batch_ingest_service.py, backend/app/routers/analysis.py, frontend/src/pages/AdminPage.tsx | done, tested | ~7000 |
+| 17:21 | Session end: 122 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~92462 tok |
+| 17:23 | Session end: 122 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~92462 tok |
+| 17:25 | Edited backend/app/services/batch_ingest_service.py | modified browse() | ~424 |
+| 17:25 | Edited backend/app/routers/analysis.py | modified admin_ingest_status() | ~136 |
+| 17:26 | Edited frontend/src/types/index.ts | expanded (+8 lines) | ~58 |
+| 17:26 | Edited frontend/src/api/analysis.ts | modified cancelIngest() | ~86 |
+| 17:26 | Edited frontend/src/pages/AdminPage.tsx | inline fix | ~44 |
+| 17:26 | Edited frontend/src/pages/AdminPage.tsx | added optional chaining | ~707 |
+| 17:27 | Edited frontend/src/pages/AdminPage.tsx | 6→10 lines | ~232 |
+| 17:27 | Edited frontend/src/pages/AdminPage.tsx | expanded (+7 lines) | ~77 |
+| 17:28 | Edited backend/app/services/batch_ingest_service.py | modified _count_pdfs() | ~297 |
+| 17:28 | Edited frontend/src/types/index.ts | 7→8 lines | ~51 |
+| 17:28 | Edited frontend/src/pages/AdminPage.tsx | inline fix | ~58 |
+| 2026-08-02 | Admin folder browser: GET /admin/browse (fenced under BROWSE_ROOT=home/INGEST_ROOT, path-traversal-safe, bounded recursive PDF count via os.walk caps — home 505+ in 0.39s) + FolderBrowser UI (breadcrumb path, ↑.., clickable subfolders, PDF count, Use-this-folder) in IngestPanel. Answers why no native picker: browsers hide absolute paths + server reads its own FS. | backend/app/services/batch_ingest_service.py, frontend/src/pages/AdminPage.tsx | done, tested | ~3500 |

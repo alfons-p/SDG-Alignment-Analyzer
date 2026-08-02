@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll, startIngest, getIngestStatus, cancelIngest } from '../api/analysis'
+import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll, startIngest, getIngestStatus, cancelIngest, browseFolder } from '../api/analysis'
 import type { AdminRun, AdminStats } from '../types'
 import '../components/results/results.css'
 
@@ -87,10 +87,43 @@ function pillBtn(disabled: boolean): CSSProperties {
   }
 }
 
+const folderRow: CSSProperties = {
+  textAlign: 'left', border: 'none', background: 'transparent', cursor: 'pointer',
+  padding: '7px 10px', borderRadius: 8, fontSize: 13.5, color: 'var(--color-text)',
+}
+
+function FolderBrowser({ onPick, onClose }: { onPick: (p: string) => void; onClose: () => void }) {
+  const [path, setPath] = useState('')
+  const { data, isFetching } = useQuery({ queryKey: ['browse', path], queryFn: () => browseFolder(path) })
+  return (
+    <div style={{ border: '1px solid var(--color-divider)', borderRadius: 16, padding: 14, display: 'flex', flexDirection: 'column', gap: 10, background: 'var(--color-surface)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}>
+        <span style={{ fontFamily: 'monospace', color: 'color-mix(in srgb, var(--color-text) 70%, transparent)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{data?.path ?? '…'}</span>
+        <span style={{ marginLeft: 'auto', whiteSpace: 'nowrap', color: 'var(--color-accent-2-700)' }}>{data ? `${data.pdf_count.toLocaleString()}${data.pdf_count_capped ? '+' : ''} PDFs` : ''}</span>
+      </div>
+      <div style={{ maxHeight: 220, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {data?.parent != null && <button onClick={() => setPath(data.parent!)} style={folderRow}>↑ ..</button>}
+        {(data?.dirs ?? []).map((d) => (
+          <button key={d.path} onClick={() => setPath(d.path)} style={folderRow}>📁 {d.name}</button>
+        ))}
+        {data && data.dirs.length === 0 && (
+          <span style={{ fontSize: 12.5, color: 'color-mix(in srgb, var(--color-text) 55%, transparent)', padding: '6px 8px' }}>No sub-folders here.</span>
+        )}
+      </div>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button onClick={() => data && onPick(data.path)} disabled={!data} style={pillBtn(!data)}>Use this folder</button>
+        <button onClick={onClose} style={{ ...pillBtn(false), background: 'transparent', color: 'var(--color-accent-700)', border: '1px solid var(--color-divider)' }}>Close</button>
+        {isFetching && <span style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>loading…</span>}
+      </div>
+    </div>
+  )
+}
+
 function IngestPanel() {
   const qc = useQueryClient()
   const [path, setPath] = useState('')
   const [publish, setPublish] = useState(false)
+  const [browsing, setBrowsing] = useState(false)
 
   const { data: status } = useQuery({
     queryKey: ['ingest-status'],
@@ -130,8 +163,12 @@ function IngestPanel() {
         <input
           value={path} onChange={(e) => setPath(e.target.value)} disabled={running}
           placeholder="/absolute/path/to/pdf/folder"
-          style={{ flex: '1 1 320px', minWidth: 240, border: '1px solid var(--color-divider)', background: 'var(--color-surface)', borderRadius: 999, padding: '10px 16px', fontSize: 14, color: 'var(--color-text)' }}
+          style={{ flex: '1 1 280px', minWidth: 220, border: '1px solid var(--color-divider)', background: 'var(--color-surface)', borderRadius: 999, padding: '10px 16px', fontSize: 14, color: 'var(--color-text)' }}
         />
+        <button onClick={() => setBrowsing((b) => !b)} disabled={running}
+          style={{ ...pillBtn(!!running), background: 'transparent', color: 'var(--color-accent-700)', border: '1px solid var(--color-divider)' }}>
+          {browsing ? 'Hide browser' : 'Browse…'}
+        </button>
         <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', color: 'var(--color-text)' }}>
           <input type="checkbox" checked={publish} onChange={(e) => setPublish(e.target.checked)} disabled={running} /> publish as it completes
         </label>
@@ -146,6 +183,13 @@ function IngestPanel() {
           </button>
         )}
       </div>
+
+      {browsing && !running && (
+        <FolderBrowser
+          onPick={(p) => { setPath(p); setBrowsing(false) }}
+          onClose={() => setBrowsing(false)}
+        />
+      )}
 
       {startErr && <span style={{ fontSize: 13, color: '#b91c1c' }}>{startErr}</span>}
 

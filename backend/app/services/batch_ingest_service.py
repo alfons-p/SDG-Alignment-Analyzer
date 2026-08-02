@@ -24,6 +24,58 @@ log = logging.getLogger("batch_ingest")
 
 # Optional safety fence: if set, an ingest --input must resolve under this dir.
 INGEST_ROOT = os.getenv("INGEST_ROOT", "")
+# Where the Admin folder browser starts / is fenced to (default: home dir).
+BROWSE_ROOT = os.getenv("INGEST_ROOT") or str(Path.home())
+
+
+def browse(path: str = "") -> dict:
+    """List sub-folders of `path` for the Admin folder browser, fenced under
+    BROWSE_ROOT (no escaping above it, no traversal). Reports the recursive PDF
+    count of the current folder so the operator sees what an ingest would pick
+    up before starting."""
+    root = Path(BROWSE_ROOT).expanduser().resolve()
+    target = root if not path else Path(path).expanduser().resolve()
+    if target != root and root not in target.parents:
+        target = root  # clamp anything outside the fence back to root
+    if not target.is_dir():
+        target = root
+
+    dirs = []
+    try:
+        for c in sorted(target.iterdir(), key=lambda p: p.name.lower()):
+            if c.is_dir() and not c.name.startswith("."):
+                dirs.append({"name": c.name, "path": str(c)})
+    except PermissionError:
+        pass
+
+    pdf_count, capped = _count_pdfs(target)
+
+    return {
+        "root": str(root),
+        "path": str(target),
+        "parent": None if target == root else str(target.parent),
+        "pdf_count": pdf_count,   # recursive — what an ingest here would find
+        "pdf_count_capped": capped,
+        "dirs": dirs,
+    }
+
+
+def _count_pdfs(target: Path, pdf_cap: int = 10000, scan_cap: int = 120000) -> tuple[int, bool]:
+    """Recursive PDF count, bounded so browsing a huge tree (e.g. the home dir)
+    never hangs the request. Returns (count, capped)."""
+    pdfs = scanned = 0
+    try:
+        for dirpath, dirnames, filenames in os.walk(target):
+            dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+            for f in filenames:
+                scanned += 1
+                if f.lower().endswith(".pdf"):
+                    pdfs += 1
+            if pdfs >= pdf_cap or scanned >= scan_cap:
+                return pdfs, True
+    except Exception:  # noqa: BLE001
+        return pdfs, True
+    return pdfs, False
 
 
 def _completed_exists(db, ident: dict) -> bool:

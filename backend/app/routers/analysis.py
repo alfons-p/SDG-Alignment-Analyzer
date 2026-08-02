@@ -472,6 +472,13 @@ def admin_ingest_status(admin: User = Depends(get_current_admin)):
     return bi.get_status()
 
 
+@router.get("/admin/browse")
+def admin_browse(path: str = "", admin: User = Depends(get_current_admin)):
+    """List sub-folders for the Admin folder browser (fenced under BROWSE_ROOT)."""
+    from backend.app.services import batch_ingest_service as bi
+    return bi.browse(path)
+
+
 @router.post("/admin/ingest/cancel")
 def admin_ingest_cancel(admin: User = Depends(get_current_admin)):
     from backend.app.services import batch_ingest_service as bi

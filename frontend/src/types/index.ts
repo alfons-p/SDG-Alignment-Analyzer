@@ -162,6 +162,15 @@ export interface AdminRunsResponse {
   runs: AdminRun[]
 }
 
+export interface BrowseResult {
+  root: string
+  path: string
+  parent: string | null
+  pdf_count: number
+  pdf_count_capped: boolean
+  dirs: { name: string; path: string }[]
+}
+
 export interface IngestStatus {
   running: boolean
   total: number

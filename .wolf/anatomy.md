@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T05:30:03.103Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T07:28:29.951Z
 > Files: 836 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -144,7 +144,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~6698 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~6778 tok)
 - `auth.py` — Auth router — register, login. (~1077 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~586 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -161,7 +161,7 @@
 - `__init__.py` (~0 tok)
 - `aggregation.py` — Standalone aggregation functions — extracted logic, no Reporter dependency. (~935 tok)
 - `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~5404 tok)
-- `batch_ingest_service.py` — Server-side folder ingest — shared by the CLI (scripts/batch_ingest.py) and (~1934 tok)
+- `batch_ingest_service.py` — Server-side folder ingest — shared by the CLI (scripts/batch_ingest.py) and (~2514 tok)
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
 - `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
 - `pdf_service.py` — PDF export — the two document types the Export screen offers (design_handoff (~4338 tok)
@@ -230,7 +230,7 @@
 
 ## frontend/src/api/
 
-- `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1195 tok)
+- `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1250 tok)
 - `auth.ts` — API routes: POST, GET (3 endpoints) (~159 tok)
 - `client.ts` — Declares api (~441 tok)
 - `public.ts` — Exports CouncilYear, Council, National, Narrative + 2 more (~315 tok)
@@ -284,7 +284,7 @@
 ## frontend/src/pages/
 
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
-- `AdminPage.tsx` — AdminPage — renders table (~3912 tok)
+- `AdminPage.tsx` — AdminPage (~4721 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `DashboardPage.tsx` — DashboardPage (~947 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
@@ -300,7 +300,7 @@
 
 ## frontend/src/types/
 
-- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 16 more (~1129 tok)
+- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 17 more (~1180 tok)
 
 ## logs/
 
