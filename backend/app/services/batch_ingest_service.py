@@ -60,13 +60,26 @@ def browse(path: str = "") -> dict:
     }
 
 
+# Cloud-synced / OS-protected folders: descending into these triggers macOS TCC
+# permission prompts (Google Drive, iCloud, Photos, …) and materialises remote
+# files. The recursive count skips them so browsing never provokes a prompt.
+_SKIP_DIRS = {"library", "applications", ".trash", "movies", "music", "pictures"}
+_SKIP_SUBSTR = ("google drive", "onedrive", "dropbox", "icloud", "creative cloud", "photos library")
+
+
+def _is_protected(name: str) -> bool:
+    n = name.lower()
+    return n.startswith(".") or n in _SKIP_DIRS or any(s in n for s in _SKIP_SUBSTR)
+
+
 def _count_pdfs(target: Path, pdf_cap: int = 10000, scan_cap: int = 120000) -> tuple[int, bool]:
-    """Recursive PDF count, bounded so browsing a huge tree (e.g. the home dir)
-    never hangs the request. Returns (count, capped)."""
+    """Recursive PDF count, bounded (so a huge tree never hangs the request) and
+    skipping cloud/protected folders (so it never triggers macOS permission
+    prompts). Returns (count, capped)."""
     pdfs = scanned = 0
     try:
-        for dirpath, dirnames, filenames in os.walk(target):
-            dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+        for _dirpath, dirnames, filenames in os.walk(target):
+            dirnames[:] = [d for d in dirnames if not _is_protected(d)]
             for f in filenames:
                 scanned += 1
                 if f.lower().endswith(".pdf"):

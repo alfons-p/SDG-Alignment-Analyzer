@@ -1609,3 +1609,6 @@
 | 17:28 | Edited frontend/src/types/index.ts | 7→8 lines | ~51 |
 | 17:28 | Edited frontend/src/pages/AdminPage.tsx | inline fix | ~58 |
 | 2026-08-02 | Admin folder browser: GET /admin/browse (fenced under BROWSE_ROOT=home/INGEST_ROOT, path-traversal-safe, bounded recursive PDF count via os.walk caps — home 505+ in 0.39s) + FolderBrowser UI (breadcrumb path, ↑.., clickable subfolders, PDF count, Use-this-folder) in IngestPanel. Answers why no native picker: browsers hide absolute paths + server reads its own FS. | backend/app/services/batch_ingest_service.py, frontend/src/pages/AdminPage.tsx | done, tested | ~3500 |
+| 17:29 | Session end: 133 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~94632 tok |
+| 17:31 | Edited backend/app/services/batch_ingest_service.py | modified _is_protected() | ~384 |
+| 2026-08-02 | Folder-browser TCC fix: recursive PDF count walked into ~/Google Drive → macOS permission prompt storm. _count_pdfs now prunes cloud/protected dirs (Google Drive/iCloud/Dropbox/Library/Photos/etc) — home counts in ~1s, no prompts. Cloud dirs still LISTED (navigable if PDFs live there, one-time Allow) just not auto-descended. | backend/app/services/batch_ingest_service.py | done | ~1500 |
