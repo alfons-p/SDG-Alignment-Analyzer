@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll } from '../api/analysis'
+import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll, startIngest, getIngestStatus, cancelIngest } from '../api/analysis'
 import type { AdminRun, AdminStats } from '../types'
 import '../components/results/results.css'
 
@@ -56,14 +56,17 @@ export function AdminPage() {
         ) : isLoading ? (
           <div className="rx-cmp-empty">Loading…</div>
         ) : tab === 'runs' ? (
-          <RunsTab
-            runs={data?.runs ?? []}
-            stats={data?.stats}
-            onToggle={(id, next) => publishM.mutate({ id, next })}
-            busy={publishM.isPending}
-            onPublishAll={() => publishAllM.mutate()}
-            publishAllBusy={publishAllM.isPending}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <IngestPanel />
+            <RunsTab
+              runs={data?.runs ?? []}
+              stats={data?.stats}
+              onToggle={(id, next) => publishM.mutate({ id, next })}
+              busy={publishM.isPending}
+              onPublishAll={() => publishAllM.mutate()}
+              publishAllBusy={publishAllM.isPending}
+            />
+          </div>
         ) : (
           <div className="rx-cmp-empty">
             {tab === 'narrative'
@@ -72,6 +75,92 @@ export function AdminPage() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function pillBtn(disabled: boolean): CSSProperties {
+  return {
+    border: 'none', cursor: disabled ? 'default' : 'pointer', fontFamily: 'var(--font-heading)',
+    fontSize: 13, padding: '10px 20px', borderRadius: 999,
+    background: 'var(--color-accent)', color: 'var(--color-bg)', opacity: disabled ? 0.5 : 1,
+  }
+}
+
+function IngestPanel() {
+  const qc = useQueryClient()
+  const [path, setPath] = useState('')
+  const [publish, setPublish] = useState(false)
+
+  const { data: status } = useQuery({
+    queryKey: ['ingest-status'],
+    queryFn: getIngestStatus,
+    refetchInterval: (q) => (q.state.data?.running ? 2000 : 8000),
+  })
+  const startM = useMutation({
+    mutationFn: () => startIngest(path.trim(), publish),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['ingest-status'] }),
+  })
+  const cancelM = useMutation({
+    mutationFn: cancelIngest,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['ingest-status'] }),
+  })
+
+  // Keep the runs table + stat tiles fresh while an ingest is running.
+  useEffect(() => {
+    if (status?.running) qc.invalidateQueries({ queryKey: ['admin-runs'] })
+  }, [status?.done, status?.running, qc])
+
+  const running = status?.running
+  const processed = status ? status.done + status.skipped + status.failed : 0
+  const pct = status && status.total ? Math.round((processed / status.total) * 100) : 0
+  const startErr = (startM.error as { response?: { data?: { detail?: string } } } | null)?.response?.data?.detail
+
+  return (
+    <div className="rx-card rx-elev-sm" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <span className="rx-gaps-kicker">Ingest a folder</span>
+        <span style={{ fontSize: 13, color: 'color-mix(in srgb, var(--color-text) 62%, transparent)', textWrap: 'pretty' }}>
+          Analyse every PDF in a folder on the server. Runs in the background — you can close this tab and come back.
+          Reports already analysed are skipped.
+        </span>
+      </div>
+
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          value={path} onChange={(e) => setPath(e.target.value)} disabled={running}
+          placeholder="/absolute/path/to/pdf/folder"
+          style={{ flex: '1 1 320px', minWidth: 240, border: '1px solid var(--color-divider)', background: 'var(--color-surface)', borderRadius: 999, padding: '10px 16px', fontSize: 14, color: 'var(--color-text)' }}
+        />
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', color: 'var(--color-text)' }}>
+          <input type="checkbox" checked={publish} onChange={(e) => setPublish(e.target.checked)} disabled={running} /> publish as it completes
+        </label>
+        {!running ? (
+          <button onClick={() => startM.mutate()} disabled={!path.trim() || startM.isPending} style={pillBtn(!path.trim() || startM.isPending)}>
+            {startM.isPending ? 'Starting…' : 'Start ingest'}
+          </button>
+        ) : (
+          <button onClick={() => cancelM.mutate()} disabled={cancelM.isPending}
+            style={{ ...pillBtn(false), background: 'transparent', color: 'var(--color-accent-700)', border: '1px solid var(--color-divider)' }}>
+            {cancelM.isPending ? 'Cancelling…' : 'Cancel'}
+          </button>
+        )}
+      </div>
+
+      {startErr && <span style={{ fontSize: 13, color: '#b91c1c' }}>{startErr}</span>}
+
+      {status && (status.running || status.finished_at) && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ height: 8, borderRadius: 999, background: 'color-mix(in srgb, var(--color-text) 8%, transparent)', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${pct}%`, background: 'var(--color-accent)', transition: 'width .3s' }} />
+          </div>
+          <div style={{ fontSize: 13, color: 'color-mix(in srgb, var(--color-text) 68%, transparent)' }}>
+            {running ? 'Running' : 'Finished'} · {processed}/{status.total} · {status.done} analysed · {status.skipped} skipped · {status.failed} failed
+            {running && status.current ? ` · ${status.current}` : ''}
+          </div>
+          {status.error && <span style={{ fontSize: 13, color: '#b91c1c' }}>{status.error}</span>}
+        </div>
+      )}
     </div>
   )
 }

@@ -162,6 +162,20 @@ export interface AdminRunsResponse {
   runs: AdminRun[]
 }
 
+export interface IngestStatus {
+  running: boolean
+  total: number
+  done: number
+  skipped: number
+  failed: number
+  current: string | null
+  path: string | null
+  publish: boolean
+  started_at: number | null
+  finished_at: number | null
+  error: string | null
+}
+
 export function getSDGScore(
   scores: Record<string, SDGScore> | undefined,
   sdg: number,

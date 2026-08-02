@@ -86,6 +86,19 @@ export async function publishAll(): Promise<{ published: number }> {
   return data
 }
 
+export async function startIngest(path: string, publish: boolean): Promise<void> {
+  await api.post('/api/analysis/admin/ingest', { path, publish })
+}
+
+export async function getIngestStatus(): Promise<import('../types').IngestStatus> {
+  const { data } = await api.get('/api/analysis/admin/ingest/status')
+  return data
+}
+
+export async function cancelIngest(): Promise<void> {
+  await api.post('/api/analysis/admin/ingest/cancel')
+}
+
 /** Record a client event in the server log. Best-effort — never throws. */
 export async function clientLog(message: string, level: 'info' | 'warning' = 'info'): Promise<void> {
   try {

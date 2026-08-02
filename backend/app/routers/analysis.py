@@ -447,6 +447,37 @@ def publish_analysis(analysis_id: str, admin: User = Depends(get_current_admin),
     return {"id": analysis.id, "published": True}
 
 
+class IngestRequest(BaseModel):
+    path: str
+    publish: bool = False
+
+
+@router.post("/admin/ingest")
+def admin_ingest(body: IngestRequest, admin: User = Depends(get_current_admin)):
+    """Launch a server-side folder ingest in the background. The browser only
+    fires this; the analysis loop runs on the server, so it's tab-independent."""
+    from backend.app.services import batch_ingest_service as bi
+    try:
+        bi.start_ingest(body.path, admin.email, body.publish)
+    except (FileNotFoundError, ValueError) as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
+    return {"started": True}
+
+
+@router.get("/admin/ingest/status")
+def admin_ingest_status(admin: User = Depends(get_current_admin)):
+    from backend.app.services import batch_ingest_service as bi
+    return bi.get_status()
+
+
+@router.post("/admin/ingest/cancel")
+def admin_ingest_cancel(admin: User = Depends(get_current_admin)):
+    from backend.app.services import batch_ingest_service as bi
+    return {"cancel_requested": bi.request_cancel()}
+
+
 @router.post("/admin/publish-all")
 def publish_all(admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
     """Publish every completed, not-yet-published analysis in one call. Single

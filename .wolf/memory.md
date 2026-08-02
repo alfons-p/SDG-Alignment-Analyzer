@@ -1581,3 +1581,17 @@
 | 15:18 | Edited backend/app/routers/analysis.py | inline fix | ~10 |
 | 15:20 | Session end: 112 writes across 28 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~87070 tok |
 | 2026-08-02 | Server-side batch runner scripts/batch_ingest.py: walks folder, skip-if-exists (council+year), run_analysis_sync (pool-isolated/timeout), owned by admin, --publish/--limit/--dry-run, nohup-able, resumable. Fixed data bug: browser webkitdirectory stored FULL PATH as filename → council_name=raw/2023/NSW/... state=None (502 rows) → backfilled 514 rows to basename identity + upload_pdf now stores Path(filename).name. Tested: dry-run skips work, real ingest 1 PDF completed. | scripts/batch_ingest.py, backend/app/routers/analysis.py | done, tested | ~6000 |
+| 15:22 | Session end: 112 writes across 28 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~87070 tok |
+| 15:23 | Session end: 112 writes across 28 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~87070 tok |
+| 15:26 | Created backend/app/services/batch_ingest_service.py | — | ~1934 |
+| 15:26 | Edited backend/app/routers/analysis.py | modified admin_ingest() | ~371 |
+| 15:26 | Created scripts/batch_ingest.py | — | ~969 |
+| 15:27 | Edited frontend/src/types/index.ts | expanded (+14 lines) | ~98 |
+| 15:27 | Edited frontend/src/api/analysis.ts | modified publishAll() | ~168 |
+| 15:27 | Edited frontend/src/pages/AdminPage.tsx | 2→2 lines | ~55 |
+| 15:27 | Edited frontend/src/pages/AdminPage.tsx | CSS: display, flexDirection, gap | ~137 |
+| 15:28 | Edited frontend/src/pages/AdminPage.tsx | 2→2 lines | ~43 |
+| 15:28 | Edited frontend/src/pages/AdminPage.tsx | added optional chaining | ~1275 |
+| 15:30 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/svctest.py | — | ~342 |
+| 15:35 | Session end: 122 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~92462 tok |
+| 2026-08-02 | Admin-triggered server-side ingest: batch_ingest_service.py (shared core ingest_folder + background-thread job w/ progress state + cancel + INGEST_ROOT fence). Endpoints POST /admin/ingest, GET /admin/ingest/status, POST /admin/ingest/cancel. AdminPage IngestPanel (folder path + publish + Start/Cancel + live progress bar, polls status 2s). CLI refactored to reuse core. Browser only fires the command; server runs loop (tab-independent). Tested: service end-to-end 1 PDF completed. | backend/app/services/batch_ingest_service.py, backend/app/routers/analysis.py, frontend/src/pages/AdminPage.tsx | done, tested | ~7000 |
