@@ -1664,3 +1664,13 @@
 | 13:51 | Edited frontend/src/pages/LandingPage.tsx | added optional chaining | ~86 |
 | 13:51 | Edited frontend/src/pages/LandingPage.tsx | added optional chaining | ~294 |
 | 2026-08-03 | P1 Council page: backend build_council_detail(slug) + coverage enrichment (code slug state-name, class from urban_rural, goals per council/by_year, latest_year); GET /api/public/councils/{code}. Frontend CouncilPage /council/:code (header band, year pills, 3 figures, 17-goal evidence ledger w/ expand, extraction/across-years/source cards). Landing map+search now navigate to /council/:code. No lga_code on rows so keyed by slug. | backend/app/services/public_data.py, frontend/src/pages/CouncilPage.tsx | done, tested | ~6000 |
+| 18:37 | Edited backend/app/services/public_data.py | 6→7 lines | ~70 |
+| 18:37 | Edited frontend/src/api/public.ts | 6→7 lines | ~42 |
+| 18:38 | Created frontend/src/pages/BrowsePage.tsx | — | ~3298 |
+| 18:38 | Edited frontend/src/pages/index.ts | 1→2 lines | ~25 |
+| 18:38 | Edited frontend/src/App.tsx | modified App() | ~125 |
+| 18:39 | Edited frontend/src/pages/LandingPage.tsx | 8→5 lines | ~81 |
+| 18:39 | Edited frontend/src/pages/LandingPage.tsx | inline fix | ~34 |
+| 18:40 | Edited frontend/src/pages/LandingPage.tsx | CSS: query | ~165 |
+| 18:40 | Edited frontend/src/pages/LandingPage.tsx | 5→6 lines | ~47 |
+| 2026-08-03 | P1 Browse: /councils filterable list. Filter rail (search, State, Setting=class Urban/Rural, Reporting year, Extraction). 2-line rows: checkbox + name/meta(state.class.pages) + figures(Goals X/17, Activities, Reports span) + 17-dot goal strip. Compare selection bottom bar to /compare?councils=. URL-driven filters. Added pages to coverage by_year. Landing state+peer chips now go to /councils?state|class. | frontend/src/pages/BrowsePage.tsx, backend/app/services/public_data.py | done, built | ~4000 |

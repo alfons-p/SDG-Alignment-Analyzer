@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:51:25.364Z
-> Files: 839 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T08:40:24.958Z
+> Files: 840 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
@@ -165,7 +165,7 @@
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
 - `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
 - `pdf_service.py` — PDF export — the two document types the Export screen offers (design_handoff (~4338 tok)
-- `public_data.py` — Aggregate published analyses into the public coverage payload the landing (~2259 tok)
+- `public_data.py` — Aggregate published analyses into the public coverage payload the landing (~2269 tok)
 
 ## backend/tests/
 
@@ -224,7 +224,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~440 tok)
+- `App.tsx` — App (~460 tok)
 - `index.css` — Styles: 13 rules, 30 vars (~989 tok)
 - `main.tsx` — queryClient (~172 tok)
 
@@ -233,7 +233,7 @@
 - `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1250 tok)
 - `auth.ts` — API routes: POST, GET (3 endpoints) (~159 tok)
 - `client.ts` — Declares api (~441 tok)
-- `public.ts` — Exports CouncilYear, Council, EvidencePassage, CouncilYearDetail + 6 more (~552 tok)
+- `public.ts` — Exports CouncilYear, Council, EvidencePassage, CouncilYearDetail + 6 more (~559 tok)
 - `reference.ts` — API routes: GET (3 endpoints) (~147 tok)
 - `results.ts` — API routes: POST (1 endpoints) (~78 tok)
 
@@ -285,6 +285,7 @@
 
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
 - `AdminPage.tsx` — AdminPage (~4721 tok)
+- `BrowsePage.tsx` — "2023–25" contiguous, "2023, 2025" with a gap, "2024" single. (~3298 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `council.css` — Styles: 20 rules (~687 tok)
 - `CouncilPage.tsx` — GOAL_FULL (~3188 tok)
@@ -292,9 +293,9 @@
 - `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
-- `index.ts` (~164 tok)
+- `index.ts` (~176 tok)
 - `landing.css` — Styles: 44 rules (~1390 tok)
-- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10099 tok)
+- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10194 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
 - `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3180 tok)

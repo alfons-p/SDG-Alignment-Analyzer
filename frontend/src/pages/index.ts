@@ -1,5 +1,6 @@
 export { LandingPage } from './LandingPage'
 export { CouncilPage } from './CouncilPage'
+export { BrowsePage } from './BrowsePage'
 export { LoginPage } from './LoginPage'
 export { RegisterPage } from './RegisterPage'
 export { DashboardPage } from './DashboardPage'

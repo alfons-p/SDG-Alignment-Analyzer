@@ -97,6 +97,7 @@ def build_public_coverage(db: Session) -> dict[str, Any]:
             "goals_evidenced": len(goals),
             "goals": goals,
             "activities": total,
+            "pages": page_count,
             "extraction": _extraction_grade(total, page_count),
         }
 

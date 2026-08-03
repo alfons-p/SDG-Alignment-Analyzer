@@ -4,6 +4,7 @@ export interface CouncilYear {
   goals_evidenced: number
   goals?: number[]
   activities: number
+  pages?: number | null
   extraction?: string
 }
 

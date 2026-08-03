@@ -95,12 +95,9 @@ const PAGE_HTML = `
       <div style="display: flex; flex-direction: column; gap: 10px">
         <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Or compare like with like</span>
         <div style="display: flex; flex-wrap: wrap; gap: 7px">
-          <button class="chip">Metro</button>
-          <button class="chip">Regional</button>
-          <button class="chip">Rural</button>
-          <button class="chip">City councils</button>
-          <button class="chip">Shires</button>
-          <button class="chip">By population band</button>
+          <button class="chip" data-goto="">All councils</button>
+          <button class="chip" data-goto="class=Urban">Urban</button>
+          <button class="chip" data-goto="class=Rural">Rural</button>
         </div>
         <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
       </div>
@@ -415,7 +412,7 @@ export function LandingPage() {
     })
 
     page.querySelectorAll<HTMLElement>('[data-states]').forEach((el) => {
-      el.innerHTML = STATES.map((s) => '<button class="chip">' + s + '</button>').join('')
+      el.innerHTML = STATES.map((s) => '<button class="chip" data-goto="state=' + s + '">' + s + '</button>').join('')
     })
     page.querySelectorAll<HTMLElement>('[data-legend]').forEach((el) => {
       el.innerHTML = [2, 5, 8, 11, 14, 17].map((g) =>
@@ -522,6 +519,15 @@ export function LandingPage() {
       })
     }
 
+    // A chip that changes WHICH councils you're looking at goes to Browse.
+    const onGoto = (e: Event) => {
+      const g = (e.target as HTMLElement).closest<HTMLElement>('[data-goto]')
+      if (!g) return
+      const query = g.dataset.goto
+      navigate('/councils' + (query ? '?' + query : ''))
+    }
+    page.addEventListener('click', onGoto)
+
     // ── in-app navigation for the design's buttons/links ──
     const onNav = (e: Event) => {
       const t = (e.target as HTMLElement).closest<HTMLElement>('[data-nav]')
@@ -540,6 +546,7 @@ export function LandingPage() {
 
     return () => {
       page.removeEventListener('click', onNav)
+      page.removeEventListener('click', onGoto)
     }
   }, [navigate])
 
