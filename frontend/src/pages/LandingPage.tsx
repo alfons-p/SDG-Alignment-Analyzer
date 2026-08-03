@@ -21,111 +21,114 @@ import './landing.css'
 
 // prettier-ignore
 const PAGE_HTML = `
-  <div class="nav2">
-    <span class="brand" data-nav="home">SDG Alignment Analyser</span>
+  <div class="nav2" style="display:flex;align-items:center;gap:24px;padding:20px 56px">
+    <span class="brand" data-nav="home" style="font-family:var(--font-heading);font-size:21px;line-height:1">SDG Alignment Analyser</span>
     <span class="navlink">The dataset</span>
     <span class="navlink">Findings</span>
-    <span class="navlink">Method</span>
-    <div style="margin-left: auto; display: flex; align-items: center; gap: 12px">
-      <button class="btn btn-ghost" style="border-radius: 999px" data-nav="login">Sign in</button>
-      <button class="btn btn-secondary" style="border-radius: 999px" data-nav="find">Find your council</button>
-      <button class="btn btn-primary" style="border-radius: 999px" data-nav="upload">Upload a report</button>
+    <span class="navlink" data-nav="limits">Method</span>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+      <button class="btn btn-ghost" style="border-radius:999px" data-nav="login">Sign in</button>
+      <button class="btn btn-primary" style="border-radius:999px" data-nav="upload">Upload a report</button>
     </div>
   </div>
 
-  <div style="padding: 54px 56px 40px; display: flex; flex-direction: column; gap: 32px">
-    <div style="display: flex; flex-direction: column; gap: 20px; max-width: 1020px">
-      <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)" data-stat="kicker">Australian council annual reports, 2023&ndash;2025</span>
-      <h1 style="margin: 0; font-size: 62px; line-height: 1.0; text-wrap: pretty" data-stat="headline">What Australian councils actually did about the Goals.</h1>
-      <p style="margin: 0; font-size: 19px; line-height: 1.6; max-width: 800px; text-wrap: pretty" data-stat="lead">We read published council annual reports, find the activities described in them, and match each one to the seventeen Sustainable Development Goals. The findings below are computed from every report analysed.</p>
+  <!-- ── Above the fold: finding left, dataset right ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;padding:26px 56px 44px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700)" data-stat="kicker">Australian council annual reports</span>
+      <h1 style="margin:0;font-size:38px;line-height:1.07;text-wrap:pretty" data-stat="headline">Two activities in every five describe the same Goal.</h1>
+
+      <div style="display:flex;flex-direction:column;margin-top:6px">
+        <div style="display:flex;align-items:baseline;gap:16px;padding:10px 0;border-top:1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
+          <span style="font-family:var(--font-heading);font-size:30px;line-height:1;width:84px;flex:0 0 auto" data-stat="goal11">&mdash;</span>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:14px;font-weight:600;line-height:1.4" data-stat="goal11label">share of activities on the leading Goal</span>
+            <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="goal11note">Computed from the published dataset.</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:16px;padding:10px 0;border-top:1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
+          <span style="font-family:var(--font-heading);font-size:30px;line-height:1;width:84px;flex:0 0 auto" data-stat="goal14">&mdash;</span>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:14px;font-weight:600;line-height:1.4" data-stat="goal14label">the least-evidenced Goals</span>
+            <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="goal14note">Computed from the published dataset.</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:16px;padding:10px 0;border-top:1px solid color-mix(in srgb, var(--color-text) 13%, transparent);border-bottom:1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
+          <span style="font-family:var(--font-heading);font-size:30px;line-height:1;width:84px;flex:0 0 auto;color:var(--color-accent-700)" data-stat="median">&mdash;</span>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:14px;font-weight:600;line-height:1.4">Goals evidenced by the median council</span>
+            <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="mediannote">Computed from the published dataset.</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px">
-      <div class="card" style="padding: 30px 32px; gap: 10px">
-        <span style="font-family: var(--font-heading); font-size: 42px; line-height: 1" data-stat="goal11">&mdash;</span>
-        <span style="font-size: 15px; font-weight: 600" data-stat="goal11label">share of activities on the leading Goal</span>
-        <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)" data-stat="goal11note">Computed from the published dataset.</span>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="searchwrap" data-search>
+        <input class="input" placeholder="Find your council" style="width:100%;border-radius:999px;font-size:15px;padding:14px 20px" data-input>
+        <div class="results" data-results></div>
       </div>
-      <div class="card" style="padding: 30px 32px; gap: 10px">
-        <span style="font-family: var(--font-heading); font-size: 42px; line-height: 1" data-stat="goal14">&mdash;</span>
-        <span style="font-size: 15px; font-weight: 600" data-stat="goal14label">the least-evidenced Goals</span>
-        <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)" data-stat="goal14note">Computed from the published dataset.</span>
+      <div style="border-radius:30px;background:var(--color-surface);box-shadow:var(--shadow-sm);padding:10px" data-map></div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent)" data-maphint>Shaded by Goals evidenced in the council's most recent report.</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent)">few</span>
+          <div style="display:flex;gap:3px" data-legend></div>
+          <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent)">many</span>
+        </div>
       </div>
-      <div class="card" style="padding: 30px 32px; gap: 10px">
-        <span style="font-family: var(--font-heading); font-size: 42px; line-height: 1; color: var(--color-accent-700)" data-stat="median">&mdash;</span>
-        <span style="font-size: 15px; font-weight: 600">Goals evidenced by the median council</span>
-        <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)" data-stat="mediannote">Computed from the published dataset.</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;gap:6px" data-years></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px" data-states></div>
       </div>
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 48px; padding: 12px 56px 52px; align-items: start">
+  <!-- ── Below the fold ── -->
+  <p style="margin:0;padding:4px 56px 30px;max-width:860px;font-size:18px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty" data-stat="lead">The findings below are computed from every report analysed.</p>
 
-    <div style="display: flex; flex-direction: column; gap: 14px">
-      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap">
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <h2 style="margin: 0; font-size: 24px">Every local government area</h2>
-          <span style="font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-maphint>Shaded by Goals evidenced in the council's most recent report.</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px">
-          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">few</span>
-          <div style="display: flex; gap: 3px" data-legend></div>
-          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">many</span>
-        </div>
-      </div>
-      <div style="border-radius: 32px; background: var(--color-surface); box-shadow: var(--shadow-sm); padding: 12px" data-map></div>
-      <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 52%, transparent)" data-mapsource></span>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 22px">
-      <div style="display: flex; flex-direction: column; gap: 14px">
-        <h2 style="margin: 0; font-size: 26px">Find a council</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
-        <div class="searchwrap" data-search>
-          <input class="input" placeholder="Council name or postcode" style="width: 100%; border-radius: 999px; font-size: 15px; padding: 14px 20px" data-input>
-          <div class="results" data-results></div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
-          <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Year</span>
-          <div style="display: flex; gap: 6px" data-years></div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 7px" data-states></div>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Or compare like with like</span>
-        <div style="display: flex; flex-wrap: wrap; gap: 7px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;padding:8px 56px 48px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <h2 style="margin:0;font-size:24px">Compare like with like</h2>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 68%, transparent);text-wrap:pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
           <button class="chip" data-goto="">All councils</button>
           <button class="chip" data-goto="class=Urban">Urban</button>
           <button class="chip" data-goto="class=Rural">Rural</button>
         </div>
-        <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
+        <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
       </div>
+      <span style="font-size:12px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 52%, transparent)" data-mapsource></span>
+    </div>
 
-      <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 3.5%, transparent)">
-        <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Recently added</span>
-        <div style="display: flex; align-items: baseline; gap: 12px">
-          <span style="font-family: var(--font-heading); font-size: 20px">City of Melbourne</span>
-          <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">2024&ndash;25</span>
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;flex-direction:column;gap:12px;padding:24px 28px;border-radius:28px;background:color-mix(in srgb, var(--color-text) 3.5%, transparent)">
+        <span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent)">Recently added</span>
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <span style="font-family:var(--font-heading);font-size:20px">City of Melbourne</span>
+          <span style="font-size:13px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">2024&ndash;25</span>
         </div>
-        <span style="font-size: 14px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">176 activities described, 13 of 17 Goals evidenced. Half of everything reported is city-shaping work.</span>
-        <a href="#" data-nav="login" style="font-size: 14px; align-self: flex-start">Open the analysis</a>
+        <span style="font-size:14px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 68%, transparent);text-wrap:pretty">176 activities described, 13 of 17 Goals evidenced. Half of everything reported is city-shaping work.</span>
+        <a href="#" data-nav="login" style="font-size:14px;align-self:flex-start">Open the analysis</a>
       </div>
-
-      <div style="display: flex; flex-direction: column; gap: 12px; padding: 28px 30px; border-radius: 28px; background: var(--color-accent-100)">
-        <h2 style="margin: 0; font-size: 24px; color: var(--color-accent-800)">Or add this year's report</h2>
-        <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--color-accent-800); text-wrap: pretty">Council officers can upload a newly published annual report and see the analysis in minutes. Your result stays private until you choose to publish it.</p>
-        <div style="display: flex; align-items: center; gap: 14px; padding-top: 2px; flex-wrap: wrap">
-          <button class="btn btn-primary" style="border-radius: 999px" data-nav="upload">Upload a report</button>
-          <span style="font-size: 13px; color: var(--color-accent-800)">Verified council accounts</span>
+      <div style="display:flex;flex-direction:column;gap:12px;padding:28px 30px;border-radius:28px;background:var(--color-accent-100)">
+        <h2 style="margin:0;font-size:24px;color:var(--color-accent-800)">Or add this year's report</h2>
+        <p style="margin:0;font-size:14.5px;line-height:1.6;color:var(--color-accent-800);text-wrap:pretty">Council officers can upload a newly published annual report and see the analysis in minutes. Your result stays private until you choose to publish it.</p>
+        <div style="display:flex;align-items:center;gap:14px;padding-top:2px;flex-wrap:wrap">
+          <button class="btn btn-primary" style="border-radius:999px" data-nav="upload">Upload a report</button>
+          <span style="font-size:13px;color:var(--color-accent-800)">Verified council accounts</span>
         </div>
       </div>
     </div>
   </div>
 
-  <div style="display: flex; align-items: center; gap: 24px; padding: 24px 56px; margin: 0 56px 56px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
-    <span style="text-wrap: pretty">Analysis reads published annual reports only. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none. Boundaries &copy; Australian Bureau of Statistics, ASGS Edition 3.</span>
-    <a href="#method" data-nav="limits" style="margin-left: auto; white-space: nowrap">About this analysis and its limits</a>
+  <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:22px 30px;margin:0 56px 56px;border-radius:28px;background:color-mix(in srgb, var(--color-text) 4%, transparent);font-size:12.5px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 62%, transparent)">
+    <span style="flex:1 1 520px;text-wrap:pretty">This analysis reads what council annual reports <strong>describe</strong>. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none.</span>
+    <div style="display:flex;align-items:center;gap:20px;margin-left:auto;white-space:nowrap">
+      <a href="#" data-nav="limits">About this analysis and its limits</a>
+      <span style="color:color-mix(in srgb, var(--color-text) 45%, transparent)">Boundaries &copy; ABS, ASGS Ed. 3</span>
+    </div>
   </div>
 `
 
@@ -211,7 +214,7 @@ export function LandingPage() {
       'Western Australia': 'WA', Tasmania: 'TAS', 'Northern Territory': 'NT',
       'Australian Capital Territory': 'ACT',
     }
-    const W = 780, H = 620
+    const W = 600, H = 430
 
     const norm = (s: string) => s.toLowerCase()
       .replace(/\((vic|tas|nsw|qld|wa|sa|nt|act)\.?\)/g, '')

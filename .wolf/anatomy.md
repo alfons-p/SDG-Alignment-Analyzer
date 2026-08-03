@@ -1,11 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T10:35:36.271Z
-> Files: 843 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T10:39:08.448Z
+> Files: 844 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
 - `leaktest.py` — main (~228 tok)
+- `newpagehtml.txt` — Declares PAGE_HTML (~2335 tok)
 - `svctest.py` — main (~342 tok)
 - `timeouttest.py` — main (~415 tok)
 
