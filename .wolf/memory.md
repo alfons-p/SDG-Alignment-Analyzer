@@ -1637,3 +1637,11 @@
 | 13:35 | Created frontend/src/pages/DashboardPage.tsx | — | ~1188 |
 | 13:36 | Created frontend/src/components/analysis/StatusBadge.tsx | — | ~247 |
 | 2026-08-03 | DESIGN P2 (shell redesign, part 1): organic ground+type at body (was slate #f8fafc), global :focus-visible accent ring, missing tokens (--space-*, --radius-sm, --color-accent-600). Deleted dark V1 Sidebar.tsx; AppLayout now sticky top-bar (surface+shadow, brand, nav tabs w/ accent active border, user+signout). Restyled DashboardPage + StatusBadge to organic. Design handoff v2 in ~/Downloads zip → scratchpad/handoff2 (new screens Browse/Council/Compare/Access/Limitations + implementation-review.md). | frontend/src/index.css, frontend/src/components/layout/AppLayout.tsx, frontend/src/pages/DashboardPage.tsx | done part 1, build green | ~4000 |
+| 13:37 | Session end: 140 writes across 36 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 34 reads | ~106343 tok |
+| 13:39 | Edited frontend/src/pages/LandingPage.tsx | modified shade() | ~123 |
+| 13:39 | Edited frontend/src/pages/LandingPage.tsx | CSS: councilCount, voice, items | ~660 |
+| 13:40 | Edited frontend/src/pages/LandingPage.tsx | added optional chaining | ~81 |
+| 13:40 | Edited frontend/src/pages/LandingPage.tsx | inline fix | ~46 |
+| 13:41 | Edited frontend/src/pages/LandingPage.tsx | added 1 condition(s) | ~181 |
+| 13:41 | Edited frontend/src/pages/LandingPage.tsx | inline fix | ~71 |
+| 2026-08-03 | DESIGN P0 (Landing overclaiming): headlineFor now takes councilCount + NATIONAL_MIN_COUNCILS=40 provisional voice (no "Australian" below 40); listWords() proper joining (A, B and C); derived findblurb + count-named lead (no hardcoded "three reporting years"); map unmatched fill 5

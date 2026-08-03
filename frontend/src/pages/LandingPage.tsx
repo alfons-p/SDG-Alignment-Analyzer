@@ -80,7 +80,7 @@ const PAGE_HTML = `
     <div style="display: flex; flex-direction: column; gap: 22px">
       <div style="display: flex; flex-direction: column; gap: 14px">
         <h2 style="margin: 0; font-size: 26px">Find a council</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">Three reporting years for every local government area, with the passage behind every match. No account needed.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
         <div class="searchwrap" data-search>
           <input class="input" placeholder="Council name or postcode" style="width: 100%; border-radius: 999px; font-size: 15px; padding: 14px 20px" data-input>
           <div class="results" data-results></div>
@@ -256,7 +256,9 @@ export function LandingPage() {
       return d.years_available || 0
     }
     function shade(g: number | null): string {
-      if (g == null) return 'color-mix(in srgb, var(--color-text) 5%, transparent)'
+      // Unmatched LGAs at 13% (not 5%): with a partial dataset most of the
+      // country is unmatched, and at 5% the map read as blank.
+      if (g == null) return 'color-mix(in srgb, var(--color-text) 13%, transparent)'
       const t = Math.max(0, Math.min(1, (g - 2) / 13))
       return 'color-mix(in srgb, #FD9D24 ' + Math.round(20 + t * 80) + '%, var(--color-surface))'
     }
@@ -277,16 +279,34 @@ export function LandingPage() {
       if (colour) el.style.color = colour
     }
 
-    // Self-writing headline — owns the WHOLE sentence so both clauses come from
-    // the same threshold and can never contradict each other. Ported verbatim.
-    function headlineFor(share: number, goalNum: number, goalName: string): string {
+    // A sweeping claim about "Australian councils" is only honest once the
+    // dataset is broad enough. Below NATIONAL_MIN_COUNCILS the same finding is
+    // stated as an observation about the councils analysed, not about the country.
+    const NATIONAL_MIN_COUNCILS = 40
+
+    function headlineFor(share: number, goalNum: number, goalName: string, councilCount: number): string {
       const subject = goalNum === 11 ? 'cities' : goalName.toLowerCase()
+      const national = (councilCount || 0) >= NATIONAL_MIN_COUNCILS
+      if (!national) {
+        // Provisional voice: describes the sample, never the country.
+        if (share >= 0.45) return 'In one activity out of every two, the same Goal. Councils describe ' + subject + ' plainly, and everything else obliquely.'
+        if (share >= 0.35) return 'In two activities out of every five, the same Goal. Councils describe ' + subject + ' plainly, and everything else obliquely.'
+        if (share >= 0.25) return goalName + ' leads what these councils describe — one activity in every three.'
+        return 'No single Goal dominates the councils analysed so far.'
+      }
       if (share >= 0.6) return 'Three activities in every five describe the same Goal. Australian councils write about ' + subject + ' plainly, and everything else obliquely.'
       if (share >= 0.45) return 'One activity in every two describes the same Goal. Australian councils write about ' + subject + ' plainly, and everything else obliquely.'
       if (share >= 0.35) return 'Two activities in every five describe the same Goal. Australian councils write about ' + subject + ' plainly, and everything else obliquely.'
       if (share >= 0.25) return 'One activity in every three describes the same Goal — ' + goalName + ' leads what Australian councils describe.'
       if (share >= 0.15) return 'No single Goal dominates, though ' + goalName + ' leads what Australian councils describe.'
       return 'No single Goal dominates. Coverage is spread across the seventeen Goals.'
+    }
+
+    // "A", "A and B", "A, B and C" — never "A and B and C".
+    const listWords = (items: string[]): string => {
+      if (items.length === 0) return ''
+      if (items.length === 1) return items[0]
+      return items.slice(0, -1).join(', ') + ' and ' + items[items.length - 1]
     }
     function shareWords(share: number): string {
       if (share >= 0.62 && share <= 0.68) return 'close to two thirds'
@@ -302,6 +322,7 @@ export function LandingPage() {
     function paintNational(n: National | null, councils: Rec[] | null, narrative?: Narrative) {
       if (!n && !councils) return
       n = n || {}
+      const councilCount = (n as { councils?: number }).councils || (councils?.length ?? 0)
       const shares = n.goal_shares || null
       let top: [number, number] | null = null, bottom: [number, number] | null = null
       if (shares) {
@@ -318,7 +339,7 @@ export function LandingPage() {
         if (zeros.length) {
           set('goal14', String(zeros.length), GOAL_COLORS[zeros[0]])
           set('goal14label', zeros.length === 1 ? 'Goal reaches no described activity at all' : 'Goals reach no described activity at all')
-          set('goal14note', zeros.map((z) => GOAL_FULL[z]).join(' and ') + ' — not absent from council work, absent from the language councils use to describe it.')
+          set('goal14note', listWords(zeros.map((z) => GOAL_FULL[z])) + ' — not absent from council work, absent from the language councils use to describe it.')
         } else if (bottom) {
           const pct = bottom[1] * 100
           set('goal14', (pct < 10 ? pct.toFixed(1) : Math.round(pct)) + '%', GOAL_COLORS[bottom[0]])
@@ -353,9 +374,16 @@ export function LandingPage() {
         }
         return
       }
+      if (councilCount) {
+        const yrs = YEARS.length
+        set('findblurb',
+          councilCount + (councilCount === 1 ? ' council' : ' councils') +
+          (yrs ? ', ' + yrs + (yrs === 1 ? ' reporting year' : ' reporting years') : '') +
+          ' analysed so far, with the passage behind every match. No account needed.')
+      }
       if (top) {
-        set('headline', headlineFor(top[1], top[0], GOAL_FULL[top[0]]))
-        set('lead', 'Across the councils analysed so far, ' + shareWords(top[1]) + ' of the activities described in their annual reports align to Goal ' + top[0] + ', ' + GOAL_FULL[top[0]] + '. The work behind the other sixteen Goals is being done — it just isn’t being written down in language that credits it.')
+        set('headline', headlineFor(top[1], top[0], GOAL_FULL[top[0]], councilCount))
+        set('lead', (councilCount >= NATIONAL_MIN_COUNCILS ? 'Across the councils analysed so far, ' : 'Across the ' + councilCount + ' councils analysed so far, ') + shareWords(top[1]) + ' of the activities described in their annual reports align to Goal ' + top[0] + ', ' + GOAL_FULL[top[0]] + '. The work behind the other sixteen Goals is being done — it just isn’t being written down in language that credits it.')
       }
     }
 

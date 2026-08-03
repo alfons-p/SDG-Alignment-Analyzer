@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:36:41.270Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:41:13.628Z
 > Files: 837 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -292,7 +292,7 @@
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
 - `index.ts` (~151 tok)
 - `landing.css` — Styles: 44 rules (~1390 tok)
-- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~9415 tok)
+- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~9924 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
 - `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3180 tok)
