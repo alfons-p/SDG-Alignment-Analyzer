@@ -329,6 +329,24 @@ class ActivityExtractor:
             extraction_result = self.pdf_extractor.extract_text_from_pdf(pdf_path)
             raw_text = extraction_result["text"]
 
+            # Fallback: the default extractor (PyMuPDF/fitz) under-reads some
+            # PDFs — it can return a small fraction of the real text (e.g.
+            # 11k chars where pdfplumber reads 689k). When the result is
+            # suspiciously thin (< ~200 chars/page), retry with pdfplumber and
+            # keep whichever is richer. Only triggers on thin results, so the
+            # common case (fitz works well) is unchanged.
+            _pages = extraction_result.get("metadata", {}).get("page_count", 0) or 1
+            if len(raw_text) < 200 * _pages:
+                try:
+                    from src.enhanced_pdf_extractor import PDFPlumberExtractor
+                    alt = PDFPlumberExtractor().extract_text_from_pdf(pdf_path)
+                    if len(alt.get("text", "")) > len(raw_text) * 1.5:
+                        print(f"  fitz thin ({len(raw_text)}c) → pdfplumber ({len(alt['text'])}c)")
+                        extraction_result = alt
+                        raw_text = alt["text"]
+                except Exception as _e:  # noqa: BLE001
+                    pass
+
         # Apply sentence reconstruction if enabled
         if self.use_sentence_reconstruction and self.sentence_reconstructor:
             reconstructed_text = self.sentence_reconstructor.reconstruct(raw_text)

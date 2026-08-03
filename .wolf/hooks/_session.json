@@ -141,6 +141,21 @@
       "count": 6,
       "tokens": 4216,
       "first_read": "2026-08-01T10:44:38.414Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/src/enhanced_pdf_extractor.py": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-08-03T02:39:52.590Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/src/activity_extractor.py": {
+      "count": 1,
+      "tokens": 6972,
+      "first_read": "2026-08-03T02:53:07.833Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/src/pdf_extractor.py": {
+      "count": 4,
+      "tokens": 0,
+      "first_read": "2026-08-03T03:11:52.047Z"
     }
   },
   "files_written": [
@@ -947,6 +962,18 @@
       "action": "edit",
       "tokens": 384,
       "at": "2026-08-02T07:31:42.842Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/src/pdf_extractor.py",
+      "action": "edit",
+      "tokens": 252,
+      "at": "2026-08-03T03:13:55.417Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/src/activity_extractor.py",
+      "action": "edit",
+      "tokens": 356,
+      "at": "2026-08-03T03:18:40.733Z"
     }
   ],
   "edit_counts": {
@@ -982,11 +1009,13 @@
     "../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/timeouttest.py": 1,
     "scripts/batch_ingest.py": 2,
     "backend/app/services/batch_ingest_service.py": 4,
-    "../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/svctest.py": 1
+    "../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/svctest.py": 1,
+    "src/pdf_extractor.py": 1,
+    "src/activity_extractor.py": 1
   },
-  "anatomy_hits": 22,
-  "anatomy_misses": 5,
-  "repeated_reads_warned": 22,
+  "anatomy_hits": 23,
+  "anatomy_misses": 7,
+  "repeated_reads_warned": 25,
   "cerebrum_warnings": 0,
-  "stop_count": 78
+  "stop_count": 94
 }

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T07:31:42.831Z
-> Files: 836 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:18:40.724Z
+> Files: 837 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
@@ -1024,10 +1024,11 @@
 ## src/
 
 - `activity_classifier.py` — Activity Classifier Module. (~2028 tok)
-- `activity_extractor.py` — Activity Extraction Module. (~6972 tok)
+- `activity_extractor.py` — Activity Extraction Module. (~7286 tok)
 - `alignment_engine.py` — SDG Alignment Engine. (~8441 tok)
 - `embedding_cache.py` — Embedding Cache Module. (~4716 tok)
 - `hybrid_alignment_engine.py` — Hybrid Alignment Engine with sdgBERT Support. (~11930 tok)
+- `pdf_extractor.py` — PDF text extraction module using PyMuPDF. (~3658 tok)
 - `sdg_bert_classifier.py` — SDG BERT Classifier Module. (~5955 tok)
 - `sdg_ensemble_weights.py` — SDG-specific ensemble weights (~234 tok)
 - `sdg_reference.py` — SDG Reference Data Module. (~7199 tok)

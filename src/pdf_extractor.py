@@ -128,39 +128,20 @@ class PDFExtractor:
         """
         Check if a page appears to be a table of contents page.
 
+        Requires an explicit TOC header near the top of the page. The previous
+        number-density heuristics (>40% of lines ending in a number, or >=5
+        lines ending in a short number) wrongly flagged number/table-heavy
+        report pages — financials, statistics, KPIs — as TOC and dropped them,
+        which for very data-dense reports discarded almost every content page
+        (e.g. 128 of 131) and yielded zero activities. A real TOC reliably
+        carries a "contents" heading; leaning on that is far safer than losing
+        real content.
+
         Returns:
             True if the page is likely a TOC page
         """
-        text_lower = text.lower()
-
-        # Check for explicit TOC markers
-        toc_headers = ['contents', 'table of contents', 'index']
-        if any(header in text_lower[:500] for header in toc_headers):
-            return True
-
-        # Check for TOC pattern: multiple lines with text followed by page numbers
-        lines = text.split('\n')
-        toc_line_count = 0
-        total_lines = 0
-
-        for line in lines:
-            line_stripped = line.strip()
-            if len(line_stripped) > 5:  # Skip very short lines
-                total_lines += 1
-                # Pattern: text followed by number at end (page number)
-                if re.search(r'\w+.*?\d+\s*$', line_stripped):
-                    toc_line_count += 1
-
-        # If more than 40% of lines look like TOC entries
-        if total_lines > 5 and toc_line_count / total_lines > 0.4:
-            return True
-
-        # Check for high density of page number patterns
-        page_number_patterns = re.findall(r'\b\d{1,3}\s*$', text, re.MULTILINE)
-        if len(page_number_patterns) >= 5:
-            return True
-
-        return False
+        head = text.lower()[:500]
+        return any(h in head for h in ('table of contents', 'contents', 'index'))
 
     def _filter_page_content(self, text: str) -> str:
         """

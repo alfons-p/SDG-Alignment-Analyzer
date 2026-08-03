@@ -1612,3 +1612,22 @@
 | 17:29 | Session end: 133 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~94632 tok |
 | 17:31 | Edited backend/app/services/batch_ingest_service.py | modified _is_protected() | ~384 |
 | 2026-08-02 | Folder-browser TCC fix: recursive PDF count walked into ~/Google Drive → macOS permission prompt storm. _count_pdfs now prunes cloud/protected dirs (Google Drive/iCloud/Dropbox/Library/Photos/etc) — home counts in ~1s, no prompts. Cloud dirs still LISTED (navigable if PDFs live there, one-time Allow) just not auto-descended. | backend/app/services/batch_ingest_service.py | done | ~1500 |
+| 17:33 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 17:34 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 17:34 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 17:35 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 07:26 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 07:33 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 08:28 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 08:44 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 12:38 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 28 reads | ~95016 tok |
+| 12:51 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 29 reads | ~95016 tok |
+| 12:54 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 30 reads | ~101988 tok |
+| 12:59 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 30 reads | ~101988 tok |
+| 13:01 | Session end: 134 writes across 30 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 30 reads | ~101988 tok |
+| 13:13 | Edited src/pdf_extractor.py | modified _is_toc_page() | ~252 |
+| 13:17 | Session end: 135 writes across 31 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 31 reads | ~102240 tok |
+| 13:18 | Edited src/activity_extractor.py | expanded (+18 lines) | ~356 |
+| 13:26 | Session end: 136 writes across 32 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 31 reads | ~102596 tok |
+| 13:27 | Session end: 136 writes across 32 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 31 reads | ~102596 tok |
+| 2026-08-03 | Extraction fixes for text-heavy failures. ROOT CAUSE 1: PDFExtractor._is_toc_page flagged 128/131 pages as TOC (>40% lines ending in number heuristic) → dropped number/table-heavy report pages → 0 activities. Fixed: require explicit contents/index header. Recovered Sunshine Coast 0→147. ROOT CAUSE 2: fitz under-reads some PDFs (Queanbeyan fitz 11k vs pdfplumber 689k) → added pdfplumber fallback when fitz <200 chars/page. Paroo/Yarrabah/Queanbeyan still 0 (sparse-prose edge cases, parked). 14 scanned→OCR. | src/pdf_extractor.py, src/activity_extractor.py | TOC fix verified, fallback partial | ~9000 |
