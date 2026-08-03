@@ -89,13 +89,13 @@ export function ResultsPage() {
 
   if (job?.status === 'failed' || result?.status === 'failed') {
     return (
-      <div>
-        <button onClick={() => navigate('/dashboard')} className="text-sm text-blue-600 hover:underline mb-4 flex items-center gap-1">
+      <div style={{ maxWidth: 720, margin: '0 auto' }}>
+        <button onClick={() => navigate('/dashboard')} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--color-accent-700)', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 16, padding: 0 }}>
           <ArrowLeft size={14} /> Back to dashboard
         </button>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-red-800 mb-2">Analysis Failed</h2>
-          <p className="text-sm text-red-600 whitespace-pre-wrap">{job?.error_message || result?.error_message}</p>
+        <div style={{ background: 'var(--color-accent-100)', borderRadius: 24, padding: 24, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 22, color: 'var(--color-accent-800)', margin: 0 }}>Analysis failed</h2>
+          <p style={{ fontSize: 13.5, lineHeight: 1.6, color: 'var(--color-accent-800)', whiteSpace: 'pre-wrap', margin: 0 }}>{job?.error_message || result?.error_message}</p>
         </div>
       </div>
     )
@@ -207,96 +207,46 @@ function PollingView({
   const currentStep = job?.current_step ?? null
   const activeIdx = getActiveStageIndex(currentStep)
 
+  const mutedC = 'color-mix(in srgb, var(--color-text) 55%, transparent)'
   return (
-    <div className="max-w-lg mx-auto py-12">
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
-        <h2 className="text-lg font-semibold text-slate-900 mb-1">Processing</h2>
-        <p className="text-sm text-slate-500">{job?.original_filename}</p>
+    <div style={{ maxWidth: 560, margin: '0 auto', padding: '32px 0' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 24 }}>
+        <span style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-accent-700)' }}>Processing</span>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 26, margin: 0 }}>{job?.original_filename}</h2>
       </div>
 
-      {currentStep && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-6 flex items-center gap-3">
-          <Loader2 size={16} className="text-blue-600 animate-spin shrink-0" />
-          <span className="text-sm text-blue-800">{currentStep}</span>
-        </div>
-      )}
-
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-slate-500 mb-1.5">
-          <span>Progress</span>
+      <div style={{ marginBottom: 22 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, color: mutedC, marginBottom: 6 }}>
+          <span>{currentStep || 'Starting…'}</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="w-full bg-slate-200 rounded-full h-2.5">
-          <div
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-700"
-            style={{ width: `${progress}%` }}
-          />
+        <div style={{ height: 8, borderRadius: 999, background: 'color-mix(in srgb, var(--color-text) 8%, transparent)', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'var(--color-accent)', borderRadius: 999, transition: 'width .6s' }} />
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-6">
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Pipeline stages</h3>
-        <ul className="space-y-2">
-          {STAGES.map((stage, i) => {
-            const isDone = i < activeIdx
-            const isActive = i === activeIdx
-
-            return (
-              <li key={stage.key} className="flex items-center gap-3">
-                <span
-                  className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                    isDone
-                      ? 'bg-green-500 text-white'
-                      : isActive
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-200 text-slate-400'
-                  }`}
-                >
-                  {isDone ? (
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : isActive ? (
-                    <Loader2 size={12} className="animate-spin" />
-                  ) : (
-                    <span className="text-[10px]">{i + 1}</span>
-                  )}
-                </span>
-                <span
-                  className={`text-sm ${
-                    isDone
-                      ? 'text-slate-500 line-through'
-                      : isActive
-                      ? 'text-blue-700 font-medium'
-                      : 'text-slate-400'
-                  }`}
-                >
-                  {stage.label}
-                </span>
-              </li>
-            )
-          })}
-        </ul>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 24 }}>
+        {STAGES.map((stage, i) => {
+          const isDone = i < activeIdx
+          const isActive = i === activeIdx
+          return (
+            <div key={stage.key} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', borderRadius: 16, background: isActive ? 'var(--color-accent-100)' : 'transparent' }}>
+              <span style={{ width: 22, height: 22, borderRadius: 999, flex: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, background: isDone ? 'var(--color-accent-2-500)' : isActive ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-text) 10%, transparent)', color: isDone || isActive ? '#fff' : mutedC }}>
+                {isDone ? '✓' : isActive ? <Loader2 size={12} className="rx-spin" /> : i + 1}
+              </span>
+              <span style={{ fontSize: 14, color: isDone ? mutedC : isActive ? 'var(--color-text)' : mutedC, fontWeight: isActive ? 600 : 400 }}>{stage.label}</span>
+            </div>
+          )
+        })}
       </div>
 
-      <div className="text-center">
-        <button
-          onClick={onCancel}
-          disabled={isCancelling}
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
-        >
-          {isCancelling ? (
-            <>
-              <Loader2 size={14} className="animate-spin" /> Cancelling...
-            </>
-          ) : (
-            <>
-              <XCircle size={14} /> Cancel analysis
-            </>
-          )}
-        </button>
-      </div>
+      <button
+        onClick={onCancel}
+        disabled={isCancelling}
+        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, border: '1px solid var(--color-divider)', background: 'transparent', cursor: isCancelling ? 'default' : 'pointer', color: 'var(--color-accent-700)', fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: 999, opacity: isCancelling ? 0.5 : 1 }}
+      >
+        {isCancelling ? <><Loader2 size={14} className="rx-spin" /> Cancelling…</> : <><XCircle size={14} /> Cancel analysis</>}
+      </button>
     </div>
   )
 }

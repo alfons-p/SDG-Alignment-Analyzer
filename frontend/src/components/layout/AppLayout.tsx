@@ -36,7 +36,7 @@ export function AppLayout() {
             className="app-signout"
             onClick={() => {
               localStorage.removeItem('token')
-              navigate('/login')
+              navigate('/')
             }}
           >
             Sign out

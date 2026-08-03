@@ -72,14 +72,14 @@ export function UploadPage() {
         ) : (
           <>
             {single.isError && (
-              <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg border border-red-200">
+              <div style={{ background: 'var(--color-accent-100)', color: 'var(--color-accent-800)', fontSize: 13.5, padding: '12px 16px', borderRadius: 16 }}>
                 {String(single.error)}
               </div>
             )}
             <button
               onClick={() => single.mutate()}
               disabled={files.length === 0 || single.isPending}
-              className="w-full py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              style={{ width: '100%', padding: '13px', border: 'none', borderRadius: 999, fontFamily: 'var(--font-heading)', fontSize: 15, cursor: files.length === 0 || single.isPending ? 'default' : 'pointer', background: 'var(--color-accent)', color: 'var(--color-bg)', opacity: files.length === 0 || single.isPending ? 0.5 : 1 }}
             >
               {single.isPending ? 'Uploading…' : 'Start analysis'}
             </button>

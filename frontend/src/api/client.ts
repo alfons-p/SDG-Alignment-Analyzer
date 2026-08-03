@@ -37,8 +37,8 @@ api.interceptors.response.use(
         }).catch(() => {})
       } else {
         localStorage.removeItem('token')
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login'
+        if (window.location.pathname !== '/access') {
+          window.location.href = '/access'
         }
       }
     }

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T10:39:08.448Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T11:01:44.946Z
 > Files: 844 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -225,7 +225,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~506 tok)
+- `App.tsx` — App (~490 tok)
 - `index.css` — Styles: 13 rules, 30 vars (~989 tok)
 - `main.tsx` — queryClient (~172 tok)
 
@@ -302,8 +302,8 @@
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `PublicComparePage.tsx` — GOAL_FULL — renders table (~3005 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3180 tok)
-- `UploadPage.tsx` — defaultSettings (~952 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3080 tok)
+- `UploadPage.tsx` — defaultSettings (~1017 tok)
 
 ## frontend/src/types/
 

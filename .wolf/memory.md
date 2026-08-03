@@ -1693,3 +1693,11 @@
 | 2026-08-03 | P1 Access + Limitations pages. Access /access: 3-rung ladder (Anyone/Registered/Officer) + auth panel (sign-in toggle register) w/ 4-tick export agreement gate, wired to login/register API. Limitations /limitations: contents rail + 6 limitation cards + ethics pull-quote. Landing Sign in to /access, footer to /limitations. | frontend/src/pages/AccessPage.tsx, LimitationsPage.tsx | done, built | ~3500 |
 | 20:39 | Created ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/newpagehtml.txt | — | ~2491 |
 | 2026-08-03 | P1 Landing split-hero layout: above-fold grid 1fr/1fr (finding+38px headline+3 ruled stat rows LEFT, search+map+legend+years/states RIGHT), lead moved below fold, Compare-like-with-like + peer chips, recently-added+upload cards, new footer w/ limits link. Map viewBox 780x620 to 600x430. All data-stat/data-* hooks preserved so paint+d3 unchanged. P1 COMPLETE (Council, Browse, Compare, Access, Limitations, Landing layout). | frontend/src/pages/LandingPage.tsx | done, built | ~3000 |
+| 20:44 | Session end: 187 writes across 45 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 38 reads | ~139987 tok |
+| 20:45 | Edited frontend/src/App.tsx | 4→4 lines | ~110 |
+| 20:45 | Edited frontend/src/App.tsx | 5→4 lines | ~78 |
+| 20:45 | Edited frontend/src/App.tsx | 5→4 lines | ~78 |
+| 21:00 | Edited frontend/src/pages/ResultsPage.tsx | modified if() | ~276 |
+| 21:00 | Edited frontend/src/pages/ResultsPage.tsx | reduced (-50 lines) | ~804 |
+| 21:01 | Edited frontend/src/pages/UploadPage.tsx | 12→12 lines | ~238 |
+| 2026-08-03 | DESIGN P2 remnants: retired V1 slate auth (deleted LoginPage/RegisterPage/AuthLayout, /login+/register redirect to /access, ProtectedRoute+401 interceptor to /access, signout to /). ResultsPage PollingView to organic 4-stage rows (waiting transparent/live accent-100/done sage+check) + accent progress bar; failure state red to accent-100/800. UploadPage error+button to organic. | frontend/src/pages/ResultsPage.tsx, App.tsx, UploadPage.tsx | done, built | ~3000 |
