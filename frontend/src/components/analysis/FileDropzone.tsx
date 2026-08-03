@@ -55,29 +55,35 @@ export function FileDropzone({ onFile, onFiles, multiple = false }: Props) {
           setDragOver(false)
           accept(Array.from(e.dataTransfer.files))
         }}
-        className={`relative border-2 border-dashed rounded-xl p-10 text-center transition-colors ${
-          dragOver ? 'border-blue-400 bg-blue-50' : 'border-slate-300'
-        }`}
+        style={{
+          position: 'relative',
+          border: `2px dashed ${dragOver ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-text) 22%, transparent)'}`,
+          borderRadius: 18,
+          padding: 40,
+          textAlign: 'center',
+          transition: 'border-color .15s, background .15s',
+          background: dragOver ? 'var(--color-accent-100)' : 'transparent',
+        }}
       >
-        <Upload className="mx-auto text-slate-400 mb-3" size={36} />
-        <p className="text-sm text-slate-600 font-medium">
+        <Upload style={{ margin: '0 auto 12px', color: 'color-mix(in srgb, var(--color-text) 45%, transparent)' }} size={36} />
+        <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-text)' }}>
           {multiple ? 'Drop PDFs here, or' : 'Drop PDF here or click to select'}
         </p>
-        <p className="text-xs text-slate-400 mt-1">
+        <p style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)', marginTop: 4 }}>
           {multiple ? 'a whole folder or several files' : 'PDF only'}
         </p>
 
-        <div className="mt-3 flex items-center justify-center gap-2">
+        <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
           <label
             htmlFor="file-upload"
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg cursor-pointer hover:bg-blue-700 transition-colors"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 16px', background: 'var(--color-accent)', color: 'var(--color-bg)', fontSize: 13.5, borderRadius: 999, cursor: 'pointer' }}
           >
             <FileText size={14} /> {multiple ? 'Select PDFs' : 'Browse files'}
           </label>
           {multiple && (
             <label
               htmlFor="folder-upload"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-slate-100 text-slate-700 text-sm rounded-lg cursor-pointer hover:bg-slate-200 transition-colors"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 16px', background: 'var(--color-surface)', color: 'var(--color-text)', border: '1px solid color-mix(in srgb, var(--color-text) 15%, transparent)', fontSize: 13.5, borderRadius: 999, cursor: 'pointer' }}
             >
               <FolderOpen size={14} /> Pick folder
             </label>
@@ -105,12 +111,12 @@ export function FileDropzone({ onFile, onFiles, multiple = false }: Props) {
         )}
       </div>
 
-      {error && <p className="text-amber-600 text-xs mt-2">{error}</p>}
+      {error && <p style={{ fontSize: 12, color: 'var(--color-accent-700)', marginTop: 8 }}>{error}</p>}
       {!multiple && selected && (
-        <div className="flex items-center gap-2 mt-3 text-sm text-slate-700 bg-slate-50 p-2 rounded-lg">
-          <FileText size={16} className="text-blue-600" />
-          <span className="truncate">{selected.name}</span>
-          <span className="text-xs text-slate-400">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, fontSize: 14, color: 'var(--color-text)', background: 'var(--color-surface)', padding: 10, borderRadius: 12 }}>
+          <FileText size={16} style={{ color: 'var(--color-accent)' }} />
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selected.name}</span>
+          <span style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 45%, transparent)' }}>
             ({(selected.size / 1024 / 1024).toFixed(1)} MB)
           </span>
         </div>

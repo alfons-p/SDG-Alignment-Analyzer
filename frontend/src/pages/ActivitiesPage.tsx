@@ -52,7 +52,7 @@ export function ActivitiesPage() {
   }, [activities, query, section])
 
   if (!id) return null
-  if (!result || !page) return <div className="text-sm text-slate-500">Loading…</div>
+  if (!result || !page) return <div style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>Loading…</div>
 
   const { council } = parseReportName(result.original_filename)
   const total = activities.length

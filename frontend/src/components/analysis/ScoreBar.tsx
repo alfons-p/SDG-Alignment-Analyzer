@@ -19,14 +19,14 @@ export function ScoreBar({
       >
         {sdg}
       </span>
-      <span className="text-xs text-slate-600 w-24 truncate">{label ?? `SDG ${sdg}`}</span>
-      <div className="flex-1 bg-slate-200 rounded-full h-2.5">
+      <span className="w-24 truncate" style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 62%, transparent)' }}>{label ?? `SDG ${sdg}`}</span>
+      <div className="flex-1 rounded-full h-2.5" style={{ background: 'color-mix(in srgb, var(--color-text) 12%, transparent)' }}>
         <div
           className="h-2.5 rounded-full transition-all"
           style={{ width: `${pct}%`, backgroundColor: color }}
         />
       </div>
-      <span className="text-xs font-mono text-slate-500 w-10 text-right">
+      <span className="font-mono w-10 text-right" style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>
         {score.toFixed(2)}
       </span>
     </div>

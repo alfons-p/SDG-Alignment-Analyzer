@@ -26,18 +26,18 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
     <div className="space-y-5">
       {/* Hybrid model */}
       <div>
-        <label className="block text-xs font-medium text-slate-600 mb-1">Hybrid model</label>
+        <label className="ps-label">Hybrid model</label>
         <input
           type="text"
           value={settings.model_name ?? 'voyager205/sdg-variant-finetuned'}
           onChange={(e) => onChange({ model_name: e.target.value })}
-          className="w-full px-2.5 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="ps-input"
         />
       </div>
 
       {/* Engine toggles */}
       <div className="flex flex-wrap gap-3">
-        <label className="flex items-center gap-1.5 text-xs text-slate-700">
+        <label className="ps-check">
           <input
             type="checkbox"
             checked={useHybrid}
@@ -45,7 +45,7 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
           />
           Hybrid engine (ST + sdgBERT)
         </label>
-        <label className="flex items-center gap-1.5 text-xs text-slate-700">
+        <label className="ps-check">
           <input
             type="checkbox"
             checked={settings.enable_bias_corrections ?? true}
@@ -56,12 +56,10 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
       </div>
 
       {/* Activity Sentence Extraction group */}
-      <fieldset className="border border-slate-200 rounded-lg p-4">
-        <legend className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-1">
-          Activity Sentence Extraction
-        </legend>
+      <fieldset className="ps-fieldset">
+        <legend className="ps-legend">Activity Sentence Extraction</legend>
         <div className="space-y-3 mt-1">
-          <label className="flex items-center gap-1.5 text-xs text-slate-700">
+          <label className="ps-check">
             <input
               type="checkbox"
               checked={useBert}
@@ -70,7 +68,7 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
             BERT classifier
           </label>
 
-          <label className="flex items-center gap-1.5 text-xs text-slate-700">
+          <label className="ps-check">
             <input
               type="checkbox"
               checked={settings.nofinancial ?? false}
@@ -79,7 +77,7 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
             Exclude financial statements
           </label>
 
-          <label className="flex items-center gap-1.5 text-xs text-slate-700">
+          <label className="ps-check">
             <input
               type="checkbox"
               checked={settings.require_action_verb ?? false}
@@ -90,32 +88,32 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-slate-500 mb-1">Min words</label>
+              <label className="ps-label">Min words</label>
               <input
                 type="number"
                 min={5}
                 max={200}
                 value={settings.min_words ?? 20}
                 onChange={(e) => onChange({ min_words: +e.target.value })}
-                className="w-full px-2.5 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ps-input"
               />
             </div>
             <div>
-              <label className="block text-xs text-slate-500 mb-1">Max words</label>
+              <label className="ps-label">Max words</label>
               <input
                 type="number"
                 min={50}
                 max={2000}
                 value={settings.max_words ?? 500}
                 onChange={(e) => onChange({ max_words: +e.target.value })}
-                className="w-full px-2.5 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ps-input"
               />
             </div>
           </div>
 
           {useBert && (
             <div>
-              <label className="block text-xs text-slate-500 mb-1">
+              <label className="ps-label">
                 BERT confidence threshold ({settings.min_confidence ?? 0.7})
               </label>
               <input
@@ -125,7 +123,7 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
                 step="0.05"
                 value={settings.min_confidence ?? 0.7}
                 onChange={(e) => onChange({ min_confidence: +e.target.value })}
-                className="w-full max-w-xs"
+                className="ps-range"
               />
             </div>
           )}
@@ -133,24 +131,21 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
       </fieldset>
 
       {/* Advanced settings */}
-      <button
-        type="button"
-        onClick={() => setShowAdvanced(!showAdvanced)}
-        className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
-      >
+      <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="ps-adv-btn">
         {showAdvanced ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
         Advanced settings
       </button>
 
       {showAdvanced && (
-        <div className="space-y-4 pl-4 border-l-2 border-slate-200">
+        <div className="space-y-4 ps-adv-wrap">
           {/* spaCy model */}
           <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">spaCy model</label>
+            <label className="ps-label">spaCy model</label>
             <select
               value={settings.spacy_model ?? 'en_core_web_sm'}
               onChange={(e) => onChange({ spacy_model: e.target.value })}
-              className="w-full max-w-xs px-2.5 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="ps-input"
+              style={{ maxWidth: '20rem' }}
             >
               <option value="en_core_web_sm">en_core_web_sm (fast)</option>
               <option value="en_core_web_md">en_core_web_md (medium)</option>
@@ -161,26 +156,26 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
 
           {/* Top activities */}
           <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">
-              Top activities limit (0 = all)
-            </label>
+            <label className="ps-label">Top activities limit (0 = all)</label>
             <input
               type="number"
               min={0}
               value={settings.top_activities ?? 0}
               onChange={(e) => onChange({ top_activities: +e.target.value })}
-              className="w-24 px-2.5 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="ps-input"
+              style={{ width: '6rem' }}
             />
           </div>
 
           {/* Ensemble mode (only when hybrid on) */}
           {useHybrid && (
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Ensemble mode</label>
+              <label className="ps-label">Ensemble mode</label>
               <select
                 value={settings.ensemble_mode ?? 'weighted'}
                 onChange={(e) => onChange({ ensemble_mode: e.target.value })}
-                className="w-full max-w-xs px-2.5 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="ps-input"
+                style={{ maxWidth: '20rem' }}
               >
                 <option value="weighted">weighted</option>
                 <option value="fallback">fallback</option>
@@ -191,7 +186,7 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
 
           {/* Custom alignment threshold */}
           <div className="space-y-2">
-            <label className="flex items-center gap-1.5 text-xs text-slate-700">
+            <label className="ps-check">
               <input
                 type="checkbox"
                 checked={useCustom}
@@ -208,7 +203,7 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
 
             {useCustom && (
               <div>
-                <label className="block text-xs text-slate-500 mb-1">
+                <label className="ps-label">
                   Alignment threshold ({universalThreshold.toFixed(2)})
                 </label>
                 <input
@@ -221,9 +216,9 @@ export function ProcessingSettingsPanel({ settings, onChange }: Props) {
                     const val = +e.target.value
                     onChange({ sdg_thresholds: buildUniformThresholds(val) })
                   }}
-                  className="w-full max-w-xs"
+                  className="ps-range"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p style={{ fontSize: 10, color: 'color-mix(in srgb, var(--color-text) 45%, transparent)', marginTop: 4 }}>
                   Applied uniformly to all 17 SDGs. Default uses per-SDG optimized thresholds.
                 </p>
               </div>

@@ -92,6 +92,9 @@ export interface AnalysisSummary {
   top_sdgs: SDGTopItem[]
   gaps: SDGTopItem[]
   coverage?: Record<number, number>
+  page_count?: number | null
+  activities_per_100_pages?: number | null
+  barren_activities?: number | null
 }
 
 export interface AnalysisResult {

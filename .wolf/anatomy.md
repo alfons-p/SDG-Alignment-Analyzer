@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T11:11:44.414Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T19:59:44.594Z
 > Files: 844 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -244,12 +244,12 @@
 
 ## frontend/src/components/analysis/
 
-- `ActivityTable.tsx` — ActivityTable — renders table (~1299 tok)
-- `FileDropzone.tsx` — Single-file callback (back-compat). Receives the first accepted PDF. (~1179 tok)
-- `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
-- `ScoreBar.tsx` — ScoreBar (~270 tok)
+- `ActivityTable.tsx` — ActivityTable — renders table (~1578 tok)
+- `FileDropzone.tsx` — Single-file callback (back-compat). Receives the first accepted PDF. (~1418 tok)
+- `ProcessingSettings.tsx` — buildUniformThresholds (~2272 tok)
+- `ScoreBar.tsx` — ScoreBar (~328 tok)
 - `StatusBadge.tsx` — styles (~247 tok)
-- `UploadQueue.tsx` — Fire-and-forget log to the server that survives page unload/discard. (~4211 tok)
+- `UploadQueue.tsx` — Fire-and-forget log to the server that survives page unload/discard. (~4425 tok)
 
 ## frontend/src/components/layout/
 
@@ -261,8 +261,8 @@
 ## frontend/src/components/results/
 
 - `EvidenceLedger.tsx` — Evidence ledger — all 17 Goals ranked by aligned-activity count. A row expands (~1487 tok)
-- `results.css` — Styles: 97 rules (~7909 tok)
-- `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~648 tok)
+- `results.css` — Styles: 96 rules (~8099 tok)
+- `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~872 tok)
 - `ResultsModes.tsx` — The Goal that reads clearly where it appears yet shows up in few activities: (~3627 tok)
 - `ViewSwitcher.tsx` — VIEWS (~377 tok)
 
@@ -302,12 +302,12 @@
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `PublicComparePage.tsx` — GOAL_FULL — renders table (~3005 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~4283 tok)
-- `UploadPage.tsx` — defaultSettings (~1017 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~4287 tok)
+- `UploadPage.tsx` — defaultSettings (~1125 tok)
 
 ## frontend/src/types/
 
-- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 17 more (~1180 tok)
+- `index.ts` — Exports User, TokenResponse, SDGInfo, SDGSimple + 17 more (~1211 tok)
 
 ## logs/
 

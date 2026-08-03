@@ -270,7 +270,7 @@ export function UploadQueue({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-slate-600">
+        <span style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 62%, transparent)' }}>
           {rows.length} file{rows.length === 1 ? '' : 's'} · {pending} to analyse ·{' '}
           {counts.skipped ?? 0} skipped
         </span>
@@ -278,40 +278,43 @@ export function UploadQueue({
           <button
             onClick={run}
             disabled={running || pending === 0}
-            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            style={{ padding: '9px 18px', border: 'none', borderRadius: 999, fontFamily: 'var(--font-heading)', fontSize: 14, background: 'var(--color-accent)', color: 'var(--color-bg)', cursor: running || pending === 0 ? 'default' : 'pointer', opacity: running || pending === 0 ? 0.5 : 1 }}
           >
             {running ? 'Analysing…' : `Analyse ${pending}`}
           </button>
         ) : (
-          <span className="text-sm font-medium text-slate-700">
+          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-text)' }}>
             {counts.done ?? 0} analysed · {counts.skipped ?? 0} skipped · {counts.failed ?? 0} failed
           </span>
         )}
       </div>
 
-      <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden">
-        {rows.map((r) => (
+      <div style={{ border: '1px solid color-mix(in srgb, var(--color-text) 12%, transparent)', borderRadius: 18, overflow: 'hidden' }}>
+        {rows.map((r, i) => (
           <div
             key={r.key}
-            className={`flex items-center gap-3 px-4 py-2.5 text-sm ${
-              r.analysisId && r.status === 'done' ? 'cursor-pointer hover:bg-slate-50' : ''
-            }`}
+            className="flex items-center gap-3 px-4 py-2.5"
+            style={{
+              fontSize: 14,
+              borderTop: i === 0 ? 'none' : '1px solid color-mix(in srgb, var(--color-text) 8%, transparent)',
+              cursor: r.analysisId && r.status === 'done' ? 'pointer' : 'default',
+            }}
             onClick={() => r.status === 'done' && r.analysisId && navigate(`/results/${r.analysisId}`)}
           >
             <StatusIcon status={r.status} />
             <div className="min-w-0 flex-1">
-              <div className="truncate text-slate-800">{r.name}</div>
-              <div className="text-xs text-slate-400 truncate">
+              <div className="truncate" style={{ color: 'var(--color-text)' }}>{r.name}</div>
+              <div className="truncate" style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 45%, transparent)' }}>
                 {r.council}{r.year ? ` · ${r.year}` : ' · no year in filename'}
               </div>
             </div>
-            <span className="text-xs text-slate-500 whitespace-nowrap">{r.note ?? label(r.status)}</span>
+            <span className="whitespace-nowrap" style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 55%, transparent)' }}>{r.note ?? label(r.status)}</span>
           </div>
         ))}
       </div>
 
       {running && (
-        <p className="text-xs text-slate-400">
+        <p style={{ fontSize: 12, color: 'color-mix(in srgb, var(--color-text) 45%, transparent)' }}>
           Processing one report at a time to keep the server stable — leave this tab open.
         </p>
       )}
@@ -330,11 +333,12 @@ function label(s: RowStatus): string {
 
 function StatusIcon({ status }: { status: RowStatus }) {
   const cls = 'flex-none'
-  if (status === 'done') return <CheckCircle2 size={16} className={`${cls} text-green-600`} />
-  if (status === 'failed') return <XCircle size={16} className={`${cls} text-red-500`} />
-  if (status === 'skipped') return <SkipForward size={16} className={`${cls} text-slate-400`} />
+  const muted = 'color-mix(in srgb, var(--color-text) 40%, transparent)'
+  if (status === 'done') return <CheckCircle2 size={16} className={cls} style={{ color: 'var(--color-accent-2-700)' }} />
+  if (status === 'failed') return <XCircle size={16} className={cls} style={{ color: 'var(--color-accent)' }} />
+  if (status === 'skipped') return <SkipForward size={16} className={cls} style={{ color: muted }} />
   if (status === 'uploading' || status === 'processing')
-    return <Loader2 size={16} className={`${cls} text-blue-600 animate-spin`} />
-  if (status === 'pending') return <Clock size={16} className={`${cls} text-slate-300`} />
+    return <Loader2 size={16} className={`${cls} animate-spin`} style={{ color: 'var(--color-accent)' }} />
+  if (status === 'pending') return <Clock size={16} className={cls} style={{ color: muted }} />
   return <FileText size={16} className={cls} />
 }

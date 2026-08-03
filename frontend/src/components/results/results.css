@@ -269,6 +269,34 @@
 .rx-ev-link:hover {
   background: color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
+.rx-tabbar {
+  display: flex;
+  gap: 2px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+.rx-tab {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 16px;
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+.rx-tab:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+.rx-tab.on {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  cursor: default;
+}
 .rx-spin {
   animation: rx-spin 0.8s linear infinite;
 }

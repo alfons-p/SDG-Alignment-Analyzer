@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { uploadPDF } from '../api/analysis'
@@ -48,22 +49,34 @@ export function UploadPage() {
 
   const batch = files.length > 1
 
+  const cardStyle: CSSProperties = {
+    background: 'var(--color-surface)',
+    border: '1px solid color-mix(in srgb, var(--color-text) 12%, transparent)',
+    borderRadius: 20,
+    padding: 24,
+  }
+  const cardHead: CSSProperties = {
+    fontFamily: 'var(--font-heading)', fontSize: 15, color: 'var(--color-text)', marginBottom: 16,
+  }
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Upload reports</h1>
+      <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 28, color: 'var(--color-text)', marginBottom: 24 }}>
+        Upload reports
+      </h1>
 
       <div className="max-w-2xl space-y-6">
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-slate-900 mb-4">Documents</h2>
+        <div style={cardStyle}>
+          <h2 style={cardHead}>Documents</h2>
           <FileDropzone multiple onFiles={setFiles} />
-          <p className="text-xs text-slate-400 mt-3">
+          <p style={{ fontSize: 12.5, color: 'color-mix(in srgb, var(--color-text) 55%, transparent)', marginTop: 12, lineHeight: 1.5 }}>
             Filenames should follow <code>state_council_region_year.pdf</code> so each report is
             matched to its council and year. Reports already analysed are skipped automatically.
           </p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-6">
-          <h2 className="text-sm font-semibold text-slate-900 mb-4">Processing settings</h2>
+        <div style={cardStyle}>
+          <h2 style={cardHead}>Processing settings</h2>
           <ProcessingSettingsPanel settings={settings} onChange={setSettings} />
         </div>
 

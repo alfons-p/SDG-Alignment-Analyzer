@@ -26,7 +26,10 @@ export function ResultsHeader({
       : { value: '—', label: 'no leading Goal', color: 'var(--color-text)' },
   ]
 
-  const metaBits = [state, `${summary.total_activities} activities`].filter(Boolean)
+  const pages = summary.page_count ?? null
+  const per100 = pages ? (summary.total_activities / pages) * 100 : null
+  const grade = per100 == null ? null : per100 >= 40 ? 'rich' : per100 >= 25 ? 'adequate' : 'thin'
+  const metaBits = [state, pages ? `${pages} pages` : null].filter(Boolean)
 
   return (
     <div className="rx-header">
@@ -42,6 +45,18 @@ export function ResultsHeader({
             </div>
           )}
           <span className="rx-meta">{metaBits.join(' · ')}</span>
+          {grade && (
+            <span
+              title={per100 != null ? `${per100.toFixed(0)} activities per 100 pages` : undefined}
+              style={{
+                fontSize: 11.5, fontWeight: 600, padding: '4px 12px', borderRadius: 999, textTransform: 'capitalize',
+                background: grade === 'thin' ? 'var(--color-accent-100)' : 'var(--color-accent-2-100)',
+                color: grade === 'thin' ? 'var(--color-accent-800)' : 'var(--color-accent-2-700)',
+              }}
+            >
+              {grade} extraction
+            </span>
+          )}
         </div>
       </div>
       <div style={{ display: 'flex', gap: 34, paddingBottom: 4 }}>

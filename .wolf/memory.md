@@ -1717,3 +1717,28 @@
 | 21:11 | Edited frontend/src/pages/ResultsPage.tsx | inline fix | ~48 |
 | 21:11 | Edited frontend/src/pages/ResultsPage.tsx | inline fix | ~28 |
 | 2026-08-03 | DESIGN P3-P6 officer fixes. P3 TrendView: stop fabricating adjacent years, show only the analysed year + honest copy pointing to public council page for multi-year. P4 method drawer: JSON dump to right-side 560px drawer (backdrop, close) with readable settings rows + per-goal threshold bars + What-this-tool-does-not-do credibility statement. P5 statement lead grammar fixed + full official Goal titles (new SDG_TITLE/getSDGTitle) in highlights/absent/depthNote; depthNote now defined quantity (mean among low-coverage goals, not mixed units). P6 rankGoals toFixed 2 to 3, mosaic white ink above 55pct fill. | frontend/src/components/results/ResultsModes.tsx, ResultsPage.tsx, constants/sdg-colors.ts | done, built | ~4000 |
+| 21:18 | Session end: 207 writes across 48 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 38 reads | ~145434 tok |
+| 21:20 | Edited frontend/src/types/index.ts | 9→12 lines | ~97 |
+| 21:20 | Edited frontend/src/components/results/ResultsHeader.tsx | added nullish coalescing | ~427 |
+
+## Session: 2026-08-03 21:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:23 | Edited frontend/src/pages/UploadPage.tsx | expanded (+12 lines) | ~357 |
+| 21:23 | Edited frontend/src/pages/UploadPage.tsx | added 1 import(s) | ~22 |
+| 21:23 | Edited frontend/src/pages/UploadPage.tsx | inline fix | ~11 |
+| 21:23 | Edited frontend/src/pages/UploadPage.tsx | inline fix | ~10 |
+| 21:24 | Edited frontend/src/pages/ResultsPage.tsx | 16→17 lines | ~215 |
+| 21:24 | Edited frontend/src/components/results/results.css | expanded (+28 lines) | ~217 |
+| 21:27 | Edited frontend/src/components/analysis/FileDropzone.tsx | expanded (+6 lines) | ~541 |
+| 05:56 | Edited frontend/src/components/analysis/FileDropzone.tsx | 10→10 lines | ~210 |
+| 05:57 | Edited frontend/src/components/analysis/ScoreBar.tsx | 10→10 lines | ~180 |
+| 05:57 | Edited frontend/src/components/analysis/UploadQueue.tsx | 51→54 lines | ~753 |
+| 05:57 | Edited frontend/src/components/analysis/UploadQueue.tsx | modified StatusIcon() | ~230 |
+| 05:58 | Edited frontend/src/components/analysis/ProcessingSettings.tsx | modified onChange() | ~2042 |
+| 05:59 | Edited frontend/src/components/analysis/ActivityTable.tsx | 97→99 lines | ~1361 |
+| 05:59 | Edited frontend/src/components/analysis/ActivityTable.tsx | added 1 import(s) | ~22 |
+| 05:59 | Edited frontend/src/components/analysis/ActivityTable.tsx | inline fix | ~9 |
+| 12:00 | Finish design: extraction chip (ResultsHeader), results tab bar, organic sweep of Upload/FileDropzone/ProcessingSettings/UploadQueue/ScoreBar/ActivityTable | frontend components + index.css + results.css | build clean | ~9k |
+| 06:46 | Session end: 15 writes across 8 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 8 reads | ~28960 tok |

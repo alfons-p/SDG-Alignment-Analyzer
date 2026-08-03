@@ -32,7 +32,7 @@ export function GoalDetailPage() {
 
   if (!id || !(sdg >= 1 && sdg <= SDG_COUNT)) return null
   const summary = result?.summary
-  if (!summary) return <div className="text-sm text-slate-500">Loading…</div>
+  if (!summary) return <div style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>Loading…</div>
 
   const color = getSDGColor(sdg)
   const count = goalCount(summary, sdg)

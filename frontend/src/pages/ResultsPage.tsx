@@ -73,10 +73,10 @@ export function ResultsPage() {
   const isLoading = jobLoading || resultsLoading
 
   if (isLoading && !job && !result) {
-    return <div className="text-sm text-slate-500">Loading...</div>
+    return <div style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>Loading...</div>
   }
 
-  if (!job && !result) return <div className="text-sm text-slate-500">Not found</div>
+  if (!job && !result) return <div style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>Not found</div>
 
   if (job?.status === 'queued' || job?.status === 'processing' || (isPolling && result?.status === 'processing')) {
     return (
@@ -103,7 +103,7 @@ export function ResultsPage() {
   }
 
   const summary = result?.summary
-  if (!result || !summary) return <div className="text-sm text-slate-500">No summary data</div>
+  if (!result || !summary) return <div style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>No summary data</div>
 
   function setView(v: ResultsView) {
     const next = new URLSearchParams(searchParams)
@@ -117,18 +117,19 @@ export function ResultsPage() {
 
   return (
     <div className="organic">
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         <button className="rx-backlink" onClick={() => navigate('/dashboard')}>
           <ArrowLeft size={14} /> Back to dashboard
         </button>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, padding: '16px 44px 0' }}>
-          <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/activities`)}>
-            Activity explorer
+        <div className="rx-tabbar" style={{ marginLeft: 'auto' }}>
+          <span className="rx-tab on">Report</span>
+          <button className="rx-tab" onClick={() => navigate(`/results/${id}/activities`)}>
+            Activities
           </button>
-          <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/gaps`)}>
+          <button className="rx-tab" onClick={() => navigate(`/results/${id}/gaps`)}>
             Gaps
           </button>
-          <button className="rx-ev-link" onClick={() => navigate(`/results/${id}/export`)}>
+          <button className="rx-tab" onClick={() => navigate(`/results/${id}/export`)}>
             Export
           </button>
         </div>
