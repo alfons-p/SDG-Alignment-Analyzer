@@ -98,3 +98,8 @@ htmlcov/
 /results
 /results/aggregated
 /results/by_council
+
+# DB backups (local only)
+backend/*.db.bak-*
+backend/*.db-shm
+backend/*.db-wal

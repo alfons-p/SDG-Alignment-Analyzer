@@ -86,8 +86,8 @@ export async function publishAll(): Promise<{ published: number }> {
   return data
 }
 
-export async function startIngest(path: string, publish: boolean): Promise<void> {
-  await api.post('/api/analysis/admin/ingest', { path, publish })
+export async function startIngest(path: string, publish: boolean, replace = false): Promise<void> {
+  await api.post('/api/analysis/admin/ingest', { path, publish, replace })
 }
 
 export async function getIngestStatus(): Promise<import('../types').IngestStatus> {

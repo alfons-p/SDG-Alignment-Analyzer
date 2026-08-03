@@ -183,6 +183,7 @@ export interface IngestStatus {
   current: string | null
   path: string | null
   publish: boolean
+  replace: boolean
   started_at: number | null
   finished_at: number | null
   error: string | null

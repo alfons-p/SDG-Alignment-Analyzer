@@ -1742,3 +1742,22 @@
 | 05:59 | Edited frontend/src/components/analysis/ActivityTable.tsx | inline fix | ~9 |
 | 12:00 | Finish design: extraction chip (ResultsHeader), results tab bar, organic sweep of Upload/FileDropzone/ProcessingSettings/UploadQueue/ScoreBar/ActivityTable | frontend components + index.css + results.css | build clean | ~9k |
 | 06:46 | Session end: 15 writes across 8 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 8 reads | ~28960 tok |
+| 06:47 | Session end: 15 writes across 8 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 8 reads | ~28960 tok |
+| 07:55 | Session end: 15 writes across 8 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 8 reads | ~28960 tok |
+| 08:04 | Session end: 15 writes across 8 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 9 reads | ~28960 tok |
+| 08:06 | Edited backend/app/services/batch_ingest_service.py | modified _identity_query() | ~376 |
+| 08:07 | Edited backend/app/services/batch_ingest_service.py | expanded (+6 lines) | ~209 |
+| 08:07 | Edited backend/app/services/batch_ingest_service.py | modified _completed_exists() | ~170 |
+| 08:07 | Edited backend/app/services/batch_ingest_service.py | modified start_ingest() | ~244 |
+| 08:07 | Edited backend/app/services/batch_ingest_service.py | 5→5 lines | ~71 |
+| 08:07 | Edited backend/app/routers/analysis.py | modified IngestRequest() | ~28 |
+| 08:07 | Edited backend/app/routers/analysis.py | inline fix | ~22 |
+| 08:07 | Edited scripts/batch_ingest.py | 2→3 lines | ~102 |
+| 08:07 | Edited scripts/batch_ingest.py | inline fix | ~38 |
+| 08:08 | Edited frontend/src/api/analysis.ts | modified startIngest() | ~50 |
+| 08:08 | Edited frontend/src/pages/AdminPage.tsx | 3→4 lines | ~53 |
+| 08:08 | Edited frontend/src/pages/AdminPage.tsx | inline fix | ~19 |
+| 08:08 | Edited frontend/src/pages/AdminPage.tsx | 3→3 lines | ~65 |
+| 08:08 | Edited frontend/src/pages/AdminPage.tsx | 3→7 lines | ~206 |
+| 08:08 | Edited frontend/src/types/index.ts | 4→5 lines | ~32 |
+| 08:20 | Re-ingest data/raw: 2 refreshed (Sunshine Coast, Litchfield 2025), 18 hard-cases re-failed (no prose/OCR). Purged 34 dup/superseded rows -> 1541 (1 per council-year). Added ingest replace option + failed-row dedup | batch_ingest_service.py, analysis.py, batch_ingest.py, AdminPage.tsx | done | ~12k |

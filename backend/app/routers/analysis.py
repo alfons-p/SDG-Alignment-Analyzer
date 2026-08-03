@@ -450,6 +450,7 @@ def publish_analysis(analysis_id: str, admin: User = Depends(get_current_admin),
 class IngestRequest(BaseModel):
     path: str
     publish: bool = False
+    replace: bool = False
 
 
 @router.post("/admin/ingest")
@@ -458,7 +459,7 @@ def admin_ingest(body: IngestRequest, admin: User = Depends(get_current_admin)):
     fires this; the analysis loop runs on the server, so it's tab-independent."""
     from backend.app.services import batch_ingest_service as bi
     try:
-        bi.start_ingest(body.path, admin.email, body.publish)
+        bi.start_ingest(body.path, admin.email, body.publish, body.replace)
     except (FileNotFoundError, ValueError) as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except RuntimeError as e:

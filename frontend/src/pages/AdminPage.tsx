@@ -123,6 +123,7 @@ function IngestPanel() {
   const qc = useQueryClient()
   const [path, setPath] = useState('')
   const [publish, setPublish] = useState(false)
+  const [replace, setReplace] = useState(false)
   const [browsing, setBrowsing] = useState(false)
 
   const { data: status } = useQuery({
@@ -131,7 +132,7 @@ function IngestPanel() {
     refetchInterval: (q) => (q.state.data?.running ? 2000 : 8000),
   })
   const startM = useMutation({
-    mutationFn: () => startIngest(path.trim(), publish),
+    mutationFn: () => startIngest(path.trim(), publish, replace),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['ingest-status'] }),
   })
   const cancelM = useMutation({
@@ -155,7 +156,7 @@ function IngestPanel() {
         <span className="rx-gaps-kicker">Ingest a folder</span>
         <span style={{ fontSize: 13, color: 'color-mix(in srgb, var(--color-text) 62%, transparent)', textWrap: 'pretty' }}>
           Analyse every PDF in a folder on the server. Runs in the background — you can close this tab and come back.
-          Reports already analysed are skipped.
+          Reports already analysed are skipped unless you choose <em>Replace existing</em>.
         </span>
       </div>
 
@@ -171,6 +172,10 @@ function IngestPanel() {
         </button>
         <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', color: 'var(--color-text)' }}>
           <input type="checkbox" checked={publish} onChange={(e) => setPublish(e.target.checked)} disabled={running} /> publish as it completes
+        </label>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, cursor: 'pointer', color: 'var(--color-text)' }}
+          title="Re-run council-years that already have a completed result, overwriting the old one instead of skipping.">
+          <input type="checkbox" checked={replace} onChange={(e) => setReplace(e.target.checked)} disabled={running} /> replace existing
         </label>
         {!running ? (
           <button onClick={() => startM.mutate()} disabled={!path.trim() || startM.isPending} style={pillBtn(!path.trim() || startM.isPending)}>

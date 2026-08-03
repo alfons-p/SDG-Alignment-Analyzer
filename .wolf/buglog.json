@@ -1688,6 +1688,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-01T13:58:12.965573"
+    },
+    {
+      "id": "bug-105",
+      "timestamp": "2026-08-04",
+      "error_message": "Re-ingesting a folder accumulated duplicate DB rows: each retry of a failed/completed council-year created a NEW Analysis row instead of superseding the old one (failed rows grew 33->51; Sunshine Coast ended with 3 completed rows).",
+      "file": "backend/app/services/batch_ingest_service.py",
+      "root_cause": "ingest_folder only checked _completed_exists to skip; when it did run a council-year it always inserted a fresh row and never deleted prior rows for the same identity.",
+      "fix": "Added _delete_identity_rows(); before processing a council-year, delete stale rows for that identity (only 'failed' in default mode, all in replace mode). Added replace flag threaded through ingest_folder/start_ingest/IngestRequest/CLI --replace and an Admin 'replace existing' checkbox.",
+      "tags": [
+        "ingest",
+        "duplicates",
+        "admin",
+        "dedup",
+        "replace"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04"
     }
   ]
 }

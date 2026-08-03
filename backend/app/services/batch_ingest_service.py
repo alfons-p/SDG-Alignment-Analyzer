@@ -91,16 +91,39 @@ def _count_pdfs(target: Path, pdf_cap: int = 10000, scan_cap: int = 120000) -> t
     return pdfs, False
 
 
-def _completed_exists(db, ident: dict) -> bool:
+def _identity_query(db, ident: dict, *, completed_only: bool = False):
+    """Rows matching a council-year identity, or None when identity is too weak
+    to dedup (no year/council)."""
     if not (ident["year"] and ident["council_name"]):
-        return False
+        return None
     q = db.query(Analysis).filter(
-        Analysis.status == "completed",
         Analysis.council_name == ident["council_name"],
         Analysis.year == ident["year"],
     )
     q = q.filter(Analysis.state == ident["state"]) if ident["state"] else q.filter(Analysis.state.is_(None))
-    return db.query(q.exists()).scalar()
+    if completed_only:
+        q = q.filter(Analysis.status == "completed")
+    return q
+
+
+def _completed_exists(db, ident: dict) -> bool:
+    q = _identity_query(db, ident, completed_only=True)
+    return bool(q and db.query(q.exists()).scalar())
+
+
+def _delete_identity_rows(db, ident: dict, *, statuses: tuple[str, ...] | None = None) -> int:
+    """Delete existing rows for a council-year so a fresh run supersedes them
+    instead of piling up duplicates. `statuses` limits which are removed
+    (e.g. only 'failed' retries); None removes all. Returns the count."""
+    q = _identity_query(db, ident)
+    if q is None:
+        return 0
+    if statuses is not None:
+        q = q.filter(Analysis.status.in_(statuses))
+    n = q.delete(synchronize_session=False)
+    if n:
+        db.commit()
+    return n
 
 
 def resolve_folder(path: str) -> Path:
@@ -126,11 +149,17 @@ def ingest_folder(
     session_factory: Callable = SessionLocal,
     limit: int = 0,
     dry_run: bool = False,
+    replace: bool = False,
     on_event: Optional[Callable[[str, dict, Optional[str]], None]] = None,
     should_cancel: Callable[[], bool] = lambda: False,
 ) -> dict:
     """Analyse every PDF under `folder` into the DB. `on_event(kind, counts,
-    current)` is called on start/file/done/cancelled for progress reporting."""
+    current)` is called on start/file/done/cancelled for progress reporting.
+
+    `replace=True` re-runs council-years that already have a completed analysis,
+    overwriting the old row. Default (False) skips them. Either way, stale rows
+    for a council-year we do run (old failed retries, or the replaced result)
+    are deleted first, so a re-run never accumulates duplicates."""
     emit = on_event or (lambda *a: None)
     db = session_factory()
     try:
@@ -151,12 +180,17 @@ def ingest_folder(
             emit("file", counts, p.name)
             ident = parse_report_identity(p.name)
 
-            if _completed_exists(db, ident):
+            if not replace and _completed_exists(db, ident):
                 counts["skipped"] += 1
                 continue
             if dry_run:
                 counts["done"] += 1
                 continue
+
+            # Supersede any prior rows for this council-year so a re-run doesn't
+            # leave duplicates: in replace mode drop everything (incl. the old
+            # completed result); otherwise drop only stale failed retries.
+            _delete_identity_rows(db, ident, statuses=None if replace else ("failed",))
 
             try:
                 content = p.read_bytes()
@@ -195,7 +229,7 @@ def ingest_folder(
 
 _state: dict[str, Any] = {
     "running": False, "total": 0, "done": 0, "skipped": 0, "failed": 0,
-    "current": None, "path": None, "publish": False,
+    "current": None, "path": None, "publish": False, "replace": False,
     "started_at": None, "finished_at": None, "error": None, "cancel": False,
 }
 _lock = threading.Lock()
@@ -227,7 +261,7 @@ def _on_event(kind: str, counts: dict, current: Optional[str]) -> None:
         _state["current"] = current
 
 
-def start_ingest(path: str, user_email: str, publish: bool) -> None:
+def start_ingest(path: str, user_email: str, publish: bool, replace: bool = False) -> None:
     """Validate + launch a background ingest. Raises if a run is already active
     or the folder is invalid."""
     folder = resolve_folder(path)  # raises before we mark running
@@ -236,13 +270,14 @@ def start_ingest(path: str, user_email: str, publish: bool) -> None:
             raise RuntimeError("An ingest is already running")
         _state.update({
             "running": True, "total": 0, "done": 0, "skipped": 0, "failed": 0,
-            "current": None, "path": str(folder), "publish": publish,
+            "current": None, "path": str(folder), "publish": publish, "replace": replace,
             "started_at": time.time(), "finished_at": None, "error": None, "cancel": False,
         })
 
     def _run():
         try:
-            ingest_folder(folder, user_email, publish, on_event=_on_event, should_cancel=_should_cancel)
+            ingest_folder(folder, user_email, publish, replace=replace,
+                          on_event=_on_event, should_cancel=_should_cancel)
         except Exception as e:  # noqa: BLE001
             with _lock:
                 _state["error"] = f"{type(e).__name__}: {e}"

@@ -38,6 +38,7 @@ def main() -> int:
     ap.add_argument("--input", required=True, help="folder of PDFs (searched recursively)")
     ap.add_argument("--user", default=None, help="owner email (default: first ADMIN_EMAILS, else alfonsp@gmail.com)")
     ap.add_argument("--publish", action="store_true", help="mark each analysis published as it completes")
+    ap.add_argument("--replace", action="store_true", help="re-run council-years that already completed, overwriting the old result (default: skip them)")
     ap.add_argument("--limit", type=int, default=0, help="process at most N files (0 = all)")
     ap.add_argument("--dry-run", action="store_true", help="list what would be analysed/skipped, do nothing")
     args = ap.parse_args()
@@ -65,7 +66,7 @@ def main() -> int:
                 log.info(f"[{processed}/{counts['total']}] done={counts['done']} skipped={counts['skipped']} failed={counts['failed']} · {rate * 60:.1f} files/min")
 
     try:
-        ingest_folder(folder, email, args.publish, limit=args.limit, dry_run=args.dry_run, on_event=on_event)
+        ingest_folder(folder, email, args.publish, limit=args.limit, dry_run=args.dry_run, replace=args.replace, on_event=on_event)
     except ValueError as e:
         log.error(str(e))
         return 2
