@@ -8,6 +8,7 @@ import { ViewSwitcher, type ResultsView } from '../components/results/ViewSwitch
 import { EvidenceLedger } from '../components/results/EvidenceLedger'
 import { StatementView, DepthView, TrendView } from '../components/results/ResultsModes'
 import { leadingGoal, goalsEvidenced } from '../lib/results'
+import { getSDGColor, getSDGTitle } from '../constants/sdg-colors'
 import type { AnalysisJob, AnalysisSummary } from '../types'
 import '../components/results/results.css'
 
@@ -157,17 +158,71 @@ export function ResultsPage() {
       {view === 'depth' && <DepthView summary={summary} />}
       {view === 'trend' && <TrendView summary={summary} filename={result.original_filename} />}
 
-      {showMethod && result.settings && (
-        <div style={{ padding: '0 44px 40px' }}>
-          <div className="rx-card rx-elev-sm" style={{ padding: '24px 30px' }}>
-            <h3 style={{ fontSize: 20, marginBottom: 12 }}>How this was measured</h3>
-            <pre style={{ margin: 0, fontSize: 12, whiteSpace: 'pre-wrap', fontFamily: 'var(--font-body)' }}>
-              {JSON.stringify(result.settings, null, 2)}
-            </pre>
-          </div>
-        </div>
-      )}
+      {showMethod && <MethodDrawer settings={result.settings} onClose={() => setShowMethod(false)} />}
     </div>
+  )
+}
+
+function MethodDrawer({ settings, onClose }: { settings: unknown; onClose: () => void }) {
+  const s = (settings ?? {}) as Record<string, unknown>
+  const thresholds = (s.sdg_thresholds ?? {}) as Record<string, number>
+  const tEntries = Object.entries(thresholds).map(([k, v]) => [Number(k), Number(v)] as [number, number]).sort((a, b) => a[1] - b[1])
+  const maxT = Math.max(0.6, ...tEntries.map((e) => e[1]))
+  const rows: [string, string][] = [
+    ['Engine', s.use_hybrid ? 'Hybrid — sentence-transformer + sdgBERT' : 'Sentence-transformer only'],
+    ['Model', String(s.model_name ?? '—')],
+    ['Ensemble', String(s.ensemble_mode ?? '—')],
+    ['Activity classifier', s.use_bert_classifier ? `BERT, confidence ≥ ${s.min_confidence ?? '—'}` : 'off'],
+    ['Sentence length', `${s.min_words ?? '?'}–${s.max_words ?? '?'} words`],
+    ['Bias corrections', s.enable_bias_corrections ? 'on (per-Goal)' : 'off'],
+    ['Similarity threshold', String(s.similarity_threshold ?? '—')],
+  ]
+  const label = { fontSize: 12.5, color: 'color-mix(in srgb, var(--color-text) 55%, transparent)' } as const
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--color-text) 42%, transparent)', zIndex: 60 }} />
+      <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 560, maxWidth: '92vw', background: 'var(--color-bg)', boxShadow: 'var(--shadow-lg)', zIndex: 61, overflowY: 'auto', padding: '28px 32px', display: 'flex', flexDirection: 'column', gap: 22 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: 26, margin: 0 }}>Method &amp; settings</h2>
+          <button onClick={onClose} style={{ border: '1px solid var(--color-divider)', background: 'transparent', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'var(--color-accent-700)', padding: '7px 16px', borderRadius: 999 }}>Close</button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {rows.map(([k, v]) => (
+            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, padding: '8px 0', borderBottom: '1px solid color-mix(in srgb, var(--color-text) 8%, transparent)' }}>
+              <span style={label}>{k}</span>
+              <span style={{ fontSize: 13.5, fontWeight: 600, textAlign: 'right' }}>{v}</span>
+            </div>
+          ))}
+        </div>
+
+        {tEntries.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <span style={{ ...label, fontSize: 11, letterSpacing: '0.09em', textTransform: 'uppercase' }}>Per-Goal thresholds — the bar a passage had to clear</span>
+            {tEntries.map(([g, t]) => (
+              <div key={g} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ width: 20, height: 20, borderRadius: 999, flex: 'none', background: getSDGColor(g), display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>{g}</span>
+                <span style={{ fontSize: 12.5, width: 150, flex: 'none' }}>{getSDGTitle(g)}</span>
+                <div style={{ flex: 1, height: 7, borderRadius: 999, background: 'color-mix(in srgb, var(--color-text) 8%, transparent)', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${(t / maxT) * 100}%`, background: getSDGColor(g), borderRadius: 999 }} />
+                </div>
+                <span style={{ ...label, width: 48, textAlign: 'right' }}>{t.toFixed(3)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div style={{ background: 'var(--color-accent-100)', borderRadius: 20, padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <span style={{ fontFamily: 'var(--font-heading)', fontSize: 16, color: 'var(--color-accent-800)' }}>What this tool does not do</span>
+          <span style={{ fontSize: 13.5, lineHeight: 1.6, color: 'var(--color-accent-800)', textWrap: 'pretty' }}>
+            It does not verify what a report claims, weight activities by spending or impact, or read anything but prose — tables and
+            charts are not analysed. It measures the language of a report, not the work of a council. Every number here is only as
+            good as the report it was read from.
+          </span>
+        </div>
+      </div>
+    </>
   )
 }
 

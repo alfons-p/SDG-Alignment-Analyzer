@@ -134,7 +134,7 @@ export function rankGoals(summary: AnalysisSummary, by: 'count' | 'mean', limit 
     name: getSDGName(r.sdg),
     color: getSDGColor(r.sdg),
     value: r.value,
-    label: by === 'count' ? (r.value === 0 ? '—' : String(r.value)) : r.value.toFixed(2),
+    label: by === 'count' ? (r.value === 0 ? '—' : String(r.value)) : r.value.toFixed(3),
     barPct: r.value === 0 ? 0 : Math.max(2, (r.value / max) * 100),
   }))
 }

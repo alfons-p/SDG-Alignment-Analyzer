@@ -1701,3 +1701,19 @@
 | 21:00 | Edited frontend/src/pages/ResultsPage.tsx | reduced (-50 lines) | ~804 |
 | 21:01 | Edited frontend/src/pages/UploadPage.tsx | 12→12 lines | ~238 |
 | 2026-08-03 | DESIGN P2 remnants: retired V1 slate auth (deleted LoginPage/RegisterPage/AuthLayout, /login+/register redirect to /access, ProtectedRoute+401 interceptor to /access, signout to /). ResultsPage PollingView to organic 4-stage rows (waiting transparent/live accent-100/done sage+check) + accent progress bar; failure state red to accent-100/800. UploadPage error+button to organic. | frontend/src/pages/ResultsPage.tsx, App.tsx, UploadPage.tsx | done, built | ~3000 |
+| 21:05 | Session end: 193 writes across 45 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 38 reads | ~141700 tok |
+| 21:06 | Edited frontend/src/constants/sdg-colors.ts | modified getSDGOfficial() | ~269 |
+| 21:07 | Edited frontend/src/lib/results.ts | inline fix | ~26 |
+| 21:07 | Edited frontend/src/components/results/ResultsModes.tsx | inline fix | ~23 |
+| 21:07 | Edited frontend/src/components/results/ResultsModes.tsx | 3→3 lines | ~102 |
+| 21:08 | Edited frontend/src/components/results/ResultsModes.tsx | CSS: color | ~175 |
+| 21:08 | Edited frontend/src/components/results/ResultsModes.tsx | 3→3 lines | ~39 |
+| 21:08 | Edited frontend/src/components/results/ResultsModes.tsx | inline fix | ~27 |
+| 21:09 | Edited frontend/src/components/results/ResultsModes.tsx | getSDGName() → getSDGTitle() | ~251 |
+| 21:09 | Edited frontend/src/components/results/ResultsModes.tsx | map() → getSDGTitle() | ~311 |
+| 21:09 | Edited frontend/src/components/results/ResultsModes.tsx | inline fix | ~20 |
+| 21:10 | Edited frontend/src/pages/ResultsPage.tsx | added nullish coalescing | ~1331 |
+| 21:11 | Edited frontend/src/pages/ResultsPage.tsx | added 1 import(s) | ~54 |
+| 21:11 | Edited frontend/src/pages/ResultsPage.tsx | inline fix | ~48 |
+| 21:11 | Edited frontend/src/pages/ResultsPage.tsx | inline fix | ~28 |
+| 2026-08-03 | DESIGN P3-P6 officer fixes. P3 TrendView: stop fabricating adjacent years, show only the analysed year + honest copy pointing to public council page for multi-year. P4 method drawer: JSON dump to right-side 560px drawer (backdrop, close) with readable settings rows + per-goal threshold bars + What-this-tool-does-not-do credibility statement. P5 statement lead grammar fixed + full official Goal titles (new SDG_TITLE/getSDGTitle) in highlights/absent/depthNote; depthNote now defined quantity (mean among low-coverage goals, not mixed units). P6 rankGoals toFixed 2 to 3, mosaic white ink above 55pct fill. | frontend/src/components/results/ResultsModes.tsx, ResultsPage.tsx, constants/sdg-colors.ts | done, built | ~4000 |

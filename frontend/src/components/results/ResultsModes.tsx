@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getActivities } from '../../api/analysis'
 import { getSDGScore } from '../../types'
 import type { AnalysisSummary } from '../../types'
-import { SDG_COUNT, getSDGName } from '../../constants/sdg-colors'
+import { SDG_COUNT, getSDGTitle } from '../../constants/sdg-colors'
 import {
   goalCount,
   goalsEvidenced,
@@ -62,7 +62,7 @@ export function StatementView({
           <h1 className="rx-stmt-h1">Where our work met the Goals</h1>
           <p className="rx-stmt-lead">
             {lead
-              ? `Of the ${summary.total_activities} activities described in this report, ${evidenced} of the 17 Goals carry evidence. ${lead.name} accounts for the largest share, at ${Math.round(lead.share * 100)}%.`
+              ? `This report describes ${summary.total_activities} activities. ${evidenced} of the 17 Goals carry evidence, and ${getSDGTitle(lead.sdg)} accounts for the largest share at ${Math.round(lead.share * 100)}%.`
               : `This report describes ${summary.total_activities} activities across ${evidenced} of the 17 Goals.`}
           </p>
         </div>
@@ -75,6 +75,7 @@ export function StatementView({
               .sort((a, b) => a.sdg - b.sdg)
               .map((r) => {
                 const pct = 15 + (r.count / maxCount) * 55
+                const darkCell = pct > 55
                 return (
                   <div
                     key={r.sdg}
@@ -83,6 +84,7 @@ export function StatementView({
                     style={{
                       background: `color-mix(in srgb, ${r.color} ${pct}%, var(--color-surface))`,
                       border: `1px solid color-mix(in srgb, ${r.color} 40%, transparent)`,
+                      color: darkCell ? '#fff' : 'var(--color-text)',
                     }}
                   >
                     <div className="rx-mosaic-top">
@@ -109,7 +111,7 @@ export function StatementView({
                 <span className="stripe" style={{ background: h.color }} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <span className="lbl" style={{ color: h.color }}>
-                    {h.name}
+                    {getSDGTitle(h.sdg)}
                   </span>
                   <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textWrap: 'pretty' }}>
                     {h.quote}
@@ -131,7 +133,7 @@ export function StatementView({
                   <span className="rx-absent-dot" style={{ background: r.color }}>
                     {r.num}
                   </span>
-                  <span style={{ fontSize: 14, fontWeight: 600 }}>{r.name}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600 }}>{getSDGTitle(r.sdg)}</span>
                 </div>
               ))}
             </div>
@@ -223,21 +225,23 @@ function RankList({
   )
 }
 
-/** A factual "read together" note: the Goal that reads clearly but is rarely described. */
+/** The Goal that reads clearly where it appears yet shows up in few activities:
+ * highest mean score among Goals below a coverage threshold. A defined quantity
+ * (a 0–1 mean score), not the old mean-minus-fraction which mixed units. */
 function depthNote(summary: AnalysisSummary): string {
-  let hiMeanLoCount = -1
-  let bestGap = -Infinity
+  const total = Math.max(1, summary.total_activities)
+  let best = -1
+  let bestMean = -Infinity
   for (let i = 1; i <= SDG_COUNT; i++) {
-    const mean = summary.mean_scores?.[i] ?? 0
     const count = goalCount(summary, i)
-    const gap = mean - count / Math.max(1, summary.total_activities)
-    if (count > 0 && gap > bestGap) {
-      bestGap = gap
-      hiMeanLoCount = i
+    const mean = summary.mean_scores?.[i] ?? 0
+    if (count > 0 && count / total < 0.15 && mean > bestMean) {
+      bestMean = mean
+      best = i
     }
   }
-  if (hiMeanLoCount < 0) return 'Coverage and depth broadly agree across this report.'
-  return `${getSDGName(hiMeanLoCount)} reads clearly as itself where it appears, yet shows up in relatively few activities — a Goal the report describes precisely but seldom.`
+  if (best < 0) return 'Coverage and depth broadly agree across this report.'
+  return `${getSDGTitle(best)} reads clearly as itself where it appears, yet shows up in relatively few activities — a Goal the report describes precisely but seldom.`
 }
 
 /* ── Three-year trend ── */
@@ -248,17 +252,18 @@ export function TrendView({ summary, filename }: { summary: AnalysisSummary; fil
   const evidenced = goalsEvidenced(summary)
   const lead = leadingGoal(summary)
 
-  const years = [thisYear - 2, thisYear - 1, thisYear]
-  const points = years.map((y) => {
-    const analysed = y === thisYear
-    return {
-      year: y,
-      analysed,
-      goals: analysed ? evidenced : null,
-      total: analysed ? `${summary.total_activities} activities` : 'No report analysed',
-      share: analysed && lead ? `${lead.name} led, ${Math.round(lead.share * 100)}%` : '—',
-    }
-  })
+  // A single officer analysis is one report = one year. Show only the year we
+  // actually have — never invent adjacent "No report" years the dataset does
+  // not hold. The full cross-year trend lives on the public council page.
+  const points = [
+    {
+      year: thisYear,
+      analysed: true,
+      goals: evidenced as number | null,
+      total: `${summary.total_activities} activities`,
+      share: lead ? `${getSDGTitle(lead.sdg)} led, ${Math.round(lead.share * 100)}%` : '—',
+    },
+  ]
 
   return (
     <div className="rx-mode-wrap">
@@ -266,8 +271,8 @@ export function TrendView({ summary, filename }: { summary: AnalysisSummary; fil
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 760 }}>
           <h1 style={{ fontSize: 36, lineHeight: 1.08 }}>One year analysed so far</h1>
           <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, textWrap: 'pretty' }}>
-            A year-over-year trend needs more than one analysed report. Only {thisYear} has been
-            analysed for this council; earlier years are shown for context.
+            A year-over-year trend needs more than one analysed report. This is {thisYear}. The full
+            multi-year picture for a council appears on its public page as more reports are analysed.
           </p>
         </div>
 

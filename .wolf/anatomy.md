@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T11:01:44.946Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T11:11:44.414Z
 > Files: 844 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -263,7 +263,7 @@
 - `EvidenceLedger.tsx` — Evidence ledger — all 17 Goals ranked by aligned-activity count. A row expands (~1487 tok)
 - `results.css` — Styles: 97 rules (~7909 tok)
 - `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~648 tok)
-- `ResultsModes.tsx` — A factual "read together" note: the Goal that reads clearly but is rarely described. (~3514 tok)
+- `ResultsModes.tsx` — The Goal that reads clearly where it appears yet shows up in few activities: (~3627 tok)
 - `ViewSwitcher.tsx` — VIEWS (~377 tok)
 
 ## frontend/src/components/sdg/
@@ -274,7 +274,7 @@
 
 ## frontend/src/constants/
 
-- `sdg-colors.ts` — Short goal names, as used in ledger rows and table headers. (~671 tok)
+- `sdg-colors.ts` — Short goal names, as used in ledger rows and table headers. (~906 tok)
 
 ## frontend/src/lib/
 
@@ -302,7 +302,7 @@
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `PublicComparePage.tsx` — GOAL_FULL — renders table (~3005 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)
-- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~3080 tok)
+- `ResultsPage.tsx` — A factual one-line lead for the ledger, composed from the data. No copywriter (~4283 tok)
 - `UploadPage.tsx` — defaultSettings (~1017 tok)
 
 ## frontend/src/types/
