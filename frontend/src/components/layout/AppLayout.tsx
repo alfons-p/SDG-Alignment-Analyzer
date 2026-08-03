@@ -1,11 +1,49 @@
-import { Outlet } from 'react-router-dom'
-import { Sidebar } from './Sidebar'
+import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getMe } from '../../api/auth'
 
+const NAV = [
+  { to: '/dashboard', label: 'Analyses' },
+  { to: '/upload', label: 'Upload' },
+  { to: '/compare', label: 'Compare' },
+]
+
+/**
+ * Authenticated shell — the designed sticky top bar (surface, shadow, accent
+ * active-tab border) replacing the old dark V1 sidebar. Cream ground comes from
+ * the global `body` rule. Content keeps 32px padding so the `.organic` pages'
+ * -32px bleed still reaches full width.
+ */
 export function AppLayout() {
+  const navigate = useNavigate()
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: getMe })
+  const items = user?.is_admin ? [...NAV, { to: '/admin', label: 'Admin' }] : NAV
+
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="ml-64 flex-1 p-8 min-h-screen">
+    <div>
+      <header className="app-topbar">
+        <span className="app-brand" onClick={() => navigate('/dashboard')}>SDG Alignment Analyser</span>
+        <nav className="app-nav">
+          {items.map((n) => (
+            <NavLink key={n.to} to={n.to} className={({ isActive }) => `app-tab${isActive ? ' on' : ''}`}>
+              {n.label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="app-topbar-right">
+          <span className="app-user">{user?.email ?? ''}</span>
+          <button
+            className="app-signout"
+            onClick={() => {
+              localStorage.removeItem('token')
+              navigate('/login')
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      </header>
+      <main className="app-main">
         <Outlet />
       </main>
     </div>

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:18:40.724Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T03:36:41.270Z
 > Files: 837 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -225,7 +225,7 @@
 ## frontend/src/
 
 - `App.tsx` — App (~418 tok)
-- `index.css` — Styles: 2 rules, 22 vars (~394 tok)
+- `index.css` — Styles: 13 rules, 30 vars (~989 tok)
 - `main.tsx` — queryClient (~172 tok)
 
 ## frontend/src/api/
@@ -247,12 +247,12 @@
 - `FileDropzone.tsx` — Single-file callback (back-compat). Receives the first accepted PDF. (~1179 tok)
 - `ProcessingSettings.tsx` — buildUniformThresholds (~2612 tok)
 - `ScoreBar.tsx` — ScoreBar (~270 tok)
-- `StatusBadge.tsx` — styles (~154 tok)
+- `StatusBadge.tsx` — styles (~247 tok)
 - `UploadQueue.tsx` — Fire-and-forget log to the server that survives page unload/discard. (~4211 tok)
 
 ## frontend/src/components/layout/
 
-- `AppLayout.tsx` — AppLayout (~78 tok)
+- `AppLayout.tsx` — Authenticated shell — the designed sticky top bar (surface, shadow, accent (~475 tok)
 - `AuthLayout.tsx` — AuthLayout (~172 tok)
 - `index.ts` (~24 tok)
 - `Sidebar.tsx` — baseLinks (~590 tok)
@@ -286,7 +286,7 @@
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
 - `AdminPage.tsx` — AdminPage (~4721 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
-- `DashboardPage.tsx` — DashboardPage (~947 tok)
+- `DashboardPage.tsx` — muted (~1188 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)

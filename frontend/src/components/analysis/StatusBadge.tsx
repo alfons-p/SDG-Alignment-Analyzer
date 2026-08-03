@@ -1,19 +1,20 @@
-import { cn } from '../../lib/utils'
+import type { CSSProperties } from 'react'
 
-const styles: Record<string, string> = {
-  queued: 'bg-yellow-100 text-yellow-800',
-  processing: 'bg-blue-100 text-blue-800',
-  completed: 'bg-green-100 text-green-800',
-  failed: 'bg-red-100 text-red-800',
+const styles: Record<string, CSSProperties> = {
+  queued: { background: 'color-mix(in srgb, var(--color-text) 8%, transparent)', color: 'color-mix(in srgb, var(--color-text) 62%, transparent)' },
+  processing: { background: 'var(--color-accent-100)', color: 'var(--color-accent-800)' },
+  completed: { background: 'var(--color-accent-2-100)', color: 'var(--color-accent-2-700)' },
+  failed: { background: '#fbe4e0', color: '#8a2a1c' },
 }
 
 export function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={cn(
-        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
-        styles[status] ?? 'bg-slate-100 text-slate-700',
-      )}
+      style={{
+        display: 'inline-flex', alignItems: 'center', padding: '3px 11px', borderRadius: 999,
+        fontSize: 11.5, fontWeight: 600, letterSpacing: '0.02em', textTransform: 'capitalize',
+        ...(styles[status] ?? styles.queued),
+      }}
     >
       {status}
     </span>
