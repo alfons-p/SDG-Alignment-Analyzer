@@ -1674,3 +1674,10 @@
 | 18:40 | Edited frontend/src/pages/LandingPage.tsx | CSS: query | ~165 |
 | 18:40 | Edited frontend/src/pages/LandingPage.tsx | 5→6 lines | ~47 |
 | 2026-08-03 | P1 Browse: /councils filterable list. Filter rail (search, State, Setting=class Urban/Rural, Reporting year, Extraction). 2-line rows: checkbox + name/meta(state.class.pages) + figures(Goals X/17, Activities, Reports span) + 17-dot goal strip. Compare selection bottom bar to /compare?councils=. URL-driven filters. Added pages to coverage by_year. Landing state+peer chips now go to /councils?state|class. | frontend/src/pages/BrowsePage.tsx, backend/app/services/public_data.py | done, built | ~4000 |
+| 20:27 | Created frontend/src/pages/PublicComparePage.tsx | — | ~3015 |
+| 20:27 | Edited frontend/src/pages/index.ts | 1→2 lines | ~28 |
+| 20:28 | Edited frontend/src/App.tsx | inline fix | ~61 |
+| 20:28 | Edited frontend/src/App.tsx | 1→2 lines | ~35 |
+| 20:28 | Edited frontend/src/App.tsx | 3→2 lines | ~36 |
+| 20:28 | Edited frontend/src/pages/PublicComparePage.tsx | modified PublicComparePage() | ~25 |
+| 2026-08-03 | P1 Compare (public): /compare?councils=slug1,slug2 computed. useQueries per council (allSettled-style, missing dont break). Title listWords, lead w/ extraction-depth warn, removable pills, 3 modes (share default/count/mean), 17-goal matrix tinted by strength sorted by combined share, Diff column when exactly 2, 3 computed notes, failure paths. Made /compare PUBLIC (was officer ComparePage, now unrouted). | frontend/src/pages/PublicComparePage.tsx, App.tsx | done, built | ~4000 |

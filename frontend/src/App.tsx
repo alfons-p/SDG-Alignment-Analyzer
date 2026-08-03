@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthLayout, AppLayout } from './components/layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { LandingPage, CouncilPage, BrowsePage, LoginPage, RegisterPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, ComparePage, AdminPage } from './pages'
+import { LandingPage, CouncilPage, BrowsePage, PublicComparePage, LoginPage, RegisterPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, AdminPage } from './pages'
 
 export default function App() {
   return (
@@ -9,6 +9,7 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/council/:code" element={<CouncilPage />} />
       <Route path="/councils" element={<BrowsePage />} />
+      <Route path="/compare" element={<PublicComparePage />} />
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -27,7 +28,6 @@ export default function App() {
         <Route path="/results/:id/activities" element={<ActivitiesPage />} />
         <Route path="/results/:id/gaps" element={<GapsPage />} />
         <Route path="/results/:id/export" element={<ExportPage />} />
-        <Route path="/compare" element={<ComparePage />} />
         <Route path="/admin" element={<AdminPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
