@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T10:28:24.076Z
-> Files: 841 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T10:35:36.271Z
+> Files: 843 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
@@ -224,7 +224,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~463 tok)
+- `App.tsx` — App (~506 tok)
 - `index.css` — Styles: 13 rules, 30 vars (~989 tok)
 - `main.tsx` — queryClient (~172 tok)
 
@@ -283,6 +283,7 @@
 
 ## frontend/src/pages/
 
+- `AccessPage.tsx` — muted (~2364 tok)
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
 - `AdminPage.tsx` — AdminPage (~4721 tok)
 - `BrowsePage.tsx` — "2023–25" contiguous, "2023, 2025" with a gap, "2024" single. (~3298 tok)
@@ -293,9 +294,10 @@
 - `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
-- `index.ts` (~192 tok)
+- `index.ts` (~219 tok)
 - `landing.css` — Styles: 44 rules (~1390 tok)
-- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10194 tok)
+- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10229 tok)
+- `LimitationsPage.tsx` — muted (~2117 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `PublicComparePage.tsx` — GOAL_FULL — renders table (~3005 tok)
 - `RegisterPage.tsx` — RegisterPage — renders form (~758 tok)

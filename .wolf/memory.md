@@ -1681,3 +1681,13 @@
 | 20:28 | Edited frontend/src/App.tsx | 3→2 lines | ~36 |
 | 20:28 | Edited frontend/src/pages/PublicComparePage.tsx | modified PublicComparePage() | ~25 |
 | 2026-08-03 | P1 Compare (public): /compare?councils=slug1,slug2 computed. useQueries per council (allSettled-style, missing dont break). Title listWords, lead w/ extraction-depth warn, removable pills, 3 modes (share default/count/mean), 17-goal matrix tinted by strength sorted by combined share, Diff column when exactly 2, 3 computed notes, failure paths. Made /compare PUBLIC (was officer ComparePage, now unrouted). | frontend/src/pages/PublicComparePage.tsx, App.tsx | done, built | ~4000 |
+| 20:29 | Session end: 178 writes across 42 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 38 reads | ~132559 tok |
+| 20:31 | Created frontend/src/pages/LimitationsPage.tsx | — | ~2117 |
+| 20:34 | Created frontend/src/pages/AccessPage.tsx | — | ~2364 |
+| 20:35 | Edited frontend/src/pages/index.ts | 1→3 lines | ~43 |
+| 20:35 | Edited frontend/src/App.tsx | inline fix | ~69 |
+| 20:35 | Edited frontend/src/App.tsx | 1→3 lines | ~53 |
+| 20:35 | Edited frontend/src/pages/LandingPage.tsx | modified if() | ~26 |
+| 20:35 | Edited frontend/src/pages/LandingPage.tsx | inline fix | ~36 |
+| 20:35 | Edited frontend/src/pages/LandingPage.tsx | added 1 condition(s) | ~52 |
+| 2026-08-03 | P1 Access + Limitations pages. Access /access: 3-rung ladder (Anyone/Registered/Officer) + auth panel (sign-in toggle register) w/ 4-tick export agreement gate, wired to login/register API. Limitations /limitations: contents rail + 6 limitation cards + ethics pull-quote. Landing Sign in to /access, footer to /limitations. | frontend/src/pages/AccessPage.tsx, LimitationsPage.tsx | done, built | ~3500 |

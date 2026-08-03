@@ -125,7 +125,7 @@ const PAGE_HTML = `
 
   <div style="display: flex; align-items: center; gap: 24px; padding: 24px 56px; margin: 0 56px 56px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
     <span style="text-wrap: pretty">Analysis reads published annual reports only. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none. Boundaries &copy; Australian Bureau of Statistics, ASGS Edition 3.</span>
-    <a href="#method" style="margin-left: auto; white-space: nowrap">How this was measured</a>
+    <a href="#method" data-nav="limits" style="margin-left: auto; white-space: nowrap">About this analysis and its limits</a>
   </div>
 `
 
@@ -539,7 +539,9 @@ export function LandingPage() {
       } else if (nav === 'upload') {
         e.preventDefault(); navigate('/upload')
       } else if (nav === 'login') {
-        e.preventDefault(); navigate('/login')
+        e.preventDefault(); navigate('/access')
+      } else if (nav === 'limits') {
+        e.preventDefault(); navigate('/limitations')
       }
     }
     page.addEventListener('click', onNav)

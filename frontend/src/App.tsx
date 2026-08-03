@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthLayout, AppLayout } from './components/layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { LandingPage, CouncilPage, BrowsePage, PublicComparePage, LoginPage, RegisterPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, AdminPage } from './pages'
+import { LandingPage, CouncilPage, BrowsePage, PublicComparePage, AccessPage, LimitationsPage, LoginPage, RegisterPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, AdminPage } from './pages'
 
 export default function App() {
   return (
@@ -10,6 +10,8 @@ export default function App() {
       <Route path="/council/:code" element={<CouncilPage />} />
       <Route path="/councils" element={<BrowsePage />} />
       <Route path="/compare" element={<PublicComparePage />} />
+      <Route path="/access" element={<AccessPage />} />
+      <Route path="/limitations" element={<LimitationsPage />} />
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
