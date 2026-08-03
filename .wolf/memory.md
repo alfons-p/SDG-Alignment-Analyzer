@@ -1644,4 +1644,23 @@
 | 13:40 | Edited frontend/src/pages/LandingPage.tsx | inline fix | ~46 |
 | 13:41 | Edited frontend/src/pages/LandingPage.tsx | added 1 condition(s) | ~181 |
 | 13:41 | Edited frontend/src/pages/LandingPage.tsx | inline fix | ~71 |
-| 2026-08-03 | DESIGN P0 (Landing overclaiming): headlineFor now takes councilCount + NATIONAL_MIN_COUNCILS=40 provisional voice (no "Australian" below 40); listWords() proper joining (A, B and C); derived findblurb + count-named lead (no hardcoded "three reporting years"); map unmatched fill 5
+| 2026-08-03 | DESIGN P0 (Landing overclaiming): headlineFor now takes councilCount + NATIONAL_MIN_COUNCILS=40 provisional voice (no "Australian" below 40); listWords() proper joining (A, B and C); derived findblurb + count-named lead (no hardcoded "three reporting years"); map unmatched fill 5| 2026-08-03 | DESIGN P0 Landing: headlineFor +councilCount, NATIONAL_MIN_COUNCILS=40 provisional voice, listWords joining, derived findblurb/lead counts, map unmatched fill 5pct to 13pct. Live 532 councils = national voice. Full split-hero layout deferred (needs P1 Council/Browse routes). | frontend/src/pages/LandingPage.tsx | done | ~2500 |
+| 13:43 | Session end: 146 writes across 36 files (public.ts, landing.css, LandingPage.tsx, index.ts, App.tsx) | 36 reads | ~117301 tok |
+| 13:45 | Edited backend/app/services/public_data.py | modified _report_alignment() | ~263 |
+| 13:46 | Edited backend/app/services/public_data.py | modified values() | ~453 |
+| 13:46 | Edited backend/app/services/public_data.py | added 1 condition(s) | ~776 |
+| 13:46 | Edited backend/app/routers/public.py | modified public_coverage() | ~279 |
+| 13:47 | Edited backend/app/services/public_data.py | modified isdigit() | ~128 |
+| 13:47 | Edited frontend/src/api/public.ts | expanded (+31 lines) | ~305 |
+| 13:48 | Edited frontend/src/api/public.ts | modified getPublicCoverage() | ~116 |
+| 13:48 | Created frontend/src/pages/council.css | — | ~687 |
+| 13:49 | Created frontend/src/pages/CouncilPage.tsx | — | ~3197 |
+| 13:49 | Edited frontend/src/pages/index.ts | 1→2 lines | ~25 |
+| 13:49 | Edited frontend/src/App.tsx | modified App() | ~105 |
+| 13:50 | Edited frontend/src/pages/CouncilPage.tsx | inline fix | ~15 |
+| 13:50 | Edited frontend/src/pages/CouncilPage.tsx | 3→2 lines | ~28 |
+| 13:50 | Edited frontend/src/pages/CouncilPage.tsx | inline fix | ~18 |
+| 13:50 | Edited frontend/src/pages/LandingPage.tsx | added optional chaining | ~125 |
+| 13:51 | Edited frontend/src/pages/LandingPage.tsx | added optional chaining | ~86 |
+| 13:51 | Edited frontend/src/pages/LandingPage.tsx | added optional chaining | ~294 |
+| 2026-08-03 | P1 Council page: backend build_council_detail(slug) + coverage enrichment (code slug state-name, class from urban_rural, goals per council/by_year, latest_year); GET /api/public/councils/{code}. Frontend CouncilPage /council/:code (header band, year pills, 3 figures, 17-goal evidence ledger w/ expand, extraction/across-years/source cards). Landing map+search now navigate to /council/:code. No lga_code on rows so keyed by slug. | backend/app/services/public_data.py, frontend/src/pages/CouncilPage.tsx | done, tested | ~6000 |

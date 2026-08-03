@@ -222,11 +222,12 @@ export function LandingPage() {
       .replace(/[^a-z]/g, '')
 
     type Rec = {
-      lga_code: string | null; name: string; state: string | null; type?: string; class?: string
+      code?: string; lga_code: string | null; name: string; state: string | null; type?: string; class?: string
       lat?: number | null; lon?: number | null; goals_evidenced: number | null
       years_available: number; by_year?: Record<string, { goals_evidenced: number }>
       postcodes?: (string | number)[]
     }
+    const goCouncil = (d: Rec | null | undefined) => { if (d?.code) navigate('/council/' + d.code) }
     const SAMPLE: Rec[] = C.map((c) => ({
       lga_code: null, name: c[0], state: c[1], type: c[2], class: c[3],
       lat: c[4], lon: c[5], goals_evidenced: c[6], years_available: c[7],
@@ -397,12 +398,17 @@ export function LandingPage() {
           (d.postcodes || []).some((p) => String(p).startsWith(q))).slice(0, 7)
         out.innerHTML = hits.map((d) => {
           const g = goalsOf(d)
-          return '<div class="rrow"><span style="width:20px;height:20px;border-radius:999px;background:' + shade(g) + '"></span>' +
+          return '<div class="rrow" data-code="' + (d.code ?? '') + '"><span style="width:20px;height:20px;border-radius:999px;background:' + shade(g) + '"></span>' +
             '<span class="rname">' + d.name + '</span><span class="rmeta">' + d.state + ' · ' +
             (g == null ? 'no analysis' : g + '/17 Goals') + ' · ' + yearsOf(d) + ' yr</span></div>'
         }).join('')
         out.classList.toggle('on', hits.length > 0)
       }
+      // Navigate on mousedown — the input's blur handler swallows a click.
+      out.addEventListener('mousedown', (e) => {
+        const row = (e.target as HTMLElement).closest<HTMLElement>('[data-code]')
+        if (row?.dataset.code) navigate('/council/' + row.dataset.code)
+      })
       input.addEventListener('input', () => render(input.value))
       input.addEventListener('focus', () => render(input.value))
       input.addEventListener('blur', () => setTimeout(() => out.classList.remove('on'), 160))
@@ -473,6 +479,8 @@ export function LandingPage() {
             (g == null ? (LIVE ? 'No report analysed' + (YEAR ? ' for ' + YEAR : '') : 'Not in this sample') : g + ' of 17 Goals evidenced'))
         })
         .on('mouseleave', hideTip)
+        .on('click', (_e: MouseEvent, d: any) => goCouncil(lookup(d.properties)))
+        .style('cursor', (d: any) => (lookup(d.properties)?.code ? 'pointer' : 'default'))
 
       repaint = () => shapes.attr('fill', (d: any) => shade(goalsOf(lookup(d.properties))))
       repaint()

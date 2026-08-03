@@ -1,12 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthLayout, AppLayout } from './components/layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { LandingPage, LoginPage, RegisterPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, ComparePage, AdminPage } from './pages'
+import { LandingPage, CouncilPage, LoginPage, RegisterPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, ComparePage, AdminPage } from './pages'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/council/:code" element={<CouncilPage />} />
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

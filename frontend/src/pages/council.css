@@ -1,0 +1,49 @@
+/* Public Council page — one council's Goals, evidence, trend, extraction.
+   Body already provides the cream ground; this scopes type + interactions. */
+.cx {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+.cx h1, .cx h2, .cx h3 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.cx a {
+  color: var(--color-accent-700);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+.cx a:hover { color: var(--color-accent-800); }
+.cx .page { max-width: 1200px; margin: 0 auto; }
+
+.cx .pill {
+  border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  padding: 7px 14px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  color: var(--color-text);
+}
+.cx .pill:hover:not(:disabled) { background: var(--color-accent-100); }
+.cx .pill.on { background: var(--color-accent); color: #fff; }
+.cx .pill:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ledger row */
+.cx .lrow {
+  display: flex; align-items: center; gap: 14px; padding: 11px 14px; border-radius: 16px; cursor: pointer;
+}
+.cx .lrow:hover { background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+.cx .lnum {
+  width: 30px; height: 30px; border-radius: 999px; flex: none; display: inline-flex;
+  align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff;
+}
+.cx .lname { width: 210px; flex: none; font-size: 14px; font-weight: 600; }
+.cx .ltrack { flex: 1 1 auto; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent); overflow: hidden; }
+.cx .lfill { height: 100%; border-radius: 999px; }
+.cx .lcount { width: 92px; flex: none; text-align: right; font-size: 13px; color: color-mix(in srgb, var(--color-text) 60%, transparent); }
+.cx .lband { width: 96px; flex: none; text-align: right; font-size: 12.5px; }
+
+/* expanded evidence */
+.cx .eexp { margin: 2px 0 6px; padding: 16px 18px; border-radius: 18px; background: var(--color-accent-2-100); display: flex; flex-direction: column; gap: 12px; }
+.cx .epass { display: flex; flex-direction: column; gap: 4px; }
+.cx .card { background: var(--color-surface); border-radius: 24px; box-shadow: var(--shadow-sm); padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; }
