@@ -1777,3 +1777,16 @@
 | 14:50 | Session end: 40 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 15 reads | ~54062 tok |
 | 15:19 | Session end: 40 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 15 reads | ~54062 tok |
 | 15:25 | OCR fallback shipped (OCRExtractor rung 3 + cache + test) & re-ingested: 18 failed -> 13 recovered, 5 remain (2 sparse-text, 3 broken/0-page). DB 1536 completed, 0 dups | src/ocr_extractor.py, activity_extractor.py, analysis_service.py | done | ~15k |
+| 15:30 | Session end: 40 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 15 reads | ~54062 tok |
+| 15:54 | Edited src/ocr_extractor.py | modified __init__() | ~196 |
+| 15:54 | Edited src/ocr_extractor.py | modified _cache_path() | ~80 |
+| 15:54 | Edited src/ocr_extractor.py | modified extract_text_from_pdf() | ~748 |
+| 15:55 | Edited src/ocr_extractor.py | modified _result() | ~138 |
+| 15:55 | Edited src/activity_extractor.py | expanded (+6 lines) | ~251 |
+| 15:55 | Edited src/activity_extractor.py | modified _get_ocr_extractor() | ~766 |
+| 15:55 | Edited tests/test_ocr_extractor.py | 4→4 lines | ~52 |
+| 15:55 | Edited tests/test_ocr_extractor.py | 3→3 lines | ~49 |
+| 15:58 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 15 reads | ~56342 tok |
+| 16:16 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 16 reads | ~56342 tok |
+| 16:18 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 16 reads | ~56342 tok |
+| 16:20 | OCR trigger fix (per-page fraction + merge): Yarrabah+Paroo recovered. Final DB 1538 completed/published, 3 failed — all bad-source (Waverley/South Burnett truncated downloads, Three Springs 1-page stub). 33→3 total | src/ocr_extractor.py, activity_extractor.py | done | ~6k |

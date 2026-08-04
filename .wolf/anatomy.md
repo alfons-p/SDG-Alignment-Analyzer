@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T04:31:05.164Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T05:55:54.413Z
 > Files: 846 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -1031,11 +1031,11 @@
 ## src/
 
 - `activity_classifier.py` — Activity Classifier Module. (~2028 tok)
-- `activity_extractor.py` — Activity Extraction Module. (~8269 tok)
+- `activity_extractor.py` — Activity Extraction Module. (~8510 tok)
 - `alignment_engine.py` — SDG Alignment Engine. (~8441 tok)
 - `embedding_cache.py` — Embedding Cache Module. (~4716 tok)
 - `hybrid_alignment_engine.py` — Hybrid Alignment Engine with sdgBERT Support. (~11930 tok)
-- `ocr_extractor.py` — OCR fallback text extraction for image-only PDFs. (~1644 tok)
+- `ocr_extractor.py` — OCR fallback text extraction for image-only PDFs. (~1921 tok)
 - `pdf_extractor.py` — PDF text extraction module using PyMuPDF. (~3658 tok)
 - `sdg_bert_classifier.py` — SDG BERT Classifier Module. (~5955 tok)
 - `sdg_ensemble_weights.py` — SDG-specific ensemble weights (~234 tok)
@@ -1084,4 +1084,4 @@
 
 - `test_activity_classifier.py` — Tests for ActivityClassifier module. (~1410 tok)
 - `test_app_live.py` — Comprehensive tests for app.py and its dependencies. (~5214 tok)
-- `test_ocr_extractor.py` — Tests for the OCR fallback extractor. (~762 tok)
+- `test_ocr_extractor.py` — Tests for the OCR fallback extractor. (~767 tok)
