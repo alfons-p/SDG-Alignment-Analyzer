@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T22:08:34.365Z
-> Files: 844 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T04:31:05.164Z
+> Files: 846 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
@@ -64,7 +64,7 @@
 - `README.md` — Project documentation (~9994 tok)
 - `REFERENCES.md` — References (~2432 tok)
 - `remaining_low_quality_characterization.md` — Remaining Low-Quality Activity Text Characterization (~1897 tok)
-- `requirements.txt` — Python dependencies (~120 tok)
+- `requirements.txt` — Python dependencies (~147 tok)
 - `results_quality_sample.csv` (~83329 tok)
 - `sdg_alignment_quality_report_iteration2.md` — SDG Alignment Quality Report - Iteration 2 (~1399 tok)
 - `sdg_alignment_quality_report.md` — SDG Alignment Quality Report - Iteration 1 (~2310 tok)
@@ -161,7 +161,7 @@
 
 - `__init__.py` (~0 tok)
 - `aggregation.py` — Standalone aggregation functions — extracted logic, no Reporter dependency. (~935 tok)
-- `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~5404 tok)
+- `analysis_service.py` — Analysis service — thin wrapper around the existing src/ pipeline. (~5428 tok)
 - `batch_ingest_service.py` — Server-side folder ingest — shared by the CLI (scripts/batch_ingest.py) and (~3162 tok)
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
 - `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
@@ -1031,10 +1031,11 @@
 ## src/
 
 - `activity_classifier.py` — Activity Classifier Module. (~2028 tok)
-- `activity_extractor.py` — Activity Extraction Module. (~7286 tok)
+- `activity_extractor.py` — Activity Extraction Module. (~8269 tok)
 - `alignment_engine.py` — SDG Alignment Engine. (~8441 tok)
 - `embedding_cache.py` — Embedding Cache Module. (~4716 tok)
 - `hybrid_alignment_engine.py` — Hybrid Alignment Engine with sdgBERT Support. (~11930 tok)
+- `ocr_extractor.py` — OCR fallback text extraction for image-only PDFs. (~1644 tok)
 - `pdf_extractor.py` — PDF text extraction module using PyMuPDF. (~3658 tok)
 - `sdg_bert_classifier.py` — SDG BERT Classifier Module. (~5955 tok)
 - `sdg_ensemble_weights.py` — SDG-specific ensemble weights (~234 tok)
@@ -1083,3 +1084,4 @@
 
 - `test_activity_classifier.py` — Tests for ActivityClassifier module. (~1410 tok)
 - `test_app_live.py` — Comprehensive tests for app.py and its dependencies. (~5214 tok)
+- `test_ocr_extractor.py` — Tests for the OCR fallback extractor. (~762 tok)

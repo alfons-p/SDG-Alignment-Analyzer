@@ -1761,3 +1761,19 @@
 | 08:08 | Edited frontend/src/pages/AdminPage.tsx | 3→7 lines | ~206 |
 | 08:08 | Edited frontend/src/types/index.ts | 4→5 lines | ~32 |
 | 08:20 | Re-ingest data/raw: 2 refreshed (Sunshine Coast, Litchfield 2025), 18 hard-cases re-failed (no prose/OCR). Purged 34 dup/superseded rows -> 1541 (1 per council-year). Added ingest replace option + failed-row dedup | batch_ingest_service.py, analysis.py, batch_ingest.py, AdminPage.tsx | done | ~12k |
+| 08:44 | Session end: 30 writes across 14 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 12 reads | ~39029 tok |
+| 08:46 | Session end: 30 writes across 14 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 12 reads | ~39029 tok |
+| 13:58 | Session end: 30 writes across 14 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 14 reads | ~49973 tok |
+| 14:27 | Created src/ocr_extractor.py | — | ~1644 |
+| 14:28 | Created tests/test_ocr_extractor.py | — | ~762 |
+| 14:29 | Edited src/activity_extractor.py | 5→9 lines | ~88 |
+| 14:29 | Edited src/activity_extractor.py | modified fallback() | ~232 |
+| 14:30 | Edited src/activity_extractor.py | added 1 import(s) | ~27 |
+| 14:30 | Edited src/activity_extractor.py | 4→5 lines | ~46 |
+| 14:30 | Edited src/activity_extractor.py | 4→9 lines | ~134 |
+| 14:30 | Edited src/activity_extractor.py | modified _get_ocr_extractor() | ~728 |
+| 14:30 | Edited backend/app/services/analysis_service.py | inline fix | ~56 |
+| 14:31 | Edited requirements.txt | 3→4 lines | ~39 |
+| 14:50 | Session end: 40 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 15 reads | ~54062 tok |
+| 15:19 | Session end: 40 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 15 reads | ~54062 tok |
+| 15:25 | OCR fallback shipped (OCRExtractor rung 3 + cache + test) & re-ingested: 18 failed -> 13 recovered, 5 remain (2 sparse-text, 3 broken/0-page). DB 1536 completed, 0 dups | src/ocr_extractor.py, activity_extractor.py, analysis_service.py | done | ~15k |
