@@ -1,6 +1,7 @@
 # Core Dependencies
 pymupdf>=1.23.0
 pypdfium2>=4.30.0
+pytesseract>=0.3.10   # OCR fallback for image-only PDFs (needs `brew install tesseract`)
 spacy>=3.7.0
 sentence-transformers>=2.2.0
 torch>=2.0.0

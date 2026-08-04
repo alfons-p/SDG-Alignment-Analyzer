@@ -5,6 +5,7 @@ Uses BERT activity classifier (DeBERTa-v3-small) by default.
 Falls back to spaCy heuristics if the model is unavailable or --no-bert-classifier is set.
 """
 
+import os
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple, Union
 
@@ -212,6 +213,10 @@ class ActivityExtractor:
         bert_classifier_model: Optional[str] = None,
         min_confidence: float = 0.7,
         require_action_verb: bool = False,
+        use_ocr: bool = True,
+        ocr_dpi: int = 300,
+        ocr_lang: str = "eng",
+        ocr_max_pages: int = 150,
     ):
         """
         Initialize activity extractor.
@@ -244,6 +249,16 @@ class ActivityExtractor:
         self.use_sentence_reconstruction = use_sentence_reconstruction
         self.spacy_model_name = spacy_model
         self.nofinancial = nofinancial
+
+        # OCR fallback (rung 3): built lazily on first image-only PDF, reused
+        # thereafter (matches the model-caching pattern). Env overrides let the
+        # feature be disabled or tuned without code changes.
+        self.use_ocr = use_ocr and os.getenv("OCR_ENABLED", "1") not in ("0", "false", "False")
+        self.ocr_dpi = int(os.getenv("OCR_DPI", str(ocr_dpi)))
+        self.ocr_lang = os.getenv("OCR_LANG", ocr_lang)
+        self.ocr_max_pages = int(os.getenv("OCR_MAX_PAGES", str(ocr_max_pages)))
+        self.ocr_min_cpp = int(os.getenv("OCR_MIN_CPP", "50"))
+        self._ocr_extractor = None
 
         # Initialize TextProcessor with specified spaCy model
         self.text_processor = TextProcessor(
@@ -292,6 +307,56 @@ class ActivityExtractor:
         else:
             self.llm_labeler = None
 
+    def _get_ocr_extractor(self):
+        """Lazily build the OCR extractor once and reuse it."""
+        if self._ocr_extractor is None:
+            from src.ocr_extractor import OCRExtractor
+            self._ocr_extractor = OCRExtractor(
+                dpi=self.ocr_dpi, lang=self.ocr_lang, max_pages=self.ocr_max_pages
+            )
+        return self._ocr_extractor
+
+    @staticmethod
+    def _pdf_is_image_heavy(pdf_path: Path) -> bool:
+        """True when the PDF averages >=1 embedded image per page — the signal
+        that a thin text layer means scanned pages, not a genuinely empty doc."""
+        try:
+            import fitz
+            with fitz.open(pdf_path) as doc:
+                pages = len(doc)
+                if pages == 0:
+                    return False
+                imgs = sum(len(doc[i].get_images()) for i in range(pages))
+                return imgs / pages >= 1
+        except Exception:  # noqa: BLE001
+            return False
+
+    def _maybe_ocr(self, pdf_path: Path, raw_text: str, extraction_result: dict):
+        """Run OCR when the extracted text is too thin for the page count and the
+        PDF looks scanned. Returns possibly-updated (raw_text, extraction_result);
+        a no-op when OCR is disabled, the binary is missing, or the gates fail."""
+        if not self.use_ocr:
+            return raw_text, extraction_result
+        pages = extraction_result.get("metadata", {}).get("page_count", 0) or 0
+        if pages <= 0:
+            return raw_text, extraction_result
+        if len(raw_text) / pages >= self.ocr_min_cpp:
+            return raw_text, extraction_result
+        if not self._pdf_is_image_heavy(pdf_path):
+            return raw_text, extraction_result
+        ocr = self._get_ocr_extractor()
+        if not ocr.available():
+            print("  OCR skipped: tesseract not installed")
+            return raw_text, extraction_result
+        try:
+            result = ocr.extract_text_from_pdf(pdf_path)
+            if len(result.get("text", "")) > len(raw_text) * 1.5:
+                print(f"  image-only ({len(raw_text)}c) → OCR ({len(result['text'])}c)")
+                return result["text"], result
+        except Exception as e:  # noqa: BLE001
+            print(f"  OCR failed: {type(e).__name__}: {e}")
+        return raw_text, extraction_result
+
     def extract_from_pdf(self, pdf_path: Path, progress_callback: callable = None) -> Dict[str, Any]:
         """
         Extract activities from a PDF file.
@@ -304,6 +369,7 @@ class ActivityExtractor:
             Dictionary with activities and metadata
         """
         cb = progress_callback or (lambda p, s: None)
+        pdf_path = Path(pdf_path)
 
         # Extract text from PDF
         cb(6.0, "Reading PDF text...")
@@ -346,6 +412,11 @@ class ActivityExtractor:
                         raw_text = alt["text"]
                 except Exception as _e:  # noqa: BLE001
                     pass
+
+        # Rung 3: still image-only after fitz + pdfplumber -> OCR. Gated so it
+        # only fires on genuinely scanned PDFs: real pages (skips 0-page broken
+        # files), thin text (skips text-layer PDFs), image-heavy (confirms scan).
+        raw_text, extraction_result = self._maybe_ocr(pdf_path, raw_text, extraction_result)
 
         # Apply sentence reconstruction if enabled
         if self.use_sentence_reconstruction and self.sentence_reconstructor:

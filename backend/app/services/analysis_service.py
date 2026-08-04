@@ -145,7 +145,7 @@ def _cleanup_after_file():
 # The backend (parent) process therefore stays small; peak memory is bounded to
 # ~one model set + N files' worth, then resets.
 BATCH_WORKER_RECYCLE = int(os.getenv("BATCH_WORKER_RECYCLE", "20"))  # 0 = run inline (no subprocess)
-BATCH_TASK_TIMEOUT = int(os.getenv("BATCH_TASK_TIMEOUT", "600"))  # per-PDF hard cap (s); hung worker is killed
+BATCH_TASK_TIMEOUT = int(os.getenv("BATCH_TASK_TIMEOUT", "900"))  # per-PDF hard cap (s); hung worker is killed. Raised to 900 to cover OCR of image-only PDFs (~1-3s/page, capped at OCR_MAX_PAGES)
 _PROJECT_ROOT = str(Path(__file__).resolve().parents[3])
 _pool = None
 _pool_lock = threading.Lock()       # guards pool create/destroy
