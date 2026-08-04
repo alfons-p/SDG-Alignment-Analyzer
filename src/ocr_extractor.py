@@ -32,11 +32,15 @@ class OCRExtractor:
         dpi: int = 300,
         lang: str = "eng",
         max_pages: int = 150,
+        min_page_chars: int = 30,
         cache_dir: Optional[Path] = None,
     ):
         self.dpi = dpi
         self.lang = lang
         self.max_pages = max_pages
+        # A page with fewer than this many embedded chars is treated as image-only
+        # and OCR'd; pages above it keep their (higher-quality) embedded text.
+        self.min_page_chars = min_page_chars
         if cache_dir is None:
             cache_dir = Path(__file__).parent.parent / ".cache" / "ocr"
         self.cache_dir = Path(cache_dir)
@@ -62,12 +66,18 @@ class OCRExtractor:
 
     def _cache_path(self, content: bytes) -> Path:
         key = hashlib.sha256(content).hexdigest()[:32]
-        return self.cache_dir / f"ocr_{key}_{self.dpi}_{self.lang}.txt"
+        # min_page_chars is in the key because it changes which pages get OCR'd.
+        return self.cache_dir / f"ocr_{key}_{self.dpi}_{self.lang}_{self.min_page_chars}.txt"
 
     # ── extraction ──────────────────────────────────────────────────────────
 
     def extract_text_from_pdf(self, pdf_path: Path) -> Dict[str, Any]:
-        """OCR a PDF into the standard extraction-result dict.
+        """Per-page merge of embedded text and OCR into the standard result dict.
+
+        For each page: keep the embedded text layer when it carries real content
+        (>= ``min_page_chars``); OCR the page only when it's image-only. This
+        recovers scanned pages in a mixed document while preserving the sharper
+        embedded text on the pages that have it.
 
         Returns a dict with the same keys as ``PDFExtractor`` (``text``,
         ``pages``, ``metadata``, ``sections``) plus ``source_engine="ocr"`` and
@@ -86,32 +96,38 @@ class OCRExtractor:
         with fitz.open(pdf_path) as doc:
             page_count = len(doc)
             n = min(page_count, self.max_pages) if self.max_pages else page_count
-            truncated = self.max_pages and page_count > self.max_pages
+            truncated = bool(self.max_pages and page_count > self.max_pages)
 
-            # Cache hit: reuse OCR text, skip the expensive render+recognise.
+            # Cache hit: reuse merged text, skip the expensive render+recognise.
             cached = self._read_cache(cache_file)
             if cached is not None:
                 pages = [{"page_number": i + 1, "text": ""} for i in range(n)]
                 return self._result(pdf_path, cached, pages, page_count, n, truncated)
 
             page_texts = []
+            ocr_pages = 0
             for i in range(n):
+                embedded = doc[i].get_text()
+                if len(embedded.strip()) >= self.min_page_chars:
+                    page_texts.append(embedded)  # keep sharper embedded text
+                    continue
                 try:
                     pix = doc[i].get_pixmap(dpi=self.dpi)
                     img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
                     page_texts.append(pytesseract.image_to_string(img, lang=self.lang))
+                    ocr_pages += 1
                 except Exception as e:  # noqa: BLE001 — one bad page must not lose the rest
                     print(f"  OCR page {i + 1} failed: {type(e).__name__}: {e}")
-                    page_texts.append("")
+                    page_texts.append(embedded)
 
         text = "\n".join(page_texts)
         self._write_cache(cache_file, text)
         pages = [{"page_number": i + 1, "text": page_texts[i]} for i in range(len(page_texts))]
-        return self._result(pdf_path, text, pages, page_count, n, truncated)
+        return self._result(pdf_path, text, pages, page_count, ocr_pages, truncated)
 
     # ── helpers ───────────────────────────────────────────────────────────────
 
-    def _result(self, pdf_path, text, pages, page_count, n, truncated) -> Dict[str, Any]:
+    def _result(self, pdf_path, text, pages, page_count, ocr_pages, truncated) -> Dict[str, Any]:
         return {
             "source": str(pdf_path),
             "text": text,
@@ -119,7 +135,7 @@ class OCRExtractor:
             "metadata": {
                 "page_count": page_count,
                 "ocr": True,
-                "ocr_pages": n,
+                "ocr_pages": ocr_pages,
                 "ocr_truncated": bool(truncated),
             },
             "sections": [],

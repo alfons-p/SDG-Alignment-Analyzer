@@ -257,7 +257,13 @@ class ActivityExtractor:
         self.ocr_dpi = int(os.getenv("OCR_DPI", str(ocr_dpi)))
         self.ocr_lang = os.getenv("OCR_LANG", ocr_lang)
         self.ocr_max_pages = int(os.getenv("OCR_MAX_PAGES", str(ocr_max_pages)))
-        self.ocr_min_cpp = int(os.getenv("OCR_MIN_CPP", "50"))
+        # A page with fewer than this many chars and >=1 image is "image-only".
+        # OCR fires when that fraction of pages meets OCR_PAGE_FRACTION — a
+        # per-page test, because a document average is fooled by a few dense
+        # text pages sitting among mostly-scanned ones (e.g. Yarrabah: 84/90
+        # pages image-only, yet the 6 text pages lift the average past a cpp cut).
+        self.ocr_min_page_chars = int(os.getenv("OCR_MIN_PAGE_CHARS", "30"))
+        self.ocr_page_fraction = float(os.getenv("OCR_PAGE_FRACTION", "0.3"))
         self._ocr_extractor = None
 
         # Initialize TextProcessor with specified spaCy model
@@ -312,37 +318,42 @@ class ActivityExtractor:
         if self._ocr_extractor is None:
             from src.ocr_extractor import OCRExtractor
             self._ocr_extractor = OCRExtractor(
-                dpi=self.ocr_dpi, lang=self.ocr_lang, max_pages=self.ocr_max_pages
+                dpi=self.ocr_dpi, lang=self.ocr_lang, max_pages=self.ocr_max_pages,
+                min_page_chars=self.ocr_min_page_chars,
             )
         return self._ocr_extractor
 
-    @staticmethod
-    def _pdf_is_image_heavy(pdf_path: Path) -> bool:
-        """True when the PDF averages >=1 embedded image per page — the signal
-        that a thin text layer means scanned pages, not a genuinely empty doc."""
+    def _image_only_fraction(self, pdf_path: Path) -> float:
+        """Fraction of pages that are image-only: little/no embedded text plus at
+        least one image. This is the scanned-content signal — robust to a few
+        dense text pages (appendix, financials) that skew a document average."""
         try:
             import fitz
             with fitz.open(pdf_path) as doc:
                 pages = len(doc)
                 if pages == 0:
-                    return False
-                imgs = sum(len(doc[i].get_images()) for i in range(pages))
-                return imgs / pages >= 1
+                    return 0.0
+                img_only = sum(
+                    1 for i in range(pages)
+                    if len(doc[i].get_text().strip()) < self.ocr_min_page_chars
+                    and len(doc[i].get_images()) >= 1
+                )
+                return img_only / pages
         except Exception:  # noqa: BLE001
-            return False
+            return 0.0
 
     def _maybe_ocr(self, pdf_path: Path, raw_text: str, extraction_result: dict):
-        """Run OCR when the extracted text is too thin for the page count and the
-        PDF looks scanned. Returns possibly-updated (raw_text, extraction_result);
-        a no-op when OCR is disabled, the binary is missing, or the gates fail."""
+        """Run OCR when a large fraction of pages are image-only. Merges OCR of
+        scanned pages with embedded text of the rest. Returns possibly-updated
+        (raw_text, extraction_result); a no-op when OCR is disabled, the binary
+        is missing, or too few pages are scanned."""
         if not self.use_ocr:
             return raw_text, extraction_result
         pages = extraction_result.get("metadata", {}).get("page_count", 0) or 0
         if pages <= 0:
             return raw_text, extraction_result
-        if len(raw_text) / pages >= self.ocr_min_cpp:
-            return raw_text, extraction_result
-        if not self._pdf_is_image_heavy(pdf_path):
+        frac = self._image_only_fraction(pdf_path)
+        if frac < self.ocr_page_fraction:
             return raw_text, extraction_result
         ocr = self._get_ocr_extractor()
         if not ocr.available():
@@ -350,8 +361,9 @@ class ActivityExtractor:
             return raw_text, extraction_result
         try:
             result = ocr.extract_text_from_pdf(pdf_path)
-            if len(result.get("text", "")) > len(raw_text) * 1.5:
-                print(f"  image-only ({len(raw_text)}c) → OCR ({len(result['text'])}c)")
+            if len(result.get("text", "")) > len(raw_text):
+                print(f"  {frac*100:.0f}% image-only pages: {len(raw_text)}c → OCR merge {len(result['text'])}c "
+                      f"({result['metadata'].get('ocr_pages')} pages OCR'd)")
                 return result["text"], result
         except Exception as e:  # noqa: BLE001
             print(f"  OCR failed: {type(e).__name__}: {e}")

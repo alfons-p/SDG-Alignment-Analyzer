@@ -34,7 +34,7 @@ def test_cache_path_is_content_addressed():
     a = ocr._cache_path(b"hello")
     b = ocr._cache_path(b"world")
     assert a != b
-    assert a.name.startswith("ocr_") and a.name.endswith("_300_eng.txt")
+    assert a.name.startswith("ocr_") and a.name.endswith("_300_eng_30.txt")
     # Same bytes -> same key (deterministic).
     assert ocr._cache_path(b"hello") == a
 
@@ -59,8 +59,8 @@ def test_ocr_recovers_text_from_image_only_pdf(tmp_path):
     # A scanned annual report yields plenty of recognised text.
     assert len(result["text"]) > 2000, f"OCR text too short: {len(result['text'])}"
 
-    # Cache file written for the content+dpi+lang key.
-    cache_files = list(Path(tmp_path).glob("ocr_*_300_eng.txt"))
+    # Cache file written for the content+dpi+lang+min_page_chars key.
+    cache_files = list(Path(tmp_path).glob("ocr_*_300_eng_*.txt"))
     assert len(cache_files) == 1
 
 
