@@ -23,8 +23,8 @@ import './landing.css'
 const PAGE_HTML = `
   <div class="nav2" style="display:flex;align-items:center;gap:24px;padding:20px 56px">
     <span class="brand" data-nav="home" style="font-family:var(--font-heading);font-size:21px;line-height:1">SDG Alignment Analyser</span>
-    <span class="navlink">The dataset</span>
-    <span class="navlink">Findings</span>
+    <span class="navlink" data-nav="browse">The dataset</span>
+    <span class="navlink" data-nav="findings">Findings</span>
     <span class="navlink" data-nav="limits">Method</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
       <button class="btn btn-ghost" style="border-radius:999px" data-nav="login">Sign in</button>
@@ -85,7 +85,7 @@ const PAGE_HTML = `
   </div>
 
   <!-- ── Below the fold ── -->
-  <p style="margin:0;padding:4px 56px 30px;max-width:860px;font-size:18px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty" data-stat="lead">The findings below are computed from every report analysed.</p>
+  <p id="findings" style="margin:0;padding:4px 56px 30px;max-width:860px;font-size:18px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty;scroll-margin-top:80px" data-stat="lead">The findings below are computed from every report analysed.</p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;padding:8px 56px 48px;align-items:start">
     <div style="display:flex;flex-direction:column;gap:22px">
@@ -539,6 +539,11 @@ export function LandingPage() {
       if (nav === 'find') {
         e.preventDefault()
         page.querySelector<HTMLInputElement>('[data-input]')?.focus()
+      } else if (nav === 'findings') {
+        e.preventDefault()
+        page.querySelector('#findings')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (nav === 'browse') {
+        e.preventDefault(); navigate('/councils')
       } else if (nav === 'upload') {
         e.preventDefault(); navigate('/upload')
       } else if (nav === 'login') {
