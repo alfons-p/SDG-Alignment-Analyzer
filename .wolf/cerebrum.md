@@ -92,3 +92,6 @@
 
 - **2026-04-21: Production thresholds for domain evaluation.** User decided that domain benchmark (`benchmark_sdganalyzer.py`) must use production thresholds from `threshold_config.py`, not re-optimized thresholds. Rationale: the purpose is to measure how production models perform on domain data, not to find optimal thresholds for that domain. Re-optimizing on test data would be data leakage.
 - **2026-04-21: AidData accuracy in model comparison.** Added Hamming accuracy and sample F1 columns to `benchmark_all_models.py` for the AidData OOS subset. These complement OSDG top-1 accuracy by measuring multi-label performance on international development finance text.
+
+### 2026-08-05 — Role tiers & admin isolation
+Roles: anyone (public read) / registered (export) / officer (upload own council) / admin. Decision: admin is NEVER stored on the user row — it's the `ADMIN_EMAILS` env allow-list, resolved by `effective_role()`. Rationale: a DB compromise or stray ORM flush must not be able to escalate to admin. `role` column only holds 'registered'|'officer'. Officer council match enforced server-side by parsing the upload filename ({state}_{council}_...) against the assigned council; frontend gating is UX only.

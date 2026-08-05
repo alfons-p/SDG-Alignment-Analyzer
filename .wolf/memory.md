@@ -1790,3 +1790,35 @@
 | 16:16 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 16 reads | ~56342 tok |
 | 16:18 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 16 reads | ~56342 tok |
 | 16:20 | OCR trigger fix (per-page fraction + merge): Yarrabah+Paroo recovered. Final DB 1538 completed/published, 3 failed — all bad-source (Waverley/South Burnett truncated downloads, Three Springs 1-page stub). 33→3 total | src/ocr_extractor.py, activity_extractor.py | done | ~6k |
+| 16:22 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 16 reads | ~56342 tok |
+| 16:23 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 16 reads | ~56342 tok |
+| 16:25 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 17 reads | ~56342 tok |
+| 17:06 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 17 reads | ~56342 tok |
+| 17:34 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 17 reads | ~56342 tok |
+| 17:36 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 18 reads | ~56579 tok |
+| 17:39 | Session end: 48 writes across 19 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 18 reads | ~56579 tok |
+| 18:47 | Edited backend/app/models/user.py | expanded (+11 lines) | ~317 |
+| 18:47 | Edited backend/app/dependencies.py | modified init_db() | ~276 |
+| 18:47 | Edited backend/app/dependencies.py | modified is_admin() | ~303 |
+| 18:47 | Edited backend/app/schemas/auth.py | modified UserRegister() | ~266 |
+| 18:47 | Edited backend/app/routers/auth.py | modified register() | ~442 |
+| 18:48 | Edited backend/app/routers/auth.py | modified get_me() | ~133 |
+| 18:48 | Edited backend/app/routers/auth.py | modified get_me() | ~241 |
+| 18:48 | Edited backend/app/routers/analysis.py | modified endswith() | ~458 |
+| 18:48 | Edited backend/app/routers/analysis.py | inline fix | ~37 |
+| 18:49 | Edited backend/app/routers/analysis.py | modified _user_row() | ~798 |
+| 11:11 | Edited frontend/src/types/index.ts | expanded (+19 lines) | ~164 |
+| 11:12 | Edited frontend/src/api/auth.ts | added nullish coalescing | ~418 |
+| 11:12 | Edited frontend/src/components/layout/AppLayout.tsx | 5→4 lines | ~28 |
+| 11:12 | Edited frontend/src/components/layout/AppLayout.tsx | expanded (+7 lines) | ~115 |
+| 11:12 | Edited frontend/src/pages/AccessPage.tsx | CSS: request_officer, council | ~235 |
+| 11:13 | Edited frontend/src/pages/AccessPage.tsx | expanded (+18 lines) | ~580 |
+| 11:13 | Edited frontend/src/pages/AccessPage.tsx | 1→3 lines | ~40 |
+| 11:13 | Edited frontend/src/pages/UploadPage.tsx | added optional chaining | ~123 |
+| 11:13 | Edited frontend/src/pages/UploadPage.tsx | added optional chaining | ~798 |
+| 11:14 | Edited frontend/src/pages/UploadPage.tsx | CSS: lineHeight | ~85 |
+| 11:14 | Edited frontend/src/pages/UploadPage.tsx | added 1 import(s) | ~82 |
+| 11:14 | Edited frontend/src/pages/AdminPage.tsx | added 1 import(s) | ~88 |
+| 11:14 | Edited frontend/src/pages/AdminPage.tsx | 6→6 lines | ~69 |
+| 11:15 | Edited frontend/src/pages/AccessPage.tsx | inline fix | ~80 |
+| 20:40 | 4-tier authz: anyone/registered/officer/admin. Officer requests council at signup, admin approves, upload gated to matching {state}+{council}. Admin stays ADMIN_EMAILS allow-list (never in DB). Full stack + verified | user.py, dependencies.py, auth.py, analysis.py, AccessPage/UploadPage/AdminPage | done | ~25k |
