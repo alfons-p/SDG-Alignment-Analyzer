@@ -28,7 +28,7 @@ export function AppLayout() {
   return (
     <div>
       <header className="app-topbar">
-        <span className="app-brand" onClick={() => navigate('/dashboard')}>SDG Alignment Analyser</span>
+        <span className="app-brand" onClick={() => navigate('/')}>SDG Alignment Analyser</span>
         <nav className="app-nav">
           {items.map((n) => (
             <NavLink key={n.to} to={n.to} className={({ isActive }) => `app-tab${isActive ? ' on' : ''}`}>
