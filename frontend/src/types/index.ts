@@ -1,8 +1,27 @@
+export type Role = 'registered' | 'officer' | 'admin'
+
 export interface User {
   id: string
   email: string
   created_at: string
   is_admin: boolean
+  role: Role
+  assigned_state: string | null
+  assigned_council: string | null
+  officer_request_pending: boolean
+  requested_state: string | null
+  requested_council: string | null
+}
+
+export interface AdminUserRow {
+  id: string
+  email: string
+  role: Role
+  assigned_state: string | null
+  assigned_council: string | null
+  requested_state: string | null
+  requested_council: string | null
+  created_at: string | null
 }
 
 export interface TokenResponse {

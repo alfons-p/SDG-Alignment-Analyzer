@@ -5,10 +5,12 @@ import './council.css'
 
 const muted = 'color-mix(in srgb, var(--color-text) 65%, transparent)'
 
+const STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'NT', 'ACT']
+
 const LADDER: { role: string; how: string; can: string[]; cant?: string }[] = [
   { role: 'Anyone', how: 'no account', can: ['Browse every council, every analysed year', 'Read the passage behind every match', 'Compare councils you choose'] },
   { role: 'Registered', how: 'free, sign up in a minute', can: ['Everything above', 'Export results as PDF, CSV or JSON', 'Save comparisons and return to them'] },
-  { role: 'Council officer', how: 'verified work email', can: ['Everything above', 'Upload your own council’s annual report', 'Keep a result private until you publish it'], cant: 'Cannot upload for another council, or change a published result' },
+  { role: 'Council officer', how: 'request at sign-up, admin-approved', can: ['Everything above', 'Upload your own council’s annual report, one at a time', 'Keep a result private until you publish it'], cant: 'Cannot upload for another council, or change a published result' },
 ]
 
 const TICKS = [
@@ -29,17 +31,23 @@ export function AccessPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [ticks, setTicks] = useState([false, false, false, false])
+  const [officer, setOfficer] = useState(false)
+  const [state, setState] = useState('')
+  const [council, setCouncil] = useState('')
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
 
   const allTicked = ticks.every(Boolean)
+  const officerReady = !officer || (!!state && council.trim().length > 0)
 
   async function submit() {
     setErr('')
-    if (mode === 'up' && !allTicked) return
+    if (mode === 'up' && (!allTicked || !officerReady)) return
     setBusy(true)
     try {
-      const r = mode === 'in' ? await login(email, password) : await register(email, password)
+      const r = mode === 'in'
+        ? await login(email, password)
+        : await register(email, password, officer ? { request_officer: true, state, council: council.trim() } : undefined)
       localStorage.setItem('token', r.access_token)
       navigate('/dashboard')
     } catch (e) {
@@ -113,14 +121,32 @@ export function AccessPage() {
             </div>
           )}
 
+          {mode === 'up' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '14px 16px', borderRadius: 18, border: '1px solid color-mix(in srgb, var(--color-text) 12%, transparent)' }}>
+              <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 13.5, lineHeight: 1.5, cursor: 'pointer' }}>
+                <input type="checkbox" checked={officer} onChange={(e) => setOfficer(e.target.checked)} style={{ marginTop: 3 }} />
+                <span style={{ textWrap: 'pretty' }}>I’m a council officer and want to upload my council’s report <span style={{ color: muted }}>— an admin approves this before you can upload.</span></span>
+              </label>
+              {officer && (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <select style={{ ...input, flex: '0 0 110px' }} value={state} onChange={(e) => setState(e.target.value)}>
+                    <option value="">State</option>
+                    {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <input style={{ ...input, flex: 1 }} placeholder="Council name (e.g. Carnamah)" value={council} onChange={(e) => setCouncil(e.target.value)} />
+                </div>
+              )}
+            </div>
+          )}
+
           {err && <span style={{ fontSize: 13, color: '#b91c1c' }}>{err}</span>}
 
           <button
             onClick={submit}
-            disabled={busy || !email || !password || (mode === 'up' && !allTicked)}
-            style={{ border: 'none', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontSize: 15, padding: '12px 18px', borderRadius: 999, background: 'var(--color-accent)', color: 'var(--color-bg)', opacity: busy || !email || !password || (mode === 'up' && !allTicked) ? 0.5 : 1 }}
+            disabled={busy || !email || !password || (mode === 'up' && (!allTicked || !officerReady))}
+            style={{ border: 'none', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontSize: 15, padding: '12px 18px', borderRadius: 999, background: 'var(--color-accent)', color: 'var(--color-bg)', opacity: busy || !email || !password || (mode === 'up' && (!allTicked || !officerReady)) ? 0.5 : 1 }}
           >
-            {busy ? '…' : mode === 'in' ? 'Sign in' : 'Agree and create account'}
+            {busy ? '…' : mode === 'in' ? 'Sign in' : officer ? 'Agree and request officer access' : 'Agree and create account'}
           </button>
 
           <span style={{ fontSize: 12.5, color: muted, textAlign: 'center' }}>

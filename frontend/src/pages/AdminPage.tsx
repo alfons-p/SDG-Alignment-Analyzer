@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAdminRuns, publishAnalysis, unpublishAnalysis, publishAll, startIngest, getIngestStatus, cancelIngest, browseFolder } from '../api/analysis'
-import type { AdminRun, AdminStats } from '../types'
+import { getAdminUsers, approveOfficer, denyOfficer, revokeOfficer } from '../api/auth'
+import type { AdminRun, AdminStats, AdminUserRow } from '../types'
 import '../components/results/results.css'
 
 type Tab = 'runs' | 'narrative' | 'roles'
@@ -67,11 +68,11 @@ export function AdminPage() {
               publishAllBusy={publishAllM.isPending}
             />
           </div>
+        ) : tab === 'roles' ? (
+          <RolesPanel />
         ) : (
           <div className="rx-cmp-empty">
-            {tab === 'narrative'
-              ? 'Narrative review — approving the LLM-generated landing copy — arrives with the narrative pipeline.'
-              : 'Role management arrives with the officer role. Admins are set via the ADMIN_EMAILS backend env for now.'}
+            Narrative review — approving the LLM-generated landing copy — arrives with the narrative pipeline.
           </div>
         )}
       </div>
@@ -348,6 +349,95 @@ function RunsTab({
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  )
+}
+
+function RoleBadge({ role }: { role: AdminUserRow['role'] }) {
+  const map = {
+    admin: ['var(--color-accent-100)', 'var(--color-accent-800)'],
+    officer: ['var(--color-accent-2-100)', 'var(--color-accent-2-700)'],
+    registered: ['color-mix(in srgb, var(--color-text) 8%, transparent)', 'color-mix(in srgb, var(--color-text) 62%, transparent)'],
+  } as const
+  const [bg, fg] = map[role]
+  return (
+    <span style={{ fontSize: 11.5, fontWeight: 600, padding: '3px 11px', borderRadius: 999, background: bg, color: fg }}>{role}</span>
+  )
+}
+
+function RolesPanel() {
+  const qc = useQueryClient()
+  const { data, isLoading } = useQuery({ queryKey: ['admin-users'], queryFn: getAdminUsers })
+  const inval = () => { qc.invalidateQueries({ queryKey: ['admin-users'] }) }
+  const approve = useMutation({ mutationFn: approveOfficer, onSuccess: inval })
+  const deny = useMutation({ mutationFn: denyOfficer, onSuccess: inval })
+  const revoke = useMutation({ mutationFn: revokeOfficer, onSuccess: inval })
+  const busy = approve.isPending || deny.isPending || revoke.isPending
+
+  if (isLoading) return <div className="rx-cmp-empty">Loading…</div>
+  const pending = data?.pending_officer_requests ?? []
+  const users = data?.users ?? []
+  const border = '1px solid color-mix(in srgb, var(--color-text) 12%, transparent)'
+  const muted = 'color-mix(in srgb, var(--color-text) 55%, transparent)'
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Pending officer requests */}
+      <div className="rx-card rx-elev-sm" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <span className="rx-gaps-kicker">Officer requests</span>
+          <span style={{ fontSize: 13, color: muted }}>
+            {pending.length ? `${pending.length} account${pending.length === 1 ? '' : 's'} awaiting approval.` : 'No pending requests.'}
+          </span>
+        </div>
+        {pending.map((u) => (
+          <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderTop: border }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 14, color: 'var(--color-text)' }}>{u.email}</div>
+              <div style={{ fontSize: 12.5, color: muted }}>requests <strong>{u.requested_state} {u.requested_council}</strong></div>
+            </div>
+            <button disabled={busy} onClick={() => approve.mutate(u.id)} style={pillBtn(busy)}>Approve</button>
+            <button disabled={busy} onClick={() => deny.mutate(u.id)}
+              style={{ ...pillBtn(busy), background: 'transparent', color: 'var(--color-accent-700)', border }}>Deny</button>
+          </div>
+        ))}
+      </div>
+
+      {/* All accounts */}
+      <div className="rx-card rx-elev-sm" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <span className="rx-gaps-kicker">All accounts ({users.length})</span>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ textAlign: 'left', color: muted, fontSize: 11 }}>
+                <th style={{ padding: '8px 10px', fontWeight: 500 }}>Email</th>
+                <th style={{ padding: '8px 10px', fontWeight: 500 }}>Role</th>
+                <th style={{ padding: '8px 10px', fontWeight: 500 }}>Assigned council</th>
+                <th style={{ padding: '8px 10px', fontWeight: 500 }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id} style={{ borderTop: border }}>
+                  <td style={{ padding: '10px', color: 'var(--color-text)' }}>{u.email}</td>
+                  <td style={{ padding: '10px' }}><RoleBadge role={u.role} /></td>
+                  <td style={{ padding: '10px', color: u.assigned_council ? 'var(--color-text)' : muted }}>
+                    {u.assigned_council ? `${u.assigned_state} ${u.assigned_council}` : '—'}
+                  </td>
+                  <td style={{ padding: '10px', textAlign: 'right' }}>
+                    {u.role === 'officer' && (
+                      <button disabled={busy} onClick={() => revoke.mutate(u.id)}
+                        style={{ ...pillBtn(busy), background: 'transparent', color: 'var(--color-accent-700)', border, padding: '5px 14px', fontSize: 12.5 }}>
+                        Revoke
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

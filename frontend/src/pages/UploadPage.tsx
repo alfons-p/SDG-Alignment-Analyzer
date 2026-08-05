@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate, Link } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { uploadPDF } from '../api/analysis'
+import { getMe } from '../api/auth'
 import { FileDropzone } from '../components/analysis/FileDropzone'
 import { UploadQueue } from '../components/analysis/UploadQueue'
 import { ProcessingSettingsPanel } from '../components/analysis/ProcessingSettings'
@@ -31,6 +32,9 @@ export function UploadPage() {
   const [settings, setSettings] = useState<Partial<ProcessingSettings>>(defaultSettings)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: getMe })
+  const isOfficer = user?.role === 'officer'
+  const isAdmin = user?.role === 'admin'
 
   const single = useMutation({
     mutationFn: async () => {
@@ -47,7 +51,8 @@ export function UploadPage() {
     },
   })
 
-  const batch = files.length > 1
+  // Admins may batch-upload a folder; officers upload one file at a time.
+  const batch = isAdmin && files.length > 1
 
   const cardStyle: CSSProperties = {
     background: 'var(--color-surface)',
@@ -58,6 +63,24 @@ export function UploadPage() {
   const cardHead: CSSProperties = {
     fontFamily: 'var(--font-heading)', fontSize: 15, color: 'var(--color-text)', marginBottom: 16,
   }
+  const errDetail = (single.error as { response?: { data?: { detail?: string } } } | null)?.response?.data?.detail
+
+  // Registered users (and anyone reaching this by URL) cannot upload.
+  if (user && !isOfficer && !isAdmin) {
+    return (
+      <div className="max-w-2xl">
+        <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 28, color: 'var(--color-text)', marginBottom: 16 }}>Upload reports</h1>
+        <div style={{ ...cardStyle, background: 'var(--color-accent-100)' }}>
+          <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--color-accent-800)', margin: 0 }}>
+            Uploading is limited to approved council officers.{' '}
+            {user.officer_request_pending
+              ? `Your officer request for ${user.requested_state} ${user.requested_council} is awaiting admin approval.`
+              : <>To upload your council’s report, request officer access from the <Link to="/access">account page</Link>.</>}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -66,9 +89,17 @@ export function UploadPage() {
       </h1>
 
       <div className="max-w-2xl space-y-6">
+        {isOfficer && (
+          <div style={{ ...cardStyle, background: 'var(--color-accent-2-100)', padding: 16 }}>
+            <p style={{ fontSize: 13.5, lineHeight: 1.55, color: 'var(--color-accent-2-700)', margin: 0 }}>
+              You can upload reports for <strong>{user?.assigned_state} {user?.assigned_council}</strong> only, one file at a time.
+              The filename must read as your council (e.g. <code>{user?.assigned_state}_{user?.assigned_council?.replace(/\s+/g, ' ')}_…_2024.pdf</code>).
+            </p>
+          </div>
+        )}
         <div style={cardStyle}>
-          <h2 style={cardHead}>Documents</h2>
-          <FileDropzone multiple onFiles={setFiles} />
+          <h2 style={cardHead}>Document{isAdmin ? 's' : ''}</h2>
+          <FileDropzone multiple={isAdmin} onFiles={setFiles} onFile={(f) => setFiles([f])} />
           <p style={{ fontSize: 12.5, color: 'color-mix(in srgb, var(--color-text) 55%, transparent)', marginTop: 12, lineHeight: 1.5 }}>
             Filenames should follow <code>state_council_region_year.pdf</code> so each report is
             matched to its council and year. Reports already analysed are skipped automatically.
@@ -85,8 +116,8 @@ export function UploadPage() {
         ) : (
           <>
             {single.isError && (
-              <div style={{ background: 'var(--color-accent-100)', color: 'var(--color-accent-800)', fontSize: 13.5, padding: '12px 16px', borderRadius: 16 }}>
-                {String(single.error)}
+              <div style={{ background: 'var(--color-accent-100)', color: 'var(--color-accent-800)', fontSize: 13.5, padding: '12px 16px', borderRadius: 16, lineHeight: 1.5 }}>
+                {errDetail || String(single.error)}
               </div>
             )}
             <button

@@ -4,7 +4,6 @@ import { getMe } from '../../api/auth'
 
 const NAV = [
   { to: '/dashboard', label: 'Analyses' },
-  { to: '/upload', label: 'Upload' },
   { to: '/compare', label: 'Compare' },
 ]
 
@@ -17,7 +16,14 @@ const NAV = [
 export function AppLayout() {
   const navigate = useNavigate()
   const { data: user } = useQuery({ queryKey: ['me'], queryFn: getMe })
-  const items = user?.is_admin ? [...NAV, { to: '/admin', label: 'Admin' }] : NAV
+  // Upload is officer/admin only; Admin tab is admin only.
+  const canUpload = user?.role === 'officer' || user?.role === 'admin'
+  const items = [
+    ...NAV.slice(0, 1),
+    ...(canUpload ? [{ to: '/upload', label: 'Upload' }] : []),
+    ...NAV.slice(1),
+    ...(user?.is_admin ? [{ to: '/admin', label: 'Admin' }] : []),
+  ]
 
   return (
     <div>
