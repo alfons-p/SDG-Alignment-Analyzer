@@ -53,6 +53,9 @@ def _validate_password(password: str) -> None:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Password is too common")
 
 
+_STATES = {"NSW", "VIC", "QLD", "WA", "SA", "TAS", "NT", "ACT"}
+
+
 @router.post("/register", response_model=TokenResponse, status_code=201)
 def register(body: UserRegister, request: Request, db: Session = Depends(get_db)):
     _check_rate_limit(request)
@@ -62,7 +65,25 @@ def register(body: UserRegister, request: Request, db: Session = Depends(get_db)
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
 
-    user = User(email=body.email, password_hash=hash_password(body.password))
+    # New users are always 'registered'. An officer request is captured as a
+    # pending request (state + council); an admin approves it later.
+    requested_state = requested_council = None
+    if body.request_officer:
+        state = (body.state or "").strip().upper()
+        council = (body.council or "").strip()
+        if state not in _STATES:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Valid state required for an officer request")
+        if not council:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Council name required for an officer request")
+        requested_state, requested_council = state, council
+
+    user = User(
+        email=body.email,
+        password_hash=hash_password(body.password),
+        role="registered",
+        requested_state=requested_state,
+        requested_council=requested_council,
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -85,7 +106,20 @@ def login(body: UserLogin, request: Request, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 def get_me(user: User = Depends(get_current_user)):
-    # is_admin is computed from the ADMIN_EMAILS allow-list, not stored on the
-    # user; attach it so the client can gate admin-only navigation.
-    user.is_admin = is_admin(user)
-    return user
+    # is_admin + effective role are computed (admin from the ADMIN_EMAILS
+    # allow-list). Build the response explicitly — never write the resolved role
+    # back onto the ORM object, so admin stays out of the DB.
+    from backend.app.dependencies import effective_role
+    role = effective_role(user)
+    return UserResponse(
+        id=user.id,
+        email=user.email,
+        created_at=user.created_at,
+        is_admin=is_admin(user),
+        role=role,
+        assigned_state=user.assigned_state,
+        assigned_council=user.assigned_council,
+        officer_request_pending=bool(user.requested_council) and role != "officer",
+        requested_state=user.requested_state,
+        requested_council=user.requested_council,
+    )

@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 logger = logging.getLogger("sdg.client")
 
-from backend.app.dependencies import get_db, get_current_user, get_current_admin, SessionLocal
+from backend.app.dependencies import get_db, get_current_user, get_current_admin, require_uploader, effective_role, SessionLocal
 from backend.app.models import Analysis, User
 from backend.app.services.identity import parse_report_identity
 from backend.app.schemas.analysis import (
@@ -97,7 +97,7 @@ def upload_pdf(
     spacy_model: str = Query("en_core_web_sm"),
     nofinancial: bool = Query(False),
     require_action_verb: bool = Query(False),
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_uploader),
     db: Session = Depends(get_db),
 ):
     if not file.filename or not file.filename.lower().endswith(".pdf"):
@@ -106,6 +106,24 @@ def upload_pdf(
     # Folder uploads (webkitdirectory) can send a relative path as the filename;
     # store only the basename so identity parses cleanly and names stay tidy.
     filename = Path(file.filename).name
+
+    # Officers may only upload reports for their assigned council. Admins are
+    # unrestricted. Match state + council parsed from the filename; reject
+    # otherwise so a misnamed or wrong-council file can't slip in.
+    if effective_role(user) == "officer":
+        fid = parse_report_identity(filename)
+        want_state = (user.assigned_state or "").upper()
+        want_council = (user.assigned_council or "").strip().lower()
+        got_state = (fid["state"] or "").upper()
+        got_council = (fid["council_name"] or "").strip().lower()
+        if not want_council:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No council is assigned to your account yet.")
+        if got_state != want_state or got_council != want_council:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"You can only upload reports for {user.assigned_state} {user.assigned_council}. "
+                       f"This file reads as '{fid['state'] or '?'} {fid['council_name'] or '?'}'.",
+            )
 
     content = file.file.read()
     file_size = len(content)
@@ -497,6 +515,64 @@ def publish_all(admin: User = Depends(get_current_admin), db: Session = Depends(
     )
     db.commit()
     return {"published": count}
+
+
+def _user_row(u: User) -> dict:
+    return {
+        "id": u.id, "email": u.email, "role": effective_role(u),
+        "assigned_state": u.assigned_state, "assigned_council": u.assigned_council,
+        "requested_state": u.requested_state, "requested_council": u.requested_council,
+        "created_at": u.created_at.isoformat() if u.created_at else None,
+    }
+
+
+@router.get("/admin/users")
+def admin_users(admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """All accounts with their resolved tier — for the admin user-management view.
+    Pending officer requests are surfaced separately for the approval queue."""
+    users = db.query(User).order_by(User.created_at).all()
+    rows = [_user_row(u) for u in users]
+    pending = [r for r in rows if r["requested_council"] and r["role"] != "officer"]
+    return {"users": rows, "pending_officer_requests": pending}
+
+
+@router.post("/admin/users/{user_id}/approve-officer")
+def approve_officer(user_id: str, admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """Grant the officer role, locking uploads to the requested council."""
+    u = db.query(User).filter(User.id == user_id).first()
+    if not u:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if not u.requested_council:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="No pending officer request")
+    u.role = "officer"
+    u.assigned_state = u.requested_state
+    u.assigned_council = u.requested_council
+    u.requested_state = u.requested_council = None
+    db.commit()
+    return _user_row(u)
+
+
+@router.post("/admin/users/{user_id}/deny-officer")
+def deny_officer(user_id: str, admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """Clear a pending officer request without granting it."""
+    u = db.query(User).filter(User.id == user_id).first()
+    if not u:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    u.requested_state = u.requested_council = None
+    db.commit()
+    return _user_row(u)
+
+
+@router.post("/admin/users/{user_id}/revoke-officer")
+def revoke_officer(user_id: str, admin: User = Depends(get_current_admin), db: Session = Depends(get_db)):
+    """Demote an officer back to registered and clear their council assignment."""
+    u = db.query(User).filter(User.id == user_id).first()
+    if not u:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    u.role = "registered"
+    u.assigned_state = u.assigned_council = None
+    db.commit()
+    return _user_row(u)
 
 
 @router.post("/{analysis_id}/unpublish")

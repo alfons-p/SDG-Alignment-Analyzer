@@ -51,7 +51,33 @@ def get_db() -> Generator[Session, None, None]:
 def init_db():
     Base.metadata.create_all(bind=engine)
     _migrate_analysis_columns()
+    _migrate_user_columns()
     _fail_orphaned_analyses()
+
+
+# Role/officer columns added to `users` after the table first shipped.
+_NEW_USER_COLUMNS = {
+    "role": "VARCHAR(20) NOT NULL DEFAULT 'registered'",
+    "assigned_state": "VARCHAR(10)",
+    "assigned_council": "VARCHAR(255)",
+    "requested_state": "VARCHAR(10)",
+    "requested_council": "VARCHAR(255)",
+}
+
+
+def _migrate_user_columns() -> None:
+    if "sqlite" not in DATABASE_URL:
+        return
+    insp = inspect(engine)
+    if "users" not in insp.get_table_names():
+        return
+    existing = {c["name"] for c in insp.get_columns("users")}
+    missing = {c: ddl for c, ddl in _NEW_USER_COLUMNS.items() if c not in existing}
+    if not missing:
+        return
+    with engine.begin() as conn:
+        for col, ddl in missing.items():
+            conn.execute(text(f"ALTER TABLE users ADD COLUMN {col} {ddl}"))
 
 
 def _fail_orphaned_analyses():
@@ -163,7 +189,27 @@ def is_admin(user: User) -> bool:
     return user.email.lower() in ADMIN_EMAILS
 
 
+def effective_role(user: User) -> str:
+    """Resolved tier: 'admin' (allow-list), else the stored role ('officer' or
+    'registered'). Admin is never taken from the DB, so it can't be escalated
+    by a row write."""
+    if is_admin(user):
+        return "admin"
+    return user.role if user.role in ("officer", "registered") else "registered"
+
+
 def get_current_admin(user: Annotated[User, Depends(get_current_user)]) -> User:
     if not is_admin(user):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin only")
+    return user
+
+
+def require_uploader(user: Annotated[User, Depends(get_current_user)]) -> User:
+    """Upload is officer- or admin-only. Registered users can read and export
+    but not upload."""
+    if effective_role(user) not in ("officer", "admin"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Uploading is limited to approved council officers.",
+        )
     return user

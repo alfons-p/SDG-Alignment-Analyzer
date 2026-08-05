@@ -20,6 +20,17 @@ class User(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
+    # Role tiers: 'registered' (default — read + export) or 'officer' (may upload
+    # reports for their assigned council). 'admin' is NOT stored here — it is the
+    # ADMIN_EMAILS allow-list, so a DB write can never escalate to admin.
+    role: Mapped[str] = mapped_column(String(20), nullable=False, default="registered")
+    # Set on approval; officer uploads must match this council.
+    assigned_state: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    assigned_council: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Pending officer request captured at registration; cleared on approve/deny.
+    requested_state: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    requested_council: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
     analyses: Mapped[list["Analysis"]] = relationship(
         "Analysis", back_populates="user", cascade="all, delete-orphan"
     )
