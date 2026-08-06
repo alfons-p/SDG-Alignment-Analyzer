@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { getPublicCouncil } from '../api/public'
+import { getPublicCouncil, getPublicCoverage } from '../api/public'
 import { getSDGColor } from '../constants/sdg-colors'
 import { band, pad } from '../lib/results'
 import './council.css'
@@ -17,16 +17,17 @@ const GOAL_FULL: Record<number, string> = {
 
 const muted = 'color-mix(in srgb, var(--color-text) 60%, transparent)'
 
-function extractionGrade(activities: number, pages: number | null): { label: string; note: string } | null {
+function extractionGrade(activities: number, pages: number | null): { label: string; per100: number; note: string } | null {
   if (!pages) return null
   const per100 = (activities / pages) * 100
   const g = per100 >= 40 ? 'rich' : per100 >= 25 ? 'adequate' : 'thin'
   return {
     label: g,
+    per100,
     note:
       g === 'thin'
-        ? 'Read this council’s Goal coverage as a floor, not a measure — the report described few activities per page.'
-        : `${per100.toFixed(0)} activities per 100 pages.`,
+        ? 'This report is written largely as tables and status grids rather than prose, so it yielded little described activity. Read its Goal coverage as a floor, not a measure.'
+        : 'Enough discrete activity was described for the Goal coverage here to be read as a property of the work rather than of the document.',
   }
 }
 
@@ -37,6 +38,19 @@ export function CouncilPage() {
     queryFn: () => getPublicCouncil(code!),
     enabled: !!code,
   })
+  const { data: cov } = useQuery({ queryKey: ['public-coverage'], queryFn: getPublicCoverage })
+
+  // Peers = same state or same setting, this council first for same-state-and-
+  // setting. We don't rank — the list just seeds a comparison the reader picks.
+  const peers = useMemo(() => {
+    if (!data || !cov) return []
+    return cov.councils
+      .filter((x) => x.code !== data.code && (x.state === data.state || x.class === data.class))
+      .sort((a, b) =>
+        Number(b.state === data.state && b.class === data.class) -
+        Number(a.state === data.state && a.class === data.class))
+      .slice(0, 5)
+  }, [data, cov])
 
   const numYears = useMemo(() => (data ? Object.keys(data.years).filter((y) => y !== 'unknown').sort() : []), [data])
   const [year, setYear] = useState<string | null>(null)
@@ -143,9 +157,17 @@ export function CouncilPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {grade && (
             <div className="card">
-              <span style={{ fontSize: 11, letterSpacing: '0.09em', textTransform: 'uppercase', color: muted }}>Extraction quality</span>
-              <span style={{ fontFamily: 'var(--font-heading)', fontSize: 22, textTransform: 'capitalize' }}>{grade.label}</span>
+              <span style={{ fontSize: 11, letterSpacing: '0.09em', textTransform: 'uppercase', color: muted }}>How much this report described</span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                <span style={{ fontFamily: 'var(--font-heading)', fontSize: 26 }}>{grade.per100.toFixed(1)}</span>
+                <span style={{ fontSize: 12.5, color: 'var(--color-accent-2-700)' }}>activities per 100 pages</span>
+              </div>
               <span style={{ fontSize: 13, lineHeight: 1.55, color: muted, textWrap: 'pretty' }}>{grade.note}</span>
+              {yd.barren > 0 && (
+                <span style={{ fontSize: 12.5, lineHeight: 1.5, color: muted }}>
+                  {yd.barren} of {yd.activities} described activities matched no Goal.
+                </span>
+              )}
             </div>
           )}
 
@@ -169,6 +191,21 @@ export function CouncilPage() {
               <span style={{ fontSize: 13, color: muted }}>Only {activeYear} has been analysed for this council.</span>
             )}
           </div>
+
+          {peers.length > 0 && (
+            <div className="card">
+              <span style={{ fontSize: 11, letterSpacing: '0.09em', textTransform: 'uppercase', color: muted }}>Compare with peers</span>
+              <span style={{ fontSize: 13, lineHeight: 1.55, color: muted, textWrap: 'pretty' }}>
+                Pick the councils you want to compare. We don’t rank them for you — how plainly a report is written drives coverage as much as the work behind it.
+              </span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 2 }}>
+                {peers.map((p) => (
+                  <Link key={p.code} to={`/compare?councils=${data.code},${p.code}`} className="lchip">{p.name}</Link>
+                ))}
+                <Link to={`/councils${data.class ? `?class=${data.class}` : ''}`} className="lchip">Choose your own →</Link>
+              </div>
+            </div>
+          )}
 
           <div className="card">
             <span style={{ fontSize: 11, letterSpacing: '0.09em', textTransform: 'uppercase', color: muted }}>Source</span>
