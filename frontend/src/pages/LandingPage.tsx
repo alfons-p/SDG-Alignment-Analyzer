@@ -224,7 +224,7 @@ export function LandingPage() {
     type Rec = {
       code?: string; lga_code: string | null; name: string; state: string | null; type?: string; class?: string
       lat?: number | null; lon?: number | null; goals_evidenced: number | null
-      years_available: number; by_year?: Record<string, { goals_evidenced: number }>
+      years_available: number; by_year?: Record<string, { goals_evidenced: number; goals?: number[] }>
       postcodes?: (string | number)[]
     }
     const goCouncil = (d: Rec | null | undefined) => { if (d?.code) navigate('/council/' + d.code) }
@@ -249,6 +249,14 @@ export function LandingPage() {
     function goalsOf(d: Rec | undefined | null): number | null {
       if (!d) return null
       if (YEAR && d.by_year) return d.by_year[YEAR] ? d.by_year[YEAR].goals_evidenced : null
+      // No year selected = every analysed year combined: a Goal counts if any
+      // report evidenced it. Councils with more reports have more chances, so
+      // this view is for coverage, not for comparing councils.
+      if (d.by_year) {
+        const u = new Set<number>()
+        Object.values(d.by_year).forEach((r) => (r.goals || []).forEach((g) => u.add(g)))
+        if (u.size) return u.size
+      }
       return d.goals_evidenced != null ? d.goals_evidenced : null
     }
     function yearsOf(d: Rec | undefined | null): number {
@@ -422,16 +430,25 @@ export function LandingPage() {
         '<span style="width:18px;height:18px;border-radius:999px;background:' + shade(g) + '"></span>').join('')
     })
 
+    function mapHint() {
+      const el = page.querySelector<HTMLElement>('[data-maphint]')
+      if (!el) return
+      el.textContent = YEAR
+        ? "Goals evidenced in each council's " + YEAR + ' report.'
+        : 'Goals evidenced in any report from ' + (YEARS[0] || '') + ' to ' + (YEARS[YEARS.length - 1] || '') +
+          ' — councils with more reports have more chances to evidence one.'
+    }
+
     function paintYears() {
       const el = page.querySelector<HTMLElement>('[data-years]')
       if (!el) return
       if (!YEARS.length) { (el.parentElement as HTMLElement).style.display = 'none'; return }
       ;(el.parentElement as HTMLElement).style.display = 'flex'
       el.innerHTML = YEARS.map((y) => '<button class="chip' + (y === YEAR ? ' on' : '') + '" data-year="' + y + '">' + y + '</button>').join('') +
-        '<button class="chip' + (YEAR === null ? ' on' : '') + '" data-year="">Latest</button>'
+        '<button class="chip' + (YEAR === null ? ' on' : '') + '" data-year="">All years</button>'
       el.querySelectorAll<HTMLButtonElement>('[data-year]').forEach((b) => b.addEventListener('click', () => {
         YEAR = b.dataset.year ? +b.dataset.year : null
-        paintYears(); repaint()
+        paintYears(); mapHint(); repaint()
       }))
     }
 
@@ -453,7 +470,7 @@ export function LandingPage() {
         paintNational(cov.national, DATA, cov.narrative)
       }
       indexData()
-      paintYears()
+      paintYears(); mapHint()
       if (topo && topo.objects) drawLGA(topo); else drawPoints()
     })
 
