@@ -3,6 +3,8 @@ export type Role = 'registered' | 'officer' | 'admin'
 export interface User {
   id: string
   email: string
+  name: string | null
+  position: string | null
   created_at: string
   is_admin: boolean
   role: Role
@@ -16,6 +18,8 @@ export interface User {
 export interface AdminUserRow {
   id: string
   email: string
+  name: string | null
+  position: string | null
   role: Role
   assigned_state: string | null
   assigned_council: string | null

@@ -7,11 +7,13 @@ from pydantic import BaseModel, EmailStr
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
+    name: Optional[str] = None
     # Optional: request the council-officer role. When true, state + council are
     # required and stored as a pending request for an admin to approve.
     request_officer: bool = False
     state: Optional[str] = None
     council: Optional[str] = None
+    position: Optional[str] = None  # job title, officer context for the admin
 
 
 class UserLogin(BaseModel):
@@ -27,6 +29,8 @@ class TokenResponse(BaseModel):
 class UserResponse(BaseModel):
     id: str
     email: str
+    name: Optional[str] = None
+    position: Optional[str] = None
     created_at: datetime
     is_admin: bool = False
     role: str = "registered"          # effective tier: registered | officer | admin

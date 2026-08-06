@@ -39,8 +39,8 @@ _COMMON_PASSWORDS = {
 
 
 def _validate_password(password: str) -> None:
-    if len(password) < 8:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Password must be at least 8 characters")
+    if len(password) < 10:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Password must be at least 10 characters")
     if len(password) > 128:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Password must be at most 128 characters")
     if not re.search(r"[A-Z]", password):
@@ -67,19 +67,22 @@ def register(body: UserRegister, request: Request, db: Session = Depends(get_db)
 
     # New users are always 'registered'. An officer request is captured as a
     # pending request (state + council); an admin approves it later.
-    requested_state = requested_council = None
+    requested_state = requested_council = position = None
     if body.request_officer:
         state = (body.state or "").strip().upper()
         council = (body.council or "").strip()
         if state not in _STATES:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Valid state required for an officer request")
         if not council:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Council name required for an officer request")
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Council required for an officer request")
         requested_state, requested_council = state, council
+        position = (body.position or "").strip() or None
 
     user = User(
         email=body.email,
         password_hash=hash_password(body.password),
+        name=(body.name or "").strip() or None,
+        position=position,
         role="registered",
         requested_state=requested_state,
         requested_council=requested_council,
@@ -114,6 +117,8 @@ def get_me(user: User = Depends(get_current_user)):
     return UserResponse(
         id=user.id,
         email=user.email,
+        name=user.name,
+        position=user.position,
         created_at=user.created_at,
         is_admin=is_admin(user),
         role=role,

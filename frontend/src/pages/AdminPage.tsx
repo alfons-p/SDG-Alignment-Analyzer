@@ -394,8 +394,10 @@ function RolesPanel() {
         {pending.map((u) => (
           <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderTop: border }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14, color: 'var(--color-text)' }}>{u.email}</div>
-              <div style={{ fontSize: 12.5, color: muted }}>requests <strong>{u.requested_state} {u.requested_council}</strong></div>
+              <div style={{ fontSize: 14, color: 'var(--color-text)' }}>{u.name ? `${u.name} · ` : ''}{u.email}</div>
+              <div style={{ fontSize: 12.5, color: muted }}>
+                requests <strong>{u.requested_state} {u.requested_council}</strong>{u.position ? ` · ${u.position}` : ''}
+              </div>
             </div>
             <button disabled={busy} onClick={() => approve.mutate(u.id)} style={pillBtn(busy)}>Approve</button>
             <button disabled={busy} onClick={() => deny.mutate(u.id)}

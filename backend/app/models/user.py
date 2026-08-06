@@ -20,6 +20,10 @@ class User(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
+    # Optional profile captured at registration.
+    name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    position: Mapped[str | None] = mapped_column(String(120), nullable=True)
+
     # Role tiers: 'registered' (default — read + export) or 'officer' (may upload
     # reports for their assigned council). 'admin' is NOT stored here — it is the
     # ADMIN_EMAILS allow-list, so a DB write can never escalate to admin.

@@ -519,7 +519,8 @@ def publish_all(admin: User = Depends(get_current_admin), db: Session = Depends(
 
 def _user_row(u: User) -> dict:
     return {
-        "id": u.id, "email": u.email, "role": effective_role(u),
+        "id": u.id, "email": u.email, "name": u.name, "position": u.position,
+        "role": effective_role(u),
         "assigned_state": u.assigned_state, "assigned_council": u.assigned_council,
         "requested_state": u.requested_state, "requested_council": u.requested_council,
         "created_at": u.created_at.isoformat() if u.created_at else None,

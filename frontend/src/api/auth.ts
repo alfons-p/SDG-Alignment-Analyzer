@@ -6,18 +6,20 @@ export async function login(email: string, password: string): Promise<TokenRespo
   return data
 }
 
-export interface OfficerRequest {
-  request_officer: boolean
+export interface RegisterExtra {
+  name?: string
+  request_officer?: boolean
   state?: string
   council?: string
+  position?: string
 }
 
 export async function register(
   email: string,
   password: string,
-  officer?: OfficerRequest,
+  extra?: RegisterExtra,
 ): Promise<TokenResponse> {
-  const { data } = await api.post('/api/auth/register', { email, password, ...(officer ?? {}) })
+  const { data } = await api.post('/api/auth/register', { email, password, ...(extra ?? {}) })
   return data
 }
 

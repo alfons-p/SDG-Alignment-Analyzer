@@ -57,6 +57,8 @@ def init_db():
 
 # Role/officer columns added to `users` after the table first shipped.
 _NEW_USER_COLUMNS = {
+    "name": "VARCHAR(120)",
+    "position": "VARCHAR(120)",
     "role": "VARCHAR(20) NOT NULL DEFAULT 'registered'",
     "assigned_state": "VARCHAR(10)",
     "assigned_council": "VARCHAR(255)",
