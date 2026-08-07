@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-05T01:15:42.446Z
-> Files: 846 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T01:46:52.206Z
+> Files: 848 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
@@ -31,7 +31,8 @@
 
 - `bert_activity_classifier_model_research.md` — BERT Activity Classifier — Model Selection Research (~952 tok)
 - `frontend-redesign-pending.md` — Declares HTML (~819 tok)
-- `MEMORY.md` — Memory Index (~70 tok)
+- `MEMORY.md` — Memory Index (~100 tok)
+- `security-backlog.md` (~330 tok)
 - `v2-persistent-deployment.md` (~353 tok)
 
 ## ../../../../.cloudflared/
@@ -56,6 +57,7 @@
 - `debug_litchfield.json` (~84 tok)
 - `DOCUMENTATION_REVISION_SUMMARY.md` — Documentation Revision Summary - Threshold Optimization (~1954 tok)
 - `FILENAME_FIX_SUMMARY.md` — Fix Summary: Council-Level Alignment Files Naming Issue (~793 tok)
+- `HANDOFF.md` — Handoff: SDG Analyzer V2 — OCR fallback, role-based access, Aug-3 design reconciliation (~2907 tok)
 - `low_quality_characterization.md` — Low Quality Activity Text Characterization (~1776 tok)
 - `packages.txt` (~7 tok)
 - `pyproject.toml` — Python project configuration (~512 tok)
@@ -132,7 +134,7 @@
 ## backend/app/
 
 - `__init__.py` (~0 tok)
-- `dependencies.py` — get_db, init_db, hash_password, verify_password (~2236 tok)
+- `dependencies.py` — get_db, init_db, hash_password, verify_password (~2254 tok)
 - `main.py` — FastAPI application entry point. (~479 tok)
 
 ## backend/app/models/
@@ -140,13 +142,13 @@
 - `__init__.py` (~25 tok)
 - `analysis.py` — Declares Analysis (~661 tok)
 - `base.py` — Declares Base (~24 tok)
-- `user.py` — Declares User (~468 tok)
+- `user.py` — Declares User (~525 tok)
 
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~7861 tok)
-- `auth.py` — Auth router — register, login. (~1493 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~7875 tok)
+- `auth.py` — Auth router — register, login. (~1549 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~352 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
 - `results.py` — Results router — compare, list all results. (~490 tok)
@@ -155,7 +157,7 @@
 
 - `__init__.py` (~0 tok)
 - `analysis.py` — Pydantic: ProcessingSettingsSchema (~710 tok)
-- `auth.py` — Declares UserRegister (~296 tok)
+- `auth.py` — Declares UserRegister (~346 tok)
 
 ## backend/app/services/
 
@@ -232,7 +234,7 @@
 ## frontend/src/api/
 
 - `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1257 tok)
-- `auth.ts` — API routes: POST, GET (7 endpoints) (~419 tok)
+- `auth.ts` — API routes: POST, GET (7 endpoints) (~428 tok)
 - `client.ts` — Declares api (~441 tok)
 - `public.ts` — Exports CouncilYear, Council, EvidencePassage, CouncilYearDetail + 6 more (~559 tok)
 - `reference.ts` — API routes: GET (3 endpoints) (~147 tok)
@@ -253,7 +255,7 @@
 
 ## frontend/src/components/layout/
 
-- `AppLayout.tsx` — Authenticated shell — the designed sticky top bar (surface, shadow, accent (~533 tok)
+- `AppLayout.tsx` — Authenticated shell — the designed sticky top bar (surface, shadow, accent (~530 tok)
 - `AuthLayout.tsx` — AuthLayout (~172 tok)
 - `index.ts` (~24 tok)
 - `Sidebar.tsx` — baseLinks (~590 tok)
@@ -284,20 +286,20 @@
 
 ## frontend/src/pages/
 
-- `AccessPage.tsx` — muted (~2889 tok)
+- `AccessPage.tsx` — muted (~3815 tok)
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
-- `AdminPage.tsx` — AdminPage (~4869 tok)
+- `AdminPage.tsx` — AdminPage (~6248 tok)
 - `BrowsePage.tsx` — "2023–25" contiguous, "2023, 2025" with a gap, "2024" single. (~3298 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `council.css` — Styles: 20 rules (~687 tok)
-- `CouncilPage.tsx` — GOAL_FULL (~3188 tok)
+- `CouncilPage.tsx` — GOAL_FULL (~3821 tok)
 - `DashboardPage.tsx` — muted (~1188 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
 - `index.ts` (~219 tok)
 - `landing.css` — Styles: 44 rules (~1390 tok)
-- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10229 tok)
+- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10606 tok)
 - `LimitationsPage.tsx` — muted (~2117 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `PublicComparePage.tsx` — GOAL_FULL — renders table (~3005 tok)
@@ -307,7 +309,7 @@
 
 ## frontend/src/types/
 
-- `index.ts` — Exports Role, User, AdminUserRow, TokenResponse + 19 more (~1352 tok)
+- `index.ts` — Exports Role, User, AdminUserRow, TokenResponse + 19 more (~1380 tok)
 
 ## logs/
 
