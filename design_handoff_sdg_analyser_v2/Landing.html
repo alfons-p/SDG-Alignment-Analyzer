@@ -23,6 +23,7 @@
   .rrow:hover { background: var(--color-accent-100); }
   .rname { font-size: 14px; font-weight: 600; }
   .rmeta { font-size: 12px; color: color-mix(in srgb, var(--color-text) 58%, transparent); margin-left: auto; white-space: nowrap; }
+  .chip.leaves::after { content: "\2192"; margin-left: 6px; opacity: 0.55; font-weight: 400; }
   .chip { border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent); color: var(--color-text); }
   .chip:hover { background: var(--color-accent-100); }
   .chip.on { background: var(--color-accent); color: #fff; }
@@ -43,84 +44,88 @@
     <span class="navlink">Findings</span>
     <span class="navlink">Method</span>
     <div style="margin-left: auto; display: flex; align-items: center; gap: 12px">
-      <button class="btn btn-ghost" style="border-radius: 999px">Sign in</button>
-      <button class="btn btn-secondary" style="border-radius: 999px">Find your council</button>
+      <a href="Access.html" class="btn btn-ghost" style="border-radius: 999px; border-bottom: none">Sign in</a>
       <button class="btn btn-primary" style="border-radius: 999px">Upload a report</button>
     </div>
   </div>
 
-  <div style="padding: 54px 56px 40px; display: flex; flex-direction: column; gap: 32px">
-    <div style="display: flex; flex-direction: column; gap: 20px; max-width: 1020px">
-      <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)" data-stat="kicker">Australian council annual reports, 2023&ndash;2025</span>
-      <h1 style="margin: 0; font-size: 62px; line-height: 1.0; text-wrap: pretty" data-stat="headline">What Australian councils actually did about the Goals.</h1>
-      <p style="margin: 0; font-size: 19px; line-height: 1.6; max-width: 800px; text-wrap: pretty" data-stat="lead">We read published council annual reports, find the activities described in them, and match each one to the seventeen Sustainable Development Goals. The findings below are computed from every report analysed.</p>
+  <!-- ── Above the fold: finding left, dataset right ── -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 52px; padding: 26px 56px 44px; align-items: start">
+
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)" data-stat="kicker">Australian council annual reports</span>
+      <h1 style="margin: 0; font-size: 38px; line-height: 1.07; text-wrap: pretty" data-stat="headline">Two activities in every five describe the same Goal. Australian councils write about cities plainly, and everything else obliquely.</h1>
+
+      <div style="display: flex; flex-direction: column; margin-top: 6px">
+        <div style="display: flex; align-items: baseline; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
+          <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; width: 84px; flex: 0 0 auto" data-stat="goal11">&mdash;</span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14px; font-weight: 600; line-height: 1.4" data-stat="goal11label">of described activities align to Goal 11, Sustainable Cities and Communities</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="goal11note">Computed from the published dataset.</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
+          <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; width: 84px; flex: 0 0 auto" data-stat="goal14">&mdash;</span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14px; font-weight: 600; line-height: 1.4" data-stat="goal14label">Goals reach no described activity at all &mdash; No Poverty and Life Below Water</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="goal14note">Computed from the published dataset.</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
+          <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; width: 84px; flex: 0 0 auto; color: var(--color-accent-700)" data-stat="median">&mdash;</span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14px; font-weight: 600; line-height: 1.4">Goals evidenced by the median council</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="mediannote">Computed from the published dataset.</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px">
-      <div class="card" style="padding: 30px 32px; gap: 10px">
-        <span style="font-family: var(--font-heading); font-size: 42px; line-height: 1" data-stat="goal11">&mdash;</span>
-        <span style="font-size: 15px; font-weight: 600" data-stat="goal11label">share of activities on the leading Goal</span>
-        <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)" data-stat="goal11note">Computed from the published dataset.</span>
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div class="searchwrap" data-search>
+        <input class="input" placeholder="Find your council" style="width: 100%; border-radius: 999px; font-size: 15px; padding: 14px 20px" data-input>
+        <div class="results" data-results></div>
       </div>
-      <div class="card" style="padding: 30px 32px; gap: 10px">
-        <span style="font-family: var(--font-heading); font-size: 42px; line-height: 1" data-stat="goal14">&mdash;</span>
-        <span style="font-size: 15px; font-weight: 600" data-stat="goal14label">the least-evidenced Goals</span>
-        <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)" data-stat="goal14note">Computed from the published dataset.</span>
+
+      <div style="border-radius: 30px; background: var(--color-surface); box-shadow: var(--shadow-sm); padding: 10px" data-map></div>
+
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+        <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 58%, transparent)" data-maphint>Shaded by Goals evidenced in the council's most recent report.</span>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 8px">
+          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">few</span>
+          <div style="display: flex; gap: 3px" data-legend></div>
+          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">many</span>
+        </div>
       </div>
-      <div class="card" style="padding: 30px 32px; gap: 10px">
-        <span style="font-family: var(--font-heading); font-size: 42px; line-height: 1; color: var(--color-accent-700)" data-stat="median">&mdash;</span>
-        <span style="font-size: 15px; font-weight: 600">Goals evidenced by the median council</span>
-        <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)" data-stat="mediannote">Computed from the published dataset.</span>
+
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+        <div style="display: flex; gap: 6px" data-years></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px" data-states></div>
       </div>
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 48px; padding: 12px 56px 52px; align-items: start">
+  <!-- ── Below the fold ── -->
+  <p style="margin: 0; padding: 4px 56px 30px; max-width: 860px; font-size: 18px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 74%, transparent); text-wrap: pretty" data-stat="lead">Across the councils analysed so far, two in every five of the activities described in their annual reports align to Goal&nbsp;11, Sustainable Cities and Communities. The work behind the other sixteen Goals is being done &mdash; it just isn't being written down in language that credits it.</p>
 
-    <div style="display: flex; flex-direction: column; gap: 14px">
-      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap">
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <h2 style="margin: 0; font-size: 24px">Every local government area</h2>
-          <span style="font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-maphint>Shaded by Goals evidenced in the council's most recent report.</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px">
-          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">few</span>
-          <div style="display: flex; gap: 3px" data-legend></div>
-          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">many</span>
-        </div>
-      </div>
-      <div style="border-radius: 32px; background: var(--color-surface); box-shadow: var(--shadow-sm); padding: 12px" data-map></div>
-      <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 52%, transparent)" data-mapsource></span>
-    </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 52px; padding: 8px 56px 48px; align-items: start">
 
     <div style="display: flex; flex-direction: column; gap: 22px">
-      <div style="display: flex; flex-direction: column; gap: 14px">
-        <h2 style="margin: 0; font-size: 26px">Find a council</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">Three reporting years for every local government area, with the passage behind every match. No account needed.</p>
-        <div class="searchwrap" data-search>
-          <input class="input" placeholder="Council name or postcode" style="width: 100%; border-radius: 999px; font-size: 15px; padding: 14px 20px" data-input>
-          <div class="results" data-results></div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
-          <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Year</span>
-          <div style="display: flex; gap: 6px" data-years></div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 7px" data-states></div>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 10px">
-        <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Or compare like with like</span>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <h2 style="margin: 0; font-size: 24px">Compare like with like</h2>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 7px">
-          <button class="chip">Metro</button>
-          <button class="chip">Regional</button>
-          <button class="chip">Rural</button>
-          <button class="chip">City councils</button>
-          <button class="chip">Shires</button>
-          <button class="chip">By population band</button>
+          <button class="chip leaves" data-goto="class=Metro">Metro</button>
+          <button class="chip leaves" data-goto="class=Regional">Regional</button>
+          <button class="chip leaves" data-goto="class=Rural">Rural</button>
+
         </div>
         <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
       </div>
+      <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 52%, transparent)" data-mapsource></span>
+    </div>
 
+    <div style="display: flex; flex-direction: column; gap: 20px">
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 3.5%, transparent)">
         <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Recently added</span>
         <div style="display: flex; align-items: baseline; gap: 12px">
@@ -142,9 +147,12 @@
     </div>
   </div>
 
-  <div style="display: flex; align-items: center; gap: 24px; padding: 24px 56px; margin: 0 56px 56px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
-    <span style="text-wrap: pretty">Analysis reads published annual reports only. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none. Boundaries &copy; Australian Bureau of Statistics, ASGS Edition 3.</span>
-    <a href="#method" style="margin-left: auto; white-space: nowrap">How this was measured</a>
+  <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 22px 30px; margin: 0 56px 56px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+    <span style="flex: 1 1 520px; text-wrap: pretty">This analysis reads what council annual reports <strong>describe</strong>. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none.</span>
+    <div style="display: flex; align-items: center; gap: 20px; margin-left: auto; white-space: nowrap">
+      <a href="Limitations.html">About this analysis and its limits</a>
+      <span style="color: color-mix(in srgb, var(--color-text) 45%, transparent)">Boundaries &copy; ABS, ASGS Ed. 3</span>
+    </div>
   </div>
 </div>
 
@@ -219,7 +227,7 @@ const C = [
 const STATES = ["NSW","VIC","QLD","WA","SA","TAS","NT","ACT"];
 const ST = { "New South Wales":"NSW","Victoria":"VIC","Queensland":"QLD","South Australia":"SA","Western Australia":"WA","Tasmania":"TAS","Northern Territory":"NT","Australian Capital Territory":"ACT" };
 const tip = document.getElementById("tip");
-const W = 780, H = 620;
+const W = 600, H = 430;
 
 const norm = s => s.toLowerCase()
   .replace(/\((vic|tas|nsw|qld|wa|sa|nt|act)\.?\)/g, "")
@@ -256,6 +264,14 @@ function indexData() {
 function goalsOf(d) {
   if (!d) return null;
   if (YEAR && d.by_year) return d.by_year[YEAR] ? d.by_year[YEAR].goals_evidenced : null;
+  /* No year selected = every analysed year combined: a Goal counts if any report
+     evidenced it. Councils with more reports have more chances, so this view is for
+     coverage, not for comparing councils. */
+  if (d.by_year) {
+    const u = new Set();
+    Object.values(d.by_year).forEach(r => (r.goals || []).forEach(g => u.add(g)));
+    if (u.size) return u.size;
+  }
   return d.goals_evidenced != null ? d.goals_evidenced : null;
 }
 function yearsOf(d) {
@@ -265,7 +281,7 @@ function yearsOf(d) {
 }
 
 function shade(g) {
-  if (g == null) return "color-mix(in srgb, var(--color-text) 5%, transparent)";
+  if (g == null) return "color-mix(in srgb, var(--color-text) 13%, transparent)";
   const t = Math.max(0, Math.min(1, (g - 2) / 13));
   return "color-mix(in srgb, #FD9D24 " + Math.round(20 + t * 80) + "%, var(--color-surface))";
 }
@@ -302,8 +318,28 @@ const set = (k, v, colour) => {
    ONE function owns the WHOLE headline. Both halves of the sentence are chosen
    from the same threshold, so they can never contradict each other — the earlier
    bug was a graded first clause with a fixed second clause appended to it. */
-function headlineFor(share, goalNum, goalName) {
+/* A sweeping claim about "Australian councils" is only honest once the dataset
+   is broad enough to carry it. Below that, the same finding is stated as an
+   observation about the councils analysed, not about the country. */
+const NATIONAL_MIN_COUNCILS = 40;
+
+function headlineFor(share, goalNum, goalName, councilCount) {
   const subject = goalNum === 11 ? "cities" : goalName.toLowerCase();
+  const national = (councilCount || 0) >= NATIONAL_MIN_COUNCILS;
+
+  if (!national) {
+    // Provisional voice: describes the sample, never the country.
+    if (share >= 0.45)
+      return "In one activity out of every two, the same Goal. Councils describe " +
+        subject + " plainly, and everything else obliquely.";
+    if (share >= 0.35)
+      return "In two activities out of every five, the same Goal. Councils describe " +
+        subject + " plainly, and everything else obliquely.";
+    if (share >= 0.25)
+      return goalName + " leads what these councils describe \u2014 one activity in every three.";
+    return "No single Goal dominates the councils analysed so far.";
+  }
+
   if (share >= 0.60)
     return "Three activities in every five describe the same Goal. Australian councils write about " +
       subject + " plainly, and everything else obliquely.";
@@ -321,6 +357,13 @@ function headlineFor(share, goalNum, goalName) {
   return "No single Goal dominates. Coverage is spread across the seventeen Goals.";
 }
 
+/* "A", "A and B", "A, B and C" — never "A and B and C". */
+function listWords(items) {
+  if (items.length === 0) return "";
+  if (items.length === 1) return items[0];
+  return items.slice(0, -1).join(", ") + " and " + items[items.length - 1];
+}
+
 function shareWords(share) {
   if (share >= 0.62 && share <= 0.68) return "close to two thirds";
   if (share >= 0.47 && share <= 0.53) return "roughly half";
@@ -332,6 +375,7 @@ function shareWords(share) {
 function paintNational(n, councils, narrative) {
   if (!n && !councils) return;
   n = n || {};
+  const councilCount = n.councils || (councils || []).length || 0;
 
   /* Leading and trailing Goals come from the data, never hardcoded. */
   const shares = n.goal_shares || null;
@@ -355,7 +399,7 @@ function paintNational(n, councils, narrative) {
       set("goal14label", zeros.length === 1
         ? "Goal reaches no described activity at all"
         : "Goals reach no described activity at all");
-      set("goal14note", zeros.map(z => GOAL_FULL[z]).join(" and ") +
+      set("goal14note", listWords(zeros.map(z => GOAL_FULL[z])) +
         " \u2014 not absent from council work, absent from the language councils use to describe it.");
     } else if (bottom) {
       const pct = bottom[1] * 100;
@@ -398,52 +442,85 @@ function paintNational(n, councils, narrative) {
     return;
   }
 
+  if (councilCount) {
+    const yrs = (YEARS || []).length;
+    set("findblurb",
+      councilCount + (councilCount === 1 ? " council" : " councils") +
+      (yrs ? ", " + yrs + (yrs === 1 ? " reporting year" : " reporting years") : "") +
+      " analysed so far, with the passage behind every match. No account needed.");
+  }
+
   if (top) {
-    set("headline", headlineFor(top[1], top[0], GOAL_FULL[top[0]]));
-    set("lead", "Across the councils analysed so far, " + shareWords(top[1]) +
+    set("headline", headlineFor(top[1], top[0], GOAL_FULL[top[0]], councilCount));
+    set("lead", (councilCount >= NATIONAL_MIN_COUNCILS
+        ? "Across the councils analysed so far, "
+        : "Across the " + councilCount + " councils analysed so far, ") + shareWords(top[1]) +
       " of the activities described in their annual reports align to Goal\u00a0" + top[0] + ", " +
       GOAL_FULL[top[0]] + ". The work behind the other sixteen Goals is being done \u2014 it just isn't being written down in language that credits it.");
   }
 }
 
 /* ── search ── */
+/* A chip that changes HOW the map is drawn stays here (year).
+   A chip that changes WHICH councils you are looking at goes to Browse. */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-goto]");
+  if (!b) return;
+  const q = b.dataset.goto;
+  location.href = "Browse.html" + (q ? "?" + q : "");
+});
+
 document.querySelectorAll("[data-search]").forEach(w => {
   const input = w.querySelector("[data-input]"), out = w.querySelector("[data-results]");
   const render = q => {
     const hits = q.length < 2 ? [] : DATA.filter(d =>
       d.name.toLowerCase().includes(q.toLowerCase()) ||
       (d.postcodes || []).some(p => String(p).startsWith(q))).slice(0, 7);
+    out.dataset.codes = hits.map(d => d.lga_code || "").join(",");
     out.innerHTML = hits.map(d => {
       const g = goalsOf(d);
-      return '<div class="rrow"><span style="width:20px;height:20px;border-radius:999px;background:' + shade(g) + '"></span>' +
+      return '<div class="rrow" data-code="' + (d.lga_code || '') + '"><span style="width:20px;height:20px;border-radius:999px;background:' + shade(g) + '"></span>' +
         '<span class="rname">' + d.name + '</span><span class="rmeta">' + d.state + ' \u00b7 ' +
         (g == null ? "no analysis" : g + "/17 Goals") + ' \u00b7 ' + yearsOf(d) + ' yr</span></div>';
     }).join("");
     out.classList.toggle("on", hits.length > 0);
   };
+  out.addEventListener("mousedown", e => {
+    const row = e.target.closest("[data-code]");
+    if (row && row.dataset.code) location.href = "Council.html?lga=" + row.dataset.code;
+  });
   input.addEventListener("input", () => render(input.value));
   input.addEventListener("focus", () => render(input.value));
   input.addEventListener("blur", () => setTimeout(() => out.classList.remove("on"), 160));
 });
 
 document.querySelectorAll("[data-states]").forEach(el => {
-  el.innerHTML = STATES.map(s => '<button class="chip">' + s + '</button>').join("");
+  el.innerHTML = STATES.map(s => '<button class="chip leaves" data-goto="state=' + s + '">' + s + '</button>').join("");
 });
 document.querySelectorAll("[data-legend]").forEach(el => {
   el.innerHTML = [2, 5, 8, 11, 14, 17].map(g =>
     '<span style="width:18px;height:18px;border-radius:999px;background:' + shade(g) + '"></span>').join("");
 });
 
+function mapHint() {
+  const el = document.querySelector("[data-maphint]");
+  if (!el) return;
+  el.textContent = YEAR
+    ? "Goals evidenced in each council's " + YEAR + " report."
+    : "Goals evidenced in any report from " + (YEARS[0] || "") + " to " + (YEARS[YEARS.length - 1] || "") +
+      " \u2014 councils with more reports have more chances to evidence one.";
+}
+
 function paintYears() {
   const el = document.querySelector("[data-years]");
   if (!el) return;
-  if (!YEARS.length) { el.parentElement.style.display = "none"; return; }
-  el.parentElement.style.display = "flex";
+  if (!YEARS.length) { el.style.display = "none"; return; }
+  el.style.display = "flex";
   el.innerHTML = YEARS.map(y => '<button class="chip' + (y === YEAR ? " on" : "") + '" data-year="' + y + '">' + y + '</button>').join("") +
-    '<button class="chip' + (YEAR === null ? " on" : "") + '" data-year="">Latest</button>';
+    '<button class="chip' + (YEAR === null ? " on" : "") + '" data-year="">All years</button>';
   el.querySelectorAll("[data-year]").forEach(b => b.addEventListener("click", () => {
     YEAR = b.dataset.year ? +b.dataset.year : null;
-    paintYears(); repaint();
+    paintYears(); mapHint(); repaint();
   }));
 }
 
@@ -465,6 +542,7 @@ Promise.all([
   }
   indexData();
   paintYears();
+  mapHint();
   if (topo && topo.objects) drawLGA(topo); else drawPoints();
 });
 
@@ -490,7 +568,9 @@ function drawLGA(topo) {
       showTip(e, "<strong>" + nameOf(d.properties) + "</strong><br>" +
         (g == null ? (LIVE ? "No report analysed" + (YEAR ? " for " + YEAR : "") : "Not in this sample") : g + " of 17 Goals evidenced"));
     })
-    .on("mouseleave", hideTip);
+    .on("mouseleave", hideTip)
+    .on("click", (e, d) => { const m = lookup(d.properties); if (m) location.href = "Council.html?lga=" + m.lga_code; })
+    .style("cursor", d => lookup(d.properties) ? "pointer" : "default");
 
   repaint = () => shapes.attr("fill", d => shade(goalsOf(lookup(d.properties))));
   repaint();
@@ -518,7 +598,9 @@ function drawPoints() {
       .attr("stroke", "var(--color-surface)").attr("stroke-width", 1.2)
       .on("mousemove", (e, d) => showTip(e, "<strong>" + d.name + "</strong><br>" +
         (goalsOf(d) == null ? "No report analysed" : goalsOf(d) + " of 17 Goals evidenced") + " \u00b7 " + yearsOf(d) + " years"))
-      .on("mouseleave", hideTip);
+      .on("mouseleave", hideTip)
+      .on("click", (e, d) => { if (d.lga_code) location.href = "Council.html?lga=" + d.lga_code; })
+      .style("cursor", "pointer");
 
     repaint = () => dots.attr("fill", d => shade(goalsOf(d)));
     repaint();

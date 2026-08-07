@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-31T06:37:17.112Z",
+ "generated": "2026-08-02T21:35:08.175Z",
  "years": [
   2023,
   2024,
@@ -89,12 +89,36 @@
      "mean_alignment": 0.2473,
      "barren": 49,
      "activities_per_100_pages": 52.7,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      5,
+      7,
+      9,
+      11,
+      12,
+      15,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 10,
    "years_available": 1,
-   "latest_year": 2023
+   "latest_year": 2023,
+   "goals": [
+    3,
+    4,
+    5,
+    7,
+    9,
+    11,
+    12,
+    15,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "11400",
@@ -109,7 +133,16 @@
      "mean_alignment": 0.238,
      "barren": 39,
      "activities_per_100_pages": 43.6,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      5,
+      9,
+      11,
+      13,
+      15
+     ]
     },
     "2024": {
      "goals_evidenced": 11,
@@ -118,7 +151,20 @@
      "mean_alignment": 0.2461,
      "barren": 56,
      "activities_per_100_pages": 72.8,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      13,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 9,
@@ -127,12 +173,34 @@
      "mean_alignment": 0.2592,
      "barren": 38,
      "activities_per_100_pages": 53,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     }
    },
    "goals_evidenced": 9,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    3,
+    4,
+    8,
+    9,
+    11,
+    12,
+    13,
+    15,
+    17
+   ]
   },
   {
    "lga_code": "70200",
@@ -147,7 +215,13 @@
      "mean_alignment": 0.236,
      "barren": 27,
      "activities_per_100_pages": 52.9,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      11,
+      12,
+      13,
+      15
+     ]
     },
     "2025": {
      "goals_evidenced": 5,
@@ -156,12 +230,26 @@
      "mean_alignment": 0.2273,
      "barren": 28,
      "activities_per_100_pages": 50,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      4,
+      11,
+      12,
+      15,
+      17
+     ]
     }
    },
    "goals_evidenced": 5,
    "years_available": 2,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    4,
+    11,
+    12,
+    15,
+    17
+   ]
   },
   {
    "lga_code": "70420",
@@ -176,7 +264,16 @@
      "mean_alignment": 0.2615,
      "barren": 35,
      "activities_per_100_pages": 82.3,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      4,
+      5,
+      8,
+      9,
+      11,
+      12,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 7,
@@ -185,7 +282,16 @@
      "mean_alignment": 0.2507,
      "barren": 42,
      "activities_per_100_pages": 77.7,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      9,
+      11,
+      12,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 6,
@@ -194,12 +300,28 @@
      "mean_alignment": 0.2419,
      "barren": 36,
      "activities_per_100_pages": 79.8,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      4,
+      5,
+      11,
+      12,
+      13,
+      16
+     ]
     }
    },
    "goals_evidenced": 6,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    4,
+    5,
+    11,
+    12,
+    13,
+    16
+   ]
   },
   {
    "lga_code": "70620",
@@ -214,7 +336,16 @@
      "mean_alignment": 0.2542,
      "barren": 51,
      "activities_per_100_pages": 158.5,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      8,
+      9,
+      11,
+      12,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 9,
@@ -223,7 +354,18 @@
      "mean_alignment": 0.2588,
      "barren": 55,
      "activities_per_100_pages": 172.1,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      9,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 8,
@@ -232,12 +374,32 @@
      "mean_alignment": 0.2613,
      "barren": 64,
      "activities_per_100_pages": 193.2,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      6,
+      8,
+      9,
+      11,
+      12,
+      17
+     ]
     }
    },
    "goals_evidenced": 8,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    3,
+    4,
+    6,
+    8,
+    9,
+    11,
+    12,
+    17
+   ]
   },
   {
    "lga_code": "70700",
@@ -252,7 +414,17 @@
      "mean_alignment": 0.2392,
      "barren": 31,
      "activities_per_100_pages": 113.2,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      5,
+      11,
+      12,
+      15,
+      16,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 9,
@@ -261,12 +433,34 @@
      "mean_alignment": 0.2616,
      "barren": 37,
      "activities_per_100_pages": 126.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 9,
    "years_available": 2,
-   "latest_year": 2024
+   "latest_year": 2024,
+   "goals": [
+    3,
+    4,
+    9,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "36300",
@@ -281,7 +475,12 @@
      "mean_alignment": 0.2271,
      "barren": 28,
      "activities_per_100_pages": 50,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      11
+     ]
     },
     "2024": {
      "goals_evidenced": 5,
@@ -290,7 +489,14 @@
      "mean_alignment": 0.2311,
      "barren": 22,
      "activities_per_100_pages": 55.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      9,
+      11,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 6,
@@ -299,12 +505,28 @@
      "mean_alignment": 0.2331,
      "barren": 27,
      "activities_per_100_pages": 79.2,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      8,
+      11,
+      13,
+      17
+     ]
     }
    },
    "goals_evidenced": 6,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    3,
+    4,
+    8,
+    11,
+    13,
+    17
+   ]
   },
   {
    "lga_code": "36370",
@@ -319,7 +541,15 @@
      "mean_alignment": 0.2372,
      "barren": 28,
      "activities_per_100_pages": 40.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      4,
+      6,
+      8,
+      11,
+      12,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 6,
@@ -328,7 +558,15 @@
      "mean_alignment": 0.2327,
      "barren": 48,
      "activities_per_100_pages": 59.2,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      8,
+      11,
+      12,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 5,
@@ -337,12 +575,26 @@
      "mean_alignment": 0.2391,
      "barren": 30,
      "activities_per_100_pages": 43.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      7,
+      9,
+      11,
+      12,
+      13
+     ]
     }
    },
    "goals_evidenced": 5,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    7,
+    9,
+    11,
+    12,
+    13
+   ]
   },
   {
    "lga_code": "36510",
@@ -357,7 +609,19 @@
      "mean_alignment": 0.2482,
      "barren": 46,
      "activities_per_100_pages": 137.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      5,
+      9,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 10,
@@ -366,7 +630,19 @@
      "mean_alignment": 0.2512,
      "barren": 58,
      "activities_per_100_pages": 171,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      5,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 11,
@@ -375,12 +651,38 @@
      "mean_alignment": 0.2482,
      "barren": 75,
      "activities_per_100_pages": 130.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      4,
+      5,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 11,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    2,
+    4,
+    5,
+    8,
+    9,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "36580",
@@ -395,12 +697,40 @@
      "mean_alignment": 0.244,
      "barren": 108,
      "activities_per_100_pages": 175,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     }
    },
    "goals_evidenced": 12,
    "years_available": 1,
-   "latest_year": 2023
+   "latest_year": 2023,
+   "goals": [
+    2,
+    3,
+    4,
+    6,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    15,
+    17
+   ]
   },
   {
    "lga_code": "40310",
@@ -415,7 +745,16 @@
      "mean_alignment": 0.232,
      "barren": 22,
      "activities_per_100_pages": 77.3,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      9,
+      11,
+      12,
+      16,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 7,
@@ -424,7 +763,16 @@
      "mean_alignment": 0.2435,
      "barren": 17,
      "activities_per_100_pages": 80.3,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      9,
+      11,
+      12,
+      16,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 7,
@@ -433,12 +781,30 @@
      "mean_alignment": 0.2424,
      "barren": 15,
      "activities_per_100_pages": 75.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      8,
+      9,
+      11,
+      12,
+      17
+     ]
     }
    },
    "goals_evidenced": 7,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    3,
+    4,
+    8,
+    9,
+    11,
+    12,
+    17
+   ]
   },
   {
    "lga_code": "47490",
@@ -453,12 +819,38 @@
      "mean_alignment": 0.242,
      "barren": 62,
      "activities_per_100_pages": 70.7,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      7,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 11,
    "years_available": 1,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    2,
+    3,
+    4,
+    7,
+    9,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "47630",
@@ -473,7 +865,17 @@
      "mean_alignment": 0.2349,
      "barren": 39,
      "activities_per_100_pages": 59.1,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      4,
+      8,
+      9,
+      11,
+      12,
+      13,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 8,
@@ -482,7 +884,17 @@
      "mean_alignment": 0.2346,
      "barren": 61,
      "activities_per_100_pages": 85.3,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      4,
+      8,
+      9,
+      11,
+      12,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 8,
@@ -491,12 +903,32 @@
      "mean_alignment": 0.2283,
      "barren": 61,
      "activities_per_100_pages": 90.6,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      5,
+      8,
+      9,
+      11,
+      12,
+      17
+     ]
     }
    },
    "goals_evidenced": 8,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    3,
+    4,
+    5,
+    8,
+    9,
+    11,
+    12,
+    17
+   ]
   },
   {
    "lga_code": "47700",
@@ -511,7 +943,18 @@
      "mean_alignment": 0.2374,
      "barren": 46,
      "activities_per_100_pages": 76.9,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 5,
@@ -520,7 +963,14 @@
      "mean_alignment": 0.2414,
      "barren": 38,
      "activities_per_100_pages": 57,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      9,
+      11,
+      12,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 5,
@@ -529,12 +979,26 @@
      "mean_alignment": 0.2443,
      "barren": 30,
      "activities_per_100_pages": 40.8,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      4,
+      9,
+      11,
+      13,
+      16
+     ]
     }
    },
    "goals_evidenced": 5,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    4,
+    9,
+    11,
+    13,
+    16
+   ]
   },
   {
    "lga_code": "61510",
@@ -549,7 +1013,17 @@
      "mean_alignment": 0.2406,
      "barren": 49,
      "activities_per_100_pages": 78.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      3,
+      4,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 8,
@@ -558,7 +1032,17 @@
      "mean_alignment": 0.2337,
      "barren": 44,
      "activities_per_100_pages": 75.2,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     },
     "2025": {
      "goals_evidenced": 8,
@@ -567,12 +1051,32 @@
      "mean_alignment": 0.2423,
      "barren": 54,
      "activities_per_100_pages": 114.8,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      11,
+      12,
+      13,
+      15,
+      17
+     ]
     }
    },
    "goals_evidenced": 8,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    2,
+    3,
+    4,
+    11,
+    12,
+    13,
+    15,
+    17
+   ]
   },
   {
    "lga_code": "61610",
@@ -587,7 +1091,19 @@
      "mean_alignment": 0.2274,
      "barren": 56,
      "activities_per_100_pages": 85.6,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      5,
+      8,
+      9,
+      11,
+      12,
+      16,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 8,
@@ -596,7 +1112,17 @@
      "mean_alignment": 0.2358,
      "barren": 33,
      "activities_per_100_pages": 66.9,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      5,
+      11,
+      12,
+      13,
+      16
+     ]
     },
     "2025": {
      "goals_evidenced": 13,
@@ -605,12 +1131,42 @@
      "mean_alignment": 0.2372,
      "barren": 52,
      "activities_per_100_pages": 104.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      5,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 13,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    2,
+    3,
+    4,
+    5,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "61810",
@@ -625,7 +1181,13 @@
      "mean_alignment": 0.2522,
      "barren": 10,
      "activities_per_100_pages": 58.7,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      11,
+      13
+     ]
     },
     "2024": {
      "goals_evidenced": 4,
@@ -634,7 +1196,13 @@
      "mean_alignment": 0.256,
      "barren": 9,
      "activities_per_100_pages": 54.3,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      4,
+      11,
+      12
+     ]
     },
     "2025": {
      "goals_evidenced": 6,
@@ -643,12 +1211,28 @@
      "mean_alignment": 0.2688,
      "barren": 11,
      "activities_per_100_pages": 60.4,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      6,
+      11,
+      12,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 6,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    2,
+    6,
+    11,
+    12,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "22620",
@@ -663,12 +1247,24 @@
      "mean_alignment": 0.2421,
      "barren": 13,
      "activities_per_100_pages": 17.6,
-     "extraction": "thin"
+     "extraction": "thin",
+     "goals": [
+      4,
+      5,
+      11,
+      15
+     ]
     }
    },
    "goals_evidenced": 4,
    "years_available": 1,
-   "latest_year": 2024
+   "latest_year": 2024,
+   "goals": [
+    4,
+    5,
+    11,
+    15
+   ]
   },
   {
    "lga_code": "24600",
@@ -683,12 +1279,42 @@
      "mean_alignment": 0.2538,
      "barren": 38,
      "activities_per_100_pages": 52.1,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17
+     ]
     }
    },
    "goals_evidenced": 13,
    "years_available": 1,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    11,
+    12,
+    13,
+    15,
+    16,
+    17
+   ]
   },
   {
    "lga_code": "55810",
@@ -703,7 +1329,13 @@
      "mean_alignment": 0.2299,
      "barren": 35,
      "activities_per_100_pages": 66.3,
-     "extraction": "rich"
+     "extraction": "rich",
+     "goals": [
+      4,
+      9,
+      11,
+      17
+     ]
     },
     "2024": {
      "goals_evidenced": 2,
@@ -712,12 +1344,20 @@
      "mean_alignment": 0.2243,
      "barren": 10,
      "activities_per_100_pages": 20.3,
-     "extraction": "thin"
+     "extraction": "thin",
+     "goals": [
+      11,
+      12
+     ]
     }
    },
    "goals_evidenced": 2,
    "years_available": 2,
-   "latest_year": 2024
+   "latest_year": 2024,
+   "goals": [
+    11,
+    12
+   ]
   },
   {
    "lga_code": "55880",
@@ -732,7 +1372,10 @@
      "mean_alignment": 0.2486,
      "barren": 14,
      "activities_per_100_pages": 30.1,
-     "extraction": "adequate"
+     "extraction": "adequate",
+     "goals": [
+      11
+     ]
     },
     "2024": {
      "goals_evidenced": 1,
@@ -741,7 +1384,10 @@
      "mean_alignment": 0.2509,
      "barren": 15,
      "activities_per_100_pages": 32.9,
-     "extraction": "adequate"
+     "extraction": "adequate",
+     "goals": [
+      11
+     ]
     },
     "2025": {
      "goals_evidenced": 3,
@@ -750,12 +1396,22 @@
      "mean_alignment": 0.2498,
      "barren": 15,
      "activities_per_100_pages": 32.9,
-     "extraction": "adequate"
+     "extraction": "adequate",
+     "goals": [
+      3,
+      9,
+      11
+     ]
     }
    },
    "goals_evidenced": 3,
    "years_available": 3,
-   "latest_year": 2025
+   "latest_year": 2025,
+   "goals": [
+    3,
+    9,
+    11
+   ]
   },
   {
    "lga_code": "55950",
@@ -770,7 +1426,12 @@
      "mean_alignment": 0.2148,
      "barren": 8,
      "activities_per_100_pages": 24.6,
-     "extraction": "thin"
+     "extraction": "thin",
+     "goals": [
+      3,
+      11,
+      16
+     ]
     },
     "2024": {
      "goals_evidenced": 4,
@@ -779,12 +1440,24 @@
      "mean_alignment": 0.2252,
      "barren": 10,
      "activities_per_100_pages": 29.9,
-     "extraction": "adequate"
+     "extraction": "adequate",
+     "goals": [
+      3,
+      4,
+      11,
+      17
+     ]
     }
    },
    "goals_evidenced": 4,
    "years_available": 2,
-   "latest_year": 2024
+   "latest_year": 2024,
+   "goals": [
+    3,
+    4,
+    11,
+    17
+   ]
   }
  ]
 }

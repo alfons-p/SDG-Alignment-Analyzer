@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Council — SDG Alignment Analyser</title>
+<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
+<style>
+  body { margin: 0; background: var(--color-bg); font-family: var(--font-body); color: var(--color-text); }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; margin: 0; }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); cursor: pointer; }
+  a:hover { color: var(--color-accent-800); }
+  *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  p { margin: 0; text-wrap: pretty; }
+
+  .nav2 { display: flex; align-items: center; gap: 22px; padding: 16px 56px; }
+  .brand { font-family: var(--font-heading); font-size: 19px; line-height: 1; }
+  .navlink { font-size: 13.5px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 58%, transparent); }
+  .navlink:hover, .navlink.on { color: var(--color-text); }
+
+  .chip { border: none; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; padding: 8px 15px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent); color: var(--color-text); }
+  .chip:hover { background: var(--color-accent-100); }
+  .chip.on { background: var(--color-surface); box-shadow: var(--shadow-sm); }
+  .chip.off { opacity: 0.4; cursor: not-allowed; }
+  .chip.off:hover { background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+
+  .grow { display: flex; flex-direction: column; cursor: pointer; border-radius: 20px; padding: 11px 16px; }
+  .grow:hover { background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+  .gnum { width: 32px; height: 32px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 700; color: #fff; }
+  .track { flex: 1 1 auto; height: 11px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 7%, transparent); overflow: hidden; }
+  .fill { height: 100%; border-radius: 999px; }
+
+  .wrap { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr); gap: 40px; padding: 26px 56px 70px; align-items: start; }
+  @media (max-width: 1000px) { .wrap { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<div class="nav2">
+  <a href="Landing.html" class="brand" style="border: none; color: var(--color-text)">SDG Alignment Analyser</a>
+  <a href="Browse.html" class="navlink" style="border: none">The dataset</a>
+  <a href="Limitations.html" class="navlink" style="border: none">About</a>
+  <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
+    <a href="Access.html" class="btn btn-ghost" style="border-radius: 999px; border-bottom: none">Sign in</a>
+    <a href="Access.html" class="btn btn-primary" style="border-radius: 999px; border-bottom: none">Upload a report</a>
+  </div>
+</div>
+
+<!-- council header -->
+<div style="padding: 22px 56px 26px; background: var(--color-accent-2-100)">
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; flex-wrap: wrap">
+    <div style="display: flex; flex-direction: column; gap: 11px; min-width: 0">
+      <div style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--color-accent-2-700)">
+        <a href="Browse.html" style="border-bottom-color: color-mix(in srgb, var(--color-accent-2) 45%, transparent); color: var(--color-accent-2-700)">All councils</a>
+        <span style="opacity: 0.5">/</span>
+        <a data-statelink style="border-bottom-color: color-mix(in srgb, var(--color-accent-2) 45%, transparent); color: var(--color-accent-2-700)">&mdash;</a>
+      </div>
+      <h1 style="font-size: 40px; line-height: 1.04" data-name>&mdash;</h1>
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+        <div style="display: flex; gap: 5px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--color-surface) 65%, transparent)" data-years></div>
+        <span style="font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 65%, transparent)" data-meta>&mdash;</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 32px; padding-bottom: 4px" data-figures></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- main -->
+  <div style="display: flex; flex-direction: column; gap: 22px">
+
+    <div style="display: flex; flex-direction: column; gap: 9px">
+      <h2 style="font-size: 23px; line-height: 1.3; max-width: 720px" data-lede>&mdash;</h2>
+      <p style="font-size: 13.5px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">Ranked by the number of described activities aligned to each Goal. Open any Goal to read the passages behind it.</p>
+    </div>
+
+    <div class="card elev-sm" style="padding: 16px 8px; gap: 0">
+      <div data-goals></div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 22px; border-radius: 26px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+      <span style="flex: 1 1 380px">Scores are similarity to each Goal's language, above a threshold calibrated per Goal. A Goal with no evidence means the report did not describe qualifying work.</span>
+      <a href="Limitations.html" style="white-space: nowrap">How to read this</a>
+    </div>
+  </div>
+
+  <!-- side -->
+  <div style="display: flex; flex-direction: column; gap: 18px">
+
+    <div class="card" style="padding: 24px 26px; gap: 14px" data-extraction></div>
+
+    <div class="card" style="padding: 24px 26px; gap: 14px" data-trend></div>
+
+    <div class="card" style="padding: 24px 26px; gap: 13px">
+      <h3 style="font-size: 18px">Compare with peers</h3>
+      <p style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 66%, transparent)">Pick the councils you want to compare. We do not rank them for you &mdash; how plainly a report is written drives coverage as much as the work behind it.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px" data-peers></div>
+    </div>
+
+    <div class="card" style="padding: 24px 26px; gap: 12px">
+      <h3 style="font-size: 18px">Source</h3>
+      <p style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 66%, transparent)" data-source>&mdash;</p>
+      <p style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 55%, transparent)">Is this your council? <a href="Access.html">Upload a newer report</a> or ask us to review a match.</p>
+    </div>
+  </div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 22px 30px; margin: 0 56px 56px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+  <span style="flex: 1 1 520px">This analysis reads what council annual reports <strong>describe</strong>. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none.</span>
+  <div style="display: flex; align-items: center; gap: 20px; margin-left: auto; white-space: nowrap">
+    <a href="Limitations.html">About this analysis and its limits</a>
+    <span style="color: color-mix(in srgb, var(--color-text) 45%, transparent)">Boundaries &copy; ABS, ASGS Ed. 3</span>
+  </div>
+</div>
+
+<script>
+const GC = {1:"#E5243B",2:"#DDA63A",3:"#4C9F38",4:"#C5192D",5:"#FF3A21",6:"#26BDE2",7:"#FCC30B",8:"#A21942",9:"#FD6925",10:"#DD1367",11:"#FD9D24",12:"#BF8B2E",13:"#3F7E44",14:"#0A97D9",15:"#56C02B",16:"#00689D",17:"#19486A"};
+const GN = {1:"No Poverty",2:"Zero Hunger",3:"Good Health",4:"Quality Education",5:"Gender Equality",6:"Clean Water",7:"Clean Energy",8:"Decent Work",9:"Innovation",10:"Reduced Inequalities",11:"Sustainable Cities",12:"Responsible Consumption",13:"Climate Action",14:"Life Below Water",15:"Life on Land",16:"Peace & Justice",17:"Partnerships"};
+const GFULL = {1:"No Poverty",2:"Zero Hunger",3:"Good Health and Well-being",4:"Quality Education",5:"Gender Equality",6:"Clean Water and Sanitation",7:"Affordable and Clean Energy",8:"Decent Work and Economic Growth",9:"Industry, Innovation and Infrastructure",10:"Reduced Inequalities",11:"Sustainable Cities and Communities",12:"Responsible Consumption and Production",13:"Climate Action",14:"Life Below Water",15:"Life on Land",16:"Peace, Justice and Strong Institutions",17:"Partnerships for the Goals"};
+const pad = n => String(n).padStart(2, "0");
+const $ = s => document.querySelector(s);
+
+let C = null, COV = null, YEAR = null, OPEN = null;
+
+function yearRec() { return C.years[String(YEAR)]; }
+
+function band(n) {
+  if (n === 0) return ["Not evidenced", "var(--color-accent-700)"];
+  if (n < 5) return ["Isolated", "color-mix(in srgb, var(--color-text) 48%, transparent)"];
+  if (n < 15) return ["Emerging", "var(--color-accent-2-700)"];
+  return ["Substantial", "var(--color-accent-2-700)"];
+}
+
+/* Density decides whether coverage can be read as a property of the work
+   or mostly of the document. Same thresholds as the officer app. */
+function grade(r) {
+  if (!r.pages) return null;
+  const d = (r.activities / r.pages) * 100;
+  return { d, g: d >= 40 ? "rich" : (d >= 25 ? "adequate" : "thin") };
+}
+
+function paintYears() {
+  const ys = Object.keys(C.years).map(Number).sort((a, b) => a - b);
+  $('[data-years]').innerHTML = ys.map(y =>
+    '<button class="chip' + (y === YEAR ? ' on' : '') + '" data-y="' + y + '">' + y + '</button>').join('');
+  $('[data-years]').querySelectorAll('[data-y]').forEach(b =>
+    b.onclick = () => { YEAR = +b.dataset.y; OPEN = null; paintAll(); });
+}
+
+function paintHeader() {
+  const r = yearRec();
+  $('[data-name]').textContent = C.name;
+  $('[data-statelink]').textContent = C.state;
+  $('[data-statelink]').href = 'Browse.html?state=' + C.state;
+  $('[data-meta]').textContent = [C.class, r.pages ? r.pages + ' pages' : null,
+    'analysed ' + Object.keys(C.years).length + ' of 3 years'].filter(Boolean).join(' · ');
+  document.title = C.name + ' — SDG Alignment Analyser';
+
+  $('[data-figures]').innerHTML = [
+    [r.activities, 'activities described', 'var(--color-text)'],
+    [r.goals_evidenced + '/17', 'Goals evidenced', 'var(--color-text)'],
+    [17 - r.goals_evidenced, 'not evidenced', 'var(--color-accent-700)']
+  ].map(([v, l, c]) =>
+    '<div style="display:flex;flex-direction:column;gap:2px">' +
+    '<span style="font-family:var(--font-heading);font-size:32px;line-height:1;color:' + c + '">' + v + '</span>' +
+    '<span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">' + l + '</span></div>').join('');
+}
+
+function paintLede() {
+  const r = yearRec();
+  const ranked = Object.keys(GN).map(Number).sort((a, b) => r.counts[b] - r.counts[a]);
+  const top = ranked[0], share = r.counts[top] / r.activities;
+  const zeros = ranked.filter(i => r.counts[i] === 0).length;
+  $('[data-lede]').textContent = r.counts[top] === 0
+    ? 'No activity in this report aligned to any Goal above its threshold.'
+    : (share >= 0.35
+        ? Math.round(share * 100) + '% of what this report describes aligns to Goal ' + top + ', ' +
+          GFULL[top] + '. ' + zeros + ' of the 17 Goals have no described activity at all.'
+        : 'Goal ' + top + ', ' + GFULL[top] + ', leads with ' + r.counts[top] +
+          ' described activities. ' + zeros + ' of the 17 Goals have none at all.');
+}
+
+function paintGoals() {
+  const r = yearRec();
+  const max = Math.max(1, ...Object.values(r.counts));
+  const ids = Object.keys(GN).map(Number).sort((a, b) => r.counts[b] - r.counts[a] || r.means[b] - r.means[a]);
+  $('[data-goals]').innerHTML = ids.map(i => {
+    const n = r.counts[i], [bn, bc] = band(n), open = OPEN === i;
+    const ev = (r.evidence[i] || []);
+    return '<div class="grow" data-g="' + i + '">' +
+      '<div style="display:flex;align-items:center;gap:16px">' +
+        '<span class="gnum" style="background:' + GC[i] + '">' + pad(i) + '</span>' +
+        '<span style="flex:0 0 178px;font-size:14.5px;font-weight:600">' + GN[i] + '</span>' +
+        '<div class="track"><div class="fill" style="background:' + GC[i] + ';width:' +
+          (n === 0 ? 0 : Math.max(2, (n / max) * 100)) + '%"></div></div>' +
+        '<span style="flex:0 0 84px;text-align:right;font-size:14px;font-weight:700">' +
+          (n === 0 ? '—' : n + (n === 1 ? ' activity' : ' activities')) + '</span>' +
+        '<span style="flex:0 0 118px;text-align:right;font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;color:' + bc + '">' + bn + '</span>' +
+      '</div>' +
+      (open ? '<div style="display:flex;flex-direction:column;gap:10px;margin:12px 0 6px 48px">' +
+        (ev.length ? ev.map(e =>
+          '<div style="display:flex;flex-direction:column;gap:8px;padding:16px 20px;border-radius:22px;background:var(--color-accent-2-100)">' +
+          '<p style="font-size:14.5px;line-height:1.6;max-width:760px">' + e.t + '</p>' +
+          '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--color-accent-2-700)">' +
+            '<span style="text-transform:capitalize">' + e.sec + ' section</span>' +
+            (e.also.length ? '<span>also Goal ' + e.also.join(', ') + '</span>' : '') +
+            '<span style="margin-left:auto;font-weight:700">' + e.s.toFixed(3) + '</span>' +
+          '</div></div>').join('')
+        : '<div style="padding:18px 22px;border-radius:22px;background:var(--color-accent-100);font-size:14px;line-height:1.6;color:var(--color-accent-800);max-width:760px">' +
+          'No passage in this report scored above the threshold for ' + GFULL[i] +
+          '. The report&rsquo;s mean score against it was ' + r.means[i].toFixed(3) +
+          '. That is a statement about the report, not about the council.</div>') +
+        '</div>' : '') +
+      '</div>';
+  }).join('');
+  $('[data-goals]').querySelectorAll('[data-g]').forEach(el =>
+    el.onclick = () => { const i = +el.dataset.g; OPEN = OPEN === i ? null : i; paintGoals(); });
+}
+
+function paintExtraction() {
+  const r = yearRec(), q = grade(r);
+  if (!q) { $('[data-extraction]').style.display = 'none'; return; }
+  const tone = q.g === 'thin'
+    ? ['var(--color-accent)', 'var(--color-accent-100)', 'var(--color-accent-800)']
+    : ['var(--color-accent-2-500)', 'var(--color-accent-2-100)', 'var(--color-accent-2-700)'];
+  $('[data-extraction]').innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px">' +
+      '<span style="width:9px;height:9px;border-radius:999px;background:' + tone[0] + '"></span>' +
+      '<h3 style="font-size:18px">How much this report described</h3></div>' +
+    '<div style="display:flex;align-items:baseline;gap:9px">' +
+      '<span style="font-family:var(--font-heading);font-size:30px;line-height:1">' + q.d.toFixed(1) + '</span>' +
+      '<span style="font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">activities per 100 pages</span></div>' +
+    '<p style="font-size:13.5px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 66%, transparent)">' +
+      (q.g === 'thin'
+        ? 'This report is written largely as tables and status grids rather than prose, so it yielded little described activity. Read its Goal coverage as a floor, not a measure.'
+        : 'Enough discrete activity was described for the Goal coverage here to be read as a property of the work rather than of the document.') +
+    '</p>' +
+    '<p style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 55%, transparent)">' +
+      r.barren + ' of ' + r.activities + ' described activities matched no Goal.</p>';
+}
+
+function paintTrend() {
+  const ys = Object.keys(C.years).map(Number).sort((a, b) => a - b);
+  if (ys.length < 2) {
+    $('[data-trend]').innerHTML =
+      '<h3 style="font-size:18px">Across the years</h3>' +
+      '<p style="font-size:13.5px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 66%, transparent)">' +
+      'Only ' + ys[0] + ' has been analysed for this council. A trend appears once a second year is published.</p>';
+    return;
+  }
+  const max = Math.max(...ys.map(y => C.years[String(y)].goals_evidenced));
+  const first = C.years[String(ys[0])], last = C.years[String(ys[ys.length - 1])];
+  const d = last.goals_evidenced - first.goals_evidenced;
+  $('[data-trend]').innerHTML =
+    '<h3 style="font-size:18px">Across the years</h3>' +
+    '<div style="display:flex;flex-direction:column;gap:9px">' +
+    ys.map(y => {
+      const r = C.years[String(y)], on = y === YEAR;
+      return '<button class="chip" style="display:flex;align-items:center;gap:11px;padding:8px 12px;background:' +
+        (on ? 'var(--color-accent-100)' : 'transparent') + '" data-ty="' + y + '">' +
+        '<span style="flex:0 0 34px;text-align:left;font-size:13px;font-weight:' + (on ? 700 : 600) + '">' + y + '</span>' +
+        '<span class="track" style="height:9px"><span class="fill" style="display:block;background:var(--color-accent-2-500);width:' +
+          ((r.goals_evidenced / max) * 100) + '%"></span></span>' +
+        '<span style="flex:0 0 34px;text-align:right;font-size:12.5px;font-weight:700">' + r.goals_evidenced + '/17</span>' +
+        '</button>';
+    }).join('') + '</div>' +
+    '<p style="font-size:13px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 66%, transparent)">' +
+      (d === 0
+        ? 'Goals evidenced held at ' + last.goals_evidenced + ' between ' + ys[0] + ' and ' + ys[ys.length - 1] + '.'
+        : 'Goals evidenced ' + (d > 0 ? 'rose' : 'fell') + ' from ' + first.goals_evidenced + ' to ' +
+          last.goals_evidenced + ' between ' + ys[0] + ' and ' + ys[ys.length - 1] + '.') +
+      ' Reporting format changes between years affect this as much as the work does.</p>';
+  $('[data-trend]').querySelectorAll('[data-ty]').forEach(b =>
+    b.onclick = () => { YEAR = +b.dataset.ty; OPEN = null; paintAll(); });
+}
+
+function paintPeers() {
+  if (!COV) return;
+  const peers = COV.councils.filter(x =>
+    x.lga_code !== C.lga_code && (x.state === C.state || x.class === C.class))
+    .sort((a, b) => (a.state === C.state && a.class === C.class ? -1 : 0) - (b.state === C.state && b.class === C.class ? -1 : 0))
+    .slice(0, 5);
+  $('[data-peers]').innerHTML = peers.map(p =>
+    '<a class="chip" style="border-bottom:none;color:var(--color-text)" href="Compare.html?councils=' +
+    C.lga_code + ',' + p.lga_code + '">' + p.name + '</a>').join('') +
+    '<a class="chip" style="border-bottom:none;color:var(--color-text)" href="Browse.html?class=' +
+    (C.class || '') + '">Choose your own &rarr;</a>';
+}
+
+function paintSource() {
+  const r = yearRec();
+  $('[data-source]').innerHTML = C.name + '&rsquo;s published ' + YEAR + ' annual report' +
+    (r.pages ? ', ' + r.pages + ' pages' : '') + '. Analysed with the same classifier and thresholds as every other report in this dataset.';
+}
+
+function paintAll() { paintYears(); paintHeader(); paintLede(); paintGoals(); paintExtraction(); paintTrend(); paintSource(); }
+
+const P = new URLSearchParams(location.search);
+const code = P.get('lga') || '24600';
+
+Promise.all([
+  fetch('data/councils/' + code + '.json').then(r => r.json()),
+  fetch('data/coverage.json').then(r => r.json()).catch(() => null)
+]).then(([c, cov]) => {
+  C = c; COV = cov;
+  YEAR = Number(P.get('year')) && c.years[P.get('year')] ? Number(P.get('year')) : c.latest_year;
+  paintAll();
+  paintPeers();
+}).catch(() => {
+  $('[data-name]').textContent = 'Council not found';
+  $('[data-lede]').textContent = 'No analysis has been published for this local government area.';
+});
+</script>
+
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#f5ead8"/><rect x="24" y="40" width="72" height="9" rx="4.5" fill="#FD9D24"/><rect x="24" y="56" width="50" height="9" rx="4.5" fill="#c67139"/><rect x="24" y="72" width="30" height="9" rx="4.5" fill="#7a8a5e"/></svg>
+</template>
+</body>
+</html>

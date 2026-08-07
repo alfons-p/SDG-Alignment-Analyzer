@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse councils — proposal</title>
+<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
+<style>
+  body { margin: 0; background: var(--color-bg); font-family: var(--font-body); color: var(--color-text); }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; margin: 0; }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); }
+  a:hover { color: var(--color-accent-800); }
+  *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  .nav2 { display: flex; align-items: center; gap: 22px; padding: 16px 56px; }
+  .brand { font-family: var(--font-heading); font-size: 19px; line-height: 1; }
+  .navlink { font-size: 13.5px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 58%, transparent); cursor: pointer; }
+  .navlink:hover { color: var(--color-text); }
+  .navlink.on { color: var(--color-text); }
+
+  .chip { border: none; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; padding: 8px 14px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent); color: var(--color-text); }
+  .chip:hover { background: var(--color-accent-100); }
+  .chip.on { background: var(--color-accent); color: #fff; }
+  .chip.on:hover { background: var(--color-accent-700); }
+
+  .pillx { display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; padding: 8px 12px 8px 14px; border-radius: 999px; background: var(--color-accent-100); color: var(--color-accent-800); }
+  .pillx:hover { background: var(--color-accent-200); }
+
+  .input2 { width: 100%; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent); background: var(--color-surface); border-radius: 999px; font-family: var(--font-body); font-size: 14.5px; padding: 12px 18px; color: var(--color-text); }
+  .input2::placeholder { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 14px 20px; border-radius: 22px; cursor: pointer; }
+  .row:hover { background: color-mix(in srgb, var(--color-text) 4%, transparent); }
+  .row.sel { background: var(--color-accent-100); }
+  .rname { flex: 1 1 190px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .rstats { display: flex; align-items: flex-end; gap: 22px; margin-left: auto; }
+  .rstat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+  .rstat b { font-family: var(--font-body); font-size: 14px; font-weight: 700; line-height: 1; }
+  .rstat span { font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent); }
+  .rstrip { flex: 1 1 100%; display: flex; align-items: center; gap: 10px; padding-left: 36px; }
+
+  .box { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid color-mix(in srgb, var(--color-text) 24%, transparent); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; }
+  .box.on { background: var(--color-accent); border-color: var(--color-accent); }
+
+  .bar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 26px; display: flex; align-items: center; gap: 18px; padding: 14px 18px 14px 24px; border-radius: 999px; background: var(--color-text); color: var(--color-bg); box-shadow: var(--shadow-lg); z-index: 40; }
+  .bar.off { display: none; }
+</style>
+</head>
+<body>
+
+<div class="nav2">
+  <span class="brand">SDG Alignment Analyser</span>
+  <span class="navlink on">The dataset</span>
+  <span class="navlink">Findings</span>
+  <span class="navlink">Method</span>
+  <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
+    <a href="Access.html" class="btn btn-ghost" style="border-radius: 999px; border-bottom: none">Sign in</a>
+    <button class="btn btn-primary" style="border-radius: 999px">Upload a report</button>
+  </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 44px; padding: 26px 56px 120px; align-items: start">
+
+  <!-- filter rail -->
+  <div style="display: flex; flex-direction: column; gap: 26px; position: sticky; top: 26px">
+    <input class="input2" placeholder="Search councils" data-q>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">State</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px" data-f="state"></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Setting</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px" data-f="class"></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Reporting year</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px" data-f="year"></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Extraction quality</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px" data-f="extraction"></div>
+      <span style="font-size: 11.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 55%, transparent); text-wrap: pretty">A thin report yielded little described activity, so its coverage understates the work.</span>
+    </div>
+  </div>
+
+  <!-- list -->
+  <div style="display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h1 style="font-size: 34px; line-height: 1.1">Councils</h1>
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+        <span style="font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 68%, transparent)" data-count>&mdash;</span>
+        <div style="display: flex; gap: 7px; flex-wrap: wrap" data-active></div>
+      </div>
+      <div style="display: none; padding: 14px 20px; border-radius: 22px; background: var(--color-accent-100); font-size: 13.5px; line-height: 1.55; color: var(--color-accent-800); text-wrap: pretty" data-notice></div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+      <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Order</span>
+      <div style="display: flex; gap: 6px" data-sort></div>
+      <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 55%, transparent); flex: 1 1 260px; text-wrap: pretty">Order is not a ranking. How plainly a report is written drives coverage as much as the work behind it does.</span>
+    </div>
+
+    <div class="card elev-sm" style="padding: 18px 0 12px; gap: 0">
+      <div data-rows></div>
+      <div style="display: none; padding: 40px 24px; text-align: center; font-size: 14.5px; color: color-mix(in srgb, var(--color-text) 58%, transparent)" data-empty>
+        No council matches these filters.
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 22px 30px; margin: 0 56px 96px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+    <span style="flex: 1 1 520px; text-wrap: pretty">This analysis reads what council annual reports <strong>describe</strong>. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none.</span>
+    <div style="display: flex; align-items: center; gap: 20px; margin-left: auto; white-space: nowrap">
+      <a href="Limitations.html">About this analysis and its limits</a>
+      <span style="color: color-mix(in srgb, var(--color-text) 45%, transparent)">Boundaries &copy; ABS, ASGS Ed. 3</span>
+    </div>
+  </div>
+
+<div class="bar off" data-bar>
+  <span style="font-size: 14px; font-weight: 600" data-barlabel>2 councils selected</span>
+  <div style="display: flex; align-items: center; gap: 8px">
+    <button class="btn btn-ghost" style="border-radius: 999px; color: var(--color-bg)" data-clear>Clear</button>
+    <button class="btn btn-primary" style="border-radius: 999px" data-compare>Compare</button>
+  </div>
+</div>
+
+<script>
+const GOAL_COLORS = {1:"#E5243B",2:"#DDA63A",3:"#4C9F38",4:"#C5192D",5:"#FF3A21",6:"#26BDE2",7:"#FCC30B",8:"#A21942",9:"#FD6925",10:"#DD1367",11:"#FD9D24",12:"#BF8B2E",13:"#3F7E44",14:"#0A97D9",15:"#56C02B",16:"#00689D",17:"#19486A"};
+const GOAL_NAMES = {1:"No Poverty",2:"Zero Hunger",3:"Good Health",4:"Quality Education",5:"Gender Equality",6:"Clean Water",7:"Clean Energy",8:"Decent Work",9:"Innovation",10:"Reduced Inequalities",11:"Sustainable Cities",12:"Responsible Consumption",13:"Climate Action",14:"Life Below Water",15:"Life on Land",16:"Peace & Justice",17:"Partnerships"};
+
+let DATA = [], YEARS = [];
+const F = { state: null, class: null, year: null, extraction: null, q: "", sort: "name" };
+const SEL = new Set();
+
+const el = s => document.querySelector(s);
+const yearRec = c => F.year && c.by_year[F.year] ? c.by_year[F.year] : c.by_year[String(c.latest_year)];
+
+function matches(c) {
+  if (F.state && c.state !== F.state) return false;
+  if (F.class && c.class !== F.class) return false;
+  if (F.year && !c.by_year[F.year]) return false;
+  if (F.q && !c.name.toLowerCase().includes(F.q.toLowerCase())) return false;
+  if (F.extraction) { const r = yearRec(c); if (!r || r.extraction !== F.extraction) return false; }
+  return true;
+}
+
+/* "2023–25" for a contiguous run, "2023, 2025" for a gap, "2024" for one. */
+function span(c) {
+  const ys = Object.keys(c.by_year).map(Number).sort((a, b) => a - b);
+  if (!ys.length) return "\u2014";
+  if (ys.length === 1) return String(ys[0]);
+  const contiguous = ys[ys.length - 1] - ys[0] === ys.length - 1;
+  return contiguous
+    ? ys[0] + "\u2013" + String(ys[ys.length - 1]).slice(2)
+    : ys.join(", ");
+}
+
+function stripLabel(c) {
+  const shown = Number(F.year) || c.latest_year;
+  const others = Object.keys(c.by_year).length - 1;
+  return "Goals evidenced in " + shown + (others > 0
+    ? " \u00b7 " + others + (others === 1 ? " other year" : " other years") + " available"
+    : "");
+}
+
+function dots(goals) {
+  const set = new Set(goals || []);
+  return '<div style="display:flex;gap:3px;flex:0 0 auto">' + Array.from({length:17}, (_, i) => {
+    const n = i + 1, on = set.has(n);
+    return '<span title="' + n + ' ' + GOAL_NAMES[n] + (on ? '" ' : ' — not evidenced" ') +
+      'style="flex:0 0 auto;width:11px;height:11px;border-radius:999px;background:' +
+      (on ? GOAL_COLORS[n] : 'color-mix(in srgb, var(--color-text) 11%, transparent)') + '"></span>';
+  }).join('') + '</div>';
+}
+
+function syncUrl() {
+  const p = new URLSearchParams();
+  ["state","class","year","extraction"].forEach(k => { if (F[k]) p.set(k, F[k]); });
+  if (F.q) p.set("q", F.q);
+  const s = p.toString();
+  history.replaceState(null, "", s ? "?" + s : location.pathname);
+}
+
+function render() {
+  syncUrl();
+  const list = DATA.filter(matches);
+  list.sort((a, b) => {
+    if (F.sort === "state") return a.state.localeCompare(b.state) || a.name.localeCompare(b.name);
+    if (F.sort === "goals") return (yearRec(b)?.goals_evidenced || 0) - (yearRec(a)?.goals_evidenced || 0) || a.name.localeCompare(b.name);
+    return a.name.localeCompare(b.name);
+  });
+
+  el('[data-count]').textContent = list.length + (list.length === 1 ? " council" : " councils") +
+    (list.length < DATA.length ? " of " + DATA.length : "") +
+    (F.year ? " with a " + F.year + " report" : "");
+
+  el('[data-notice]').style.display = UNKNOWN.length ? 'block' : 'none';
+  if (UNKNOWN.length) el('[data-notice]').textContent =
+    'This link filters by ' + UNKNOWN.join(' and ') +
+    ', which the dataset does not carry yet. Showing every council instead.';
+
+  el('[data-active]').innerHTML = KNOWN.filter(k => F[k])
+    .map(k => '<button class="pillx" data-drop="' + k + '">' + F[k] + ' <span style="opacity:.6">&times;</span></button>').join('');
+  el('[data-active]').querySelectorAll('[data-drop]').forEach(b =>
+    b.onclick = () => { F[b.dataset.drop] = null; paintFilters(); render(); });
+
+  el('[data-rows]').innerHTML = list.map(c => {
+    const r = yearRec(c) || {};
+    const meta = [c.state, c.class, r.pages ? r.pages + ' pages' : null].filter(Boolean).join(' \u00b7 ');
+    return '<div class="row' + (SEL.has(c.lga_code) ? ' sel' : '') + '" data-code="' + c.lga_code + '">' +
+      '<span class="box' + (SEL.has(c.lga_code) ? ' on' : '') + '" data-check>' + (SEL.has(c.lga_code) ? '&#10003;' : '') + '</span>' +
+      '<div class="rname"><span style="font-size:15px;font-weight:600">' + c.name + '</span>' +
+      '<span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">' + meta + '</span></div>' +
+      '<div class="rstats">' +
+        '<div class="rstat"><b>' + (r.goals_evidenced != null ? r.goals_evidenced + '/17' : '&mdash;') + '</b><span>Goals</span></div>' +
+        '<div class="rstat"><b>' + (r.activities != null ? r.activities : '&mdash;') + '</b><span>Activities</span></div>' +
+        '<div class="rstat"><b style="font-size:13px;white-space:nowrap">' + span(c) + '</b><span>Reports</span></div>' +
+      '</div>' +
+      '<div class="rstrip">' + dots(r.goals) +
+        '<span style="font-size:11.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 50%, transparent)">' +
+        stripLabel(c) + '</span></div>' +
+      '</div>';
+  }).join('');
+  el('[data-empty]').style.display = list.length ? 'none' : 'block';
+
+  el('[data-rows]').querySelectorAll('.row').forEach(row => {
+    const code = row.dataset.code;
+    row.querySelector('[data-check]').onclick = e => {
+      e.stopPropagation();
+      SEL.has(code) ? SEL.delete(code) : SEL.add(code);
+      render();
+    };
+    row.onclick = () => { location.href = 'Council.html?lga=' + code; };
+  });
+
+  const bar = el('[data-bar]');
+  bar.classList.toggle('off', SEL.size < 1);
+  el('[data-barlabel]').textContent = SEL.size + (SEL.size === 1 ? ' council selected' : ' councils selected') +
+    (SEL.size === 1 ? ' — pick one more to compare' : '');
+  el('[data-compare]').disabled = SEL.size < 2;
+  el('[data-compare]').style.opacity = SEL.size < 2 ? 0.45 : 1;
+}
+
+function paintFilters() {
+  const opts = {
+    state: [...new Set(DATA.map(c => c.state))].sort(),
+    class: [...new Set(DATA.map(c => c.class).filter(Boolean))].sort(),
+    year: YEARS.map(String),
+    extraction: ["rich", "adequate", "thin"]
+  };
+  Object.entries(opts).forEach(([k, vals]) => {
+    const host = el('[data-f="' + k + '"]');
+    host.innerHTML = vals.map(v => '<button class="chip' + (F[k] === v ? ' on' : '') + '" data-v="' + v + '">' + v + '</button>').join('');
+    host.querySelectorAll('[data-v]').forEach(b =>
+      b.onclick = () => { F[k] = F[k] === b.dataset.v ? null : b.dataset.v; paintFilters(); render(); });
+  });
+  const s = el('[data-sort]');
+  s.innerHTML = [["name","Council name"],["state","State"],["goals","Goals evidenced"]]
+    .map(([v, l]) => '<button class="chip' + (F.sort === v ? ' on' : '') + '" data-s="' + v + '">' + l + '</button>').join('');
+  s.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { F.sort = b.dataset.s; paintFilters(); render(); });
+}
+
+el('[data-q]').addEventListener('input', e => { F.q = e.target.value; render(); });
+el('[data-clear]').onclick = () => { SEL.clear(); render(); };
+el('[data-compare]').onclick = () => { if (SEL.size >= 2) location.href = 'Compare.html?councils=' + [...SEL].join(','); };
+
+const KNOWN = ["state", "class", "year", "extraction"];
+const P = new URLSearchParams(location.search);
+const UNKNOWN = [];
+P.forEach((v, k) => { if (KNOWN.includes(k)) F[k] = v; else if (k !== "q") UNKNOWN.push(k); });
+if (P.get("q")) { F.q = P.get("q"); el('[data-q]').value = F.q; }
+
+fetch('data/coverage.json').then(r => r.json()).then(cov => {
+  DATA = cov.councils || [];
+  YEARS = (cov.years || []).slice().sort();
+  paintFilters();
+  render();
+}).catch(() => { el('[data-count]').textContent = 'Could not load the dataset.'; });
+</script>
+
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#f5ead8"/><rect x="24" y="34" width="72" height="10" rx="5" fill="#c67139"/><rect x="24" y="54" width="72" height="10" rx="5" fill="#7a8a5e"/><rect x="24" y="74" width="48" height="10" rx="5" fill="#201e1d" opacity=".3"/></svg>
+</template>
+</body>
+</html>

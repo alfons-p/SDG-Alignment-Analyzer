@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare councils — SDG Alignment Analyser</title>
+<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
+<style>
+  body { margin: 0; background: var(--color-bg); font-family: var(--font-body); color: var(--color-text); }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; margin: 0; }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); cursor: pointer; }
+  a:hover { color: var(--color-accent-800); }
+  *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  p { margin: 0; text-wrap: pretty; }
+
+  .nav2 { display: flex; align-items: center; gap: 22px; padding: 16px 56px; }
+  .brand { font-family: var(--font-heading); font-size: 19px; line-height: 1; }
+  .navlink { font-size: 13.5px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 58%, transparent); }
+  .navlink:hover, .navlink.on { color: var(--color-text); }
+
+  .chip { border: none; cursor: pointer; font-family: var(--font-body); font-size: 12.5px; font-weight: 600; padding: 8px 15px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent); color: var(--color-text); }
+  .chip:hover { background: var(--color-accent-100); }
+  .chip.on { background: var(--color-surface); box-shadow: var(--shadow-sm); }
+
+  .pick { display: inline-flex; align-items: center; gap: 9px; border: 1.5px solid var(--color-accent); background: var(--color-accent-100); cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 8px 12px 8px 15px; border-radius: 999px; color: var(--color-text); }
+  .pick:hover { background: var(--color-accent-200); }
+  .pick .x { opacity: 0.55; font-weight: 400; }
+
+  .add { display: inline-flex; align-items: center; gap: 8px; border: 1.5px dashed color-mix(in srgb, var(--color-text) 22%, transparent); background: transparent; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 999px; color: color-mix(in srgb, var(--color-text) 62%, transparent); }
+  .add:hover { border-color: var(--color-accent); color: var(--color-text); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 11px 14px; }
+  thead th { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: color-mix(in srgb, var(--color-text) 52%, transparent); text-align: center; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); }
+  thead th:first-child { text-align: left; }
+  tbody tr { border-bottom: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: color-mix(in srgb, var(--color-text) 3%, transparent); }
+  .cell { display: inline-flex; align-items: center; justify-content: center; min-width: 58px; padding: 7px 13px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .gnum { width: 24px; height: 24px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+
+  .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; padding: 40px; }
+  .modal.on { display: flex; }
+  .scrim { position: absolute; inset: 0; background: color-mix(in srgb, var(--color-text) 34%, transparent); }
+  .sheet { position: relative; width: 520px; max-width: 100%; max-height: 78vh; display: flex; flex-direction: column; gap: 14px; padding: 26px 28px; border-radius: 30px; background: var(--color-surface); box-shadow: var(--shadow-lg); }
+  .in { width: 100%; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent); background: var(--color-bg); border-radius: 999px; font-family: var(--font-body); font-size: 14.5px; padding: 11px 18px; color: var(--color-text); }
+  .opt { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 999px; cursor: pointer; }
+  .opt:hover { background: var(--color-accent-100); }
+  .opt.dim { opacity: 0.4; cursor: not-allowed; }
+  .opt.dim:hover { background: transparent; }
+</style>
+</head>
+<body>
+
+<div class="nav2">
+  <a href="Landing.html" class="brand" style="border: none; color: var(--color-text)">SDG Alignment Analyser</a>
+  <a href="Browse.html" class="navlink" style="border: none">The dataset</a>
+  <a href="Limitations.html" class="navlink" style="border: none">About</a>
+  <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
+    <a href="Access.html" class="btn btn-ghost" style="border-radius: 999px; border-bottom: none">Sign in</a>
+    <a href="Access.html" class="btn btn-primary" style="border-radius: 999px; border-bottom: none">Upload a report</a>
+  </div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 22px; padding: 26px 56px 70px">
+
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 820px">
+    <h1 style="font-size: 34px; line-height: 1.08" data-title>Compare councils</h1>
+    <p style="font-size: 16px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 72%, transparent)" data-lead>&mdash;</p>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 9px; flex-wrap: wrap" data-picks></div>
+
+  <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+    <div style="display: flex; gap: 5px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)" data-modes></div>
+    <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); flex: 1 1 320px" data-modenote>&mdash;</span>
+  </div>
+
+  <div class="card elev-sm" style="padding: 14px 10px 8px; gap: 0; overflow-x: auto" data-tablewrap>
+    <table data-table></table>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px" data-notes></div>
+
+  <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap; padding: 22px 30px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+    <span style="flex: 1 1 520px">This analysis reads what council annual reports <strong>describe</strong>. A Goal with no evidence means the report did not describe qualifying work &mdash; not that the council did none.</span>
+    <a href="Limitations.html" style="margin-left: auto; white-space: nowrap">About this analysis and its limits</a>
+  </div>
+</div>
+
+<div class="modal" data-modal>
+  <div class="scrim" data-close></div>
+  <div class="sheet">
+    <div style="display: flex; align-items: baseline; gap: 12px">
+      <h2 style="font-size: 22px">Add a council</h2>
+      <button class="chip" style="margin-left: auto" data-close>Close</button>
+    </div>
+    <input class="in" placeholder="Search councils" data-search>
+    <div style="overflow-y: auto; display: flex; flex-direction: column; gap: 2px" data-list></div>
+  </div>
+</div>
+
+<script>
+const GC = {1:"#E5243B",2:"#DDA63A",3:"#4C9F38",4:"#C5192D",5:"#FF3A21",6:"#26BDE2",7:"#FCC30B",8:"#A21942",9:"#FD6925",10:"#DD1367",11:"#FD9D24",12:"#BF8B2E",13:"#3F7E44",14:"#0A97D9",15:"#56C02B",16:"#00689D",17:"#19486A"};
+const GN = {1:"No Poverty",2:"Zero Hunger",3:"Good Health",4:"Quality Education",5:"Gender Equality",6:"Clean Water",7:"Clean Energy",8:"Decent Work",9:"Innovation",10:"Reduced Inequalities",11:"Sustainable Cities",12:"Responsible Consumption",13:"Climate Action",14:"Life Below Water",15:"Life on Land",16:"Peace & Justice",17:"Partnerships"};
+const GFULL = {11:"Sustainable Cities and Communities",1:"No Poverty",14:"Life Below Water",16:"Peace, Justice and Strong Institutions",9:"Industry, Innovation and Infrastructure",6:"Clean Water and Sanitation"};
+const pad = n => String(n).padStart(2, "0");
+const $ = s => document.querySelector(s);
+const MODES = [["share","Share of report"],["count","Activity count"],["mean","Mean score"]];
+const MODENOTE = {
+  share: "Activities aligned to each Goal as a share of everything that report described. The fair reading when reports differ in length.",
+  count: "Raw number of described activities. Only comparable when the reports yielded similar amounts of described activity.",
+  mean: "Average similarity to each Goal's language across all activities, aligned or not. Shows what a report sounds like, not what it evidenced."
+};
+
+let COV = null, SEL = [], DATA = new Map(), MODE = "share";
+
+const short = c => c.name.replace(/^City of |^Shire of |\s*\([A-Z]{2,3}\)$/g, "");
+const rec = c => DATA.get(c.lga_code).years[String(DATA.get(c.lga_code).latest_year)];
+
+function syncUrl() {
+  history.replaceState(null, "", SEL.length ? "?councils=" + SEL.join(",") : location.pathname);
+}
+
+async function load(code) {
+  if (DATA.has(code)) return true;
+  try {
+    const d = await fetch("data/councils/" + code + ".json").then(r => { if (!r.ok) throw 0; return r.json(); });
+    DATA.set(code, d);
+    return true;
+  } catch (e) { return false; }
+}
+
+function picked() { return SEL.map(c => COV.councils.find(x => x.lga_code === c)).filter(Boolean); }
+
+function paintPicks() {
+  $('[data-picks]').innerHTML = picked().map(c =>
+    '<button class="pick" data-drop="' + c.lga_code + '">' + short(c) +
+    ' <span style="font-weight:400;opacity:.6">' + c.state + '</span> <span class="x">&times;</span></button>').join('') +
+    '<button class="add" data-add>+ Add a council</button>';
+  $('[data-picks]').querySelectorAll('[data-drop]').forEach(b =>
+    b.onclick = () => { SEL = SEL.filter(x => x !== b.dataset.drop); paint(); });
+  $('[data-picks]').querySelector('[data-add]').onclick = openModal;
+}
+
+function paintHeader() {
+  const cs = picked();
+  if (cs.length < 2) {
+    $('[data-title]').textContent = "Compare councils";
+    $('[data-lead]').textContent = cs.length
+      ? "Add at least one more council. Coverage is only meaningful next to something."
+      : "Pick two or more councils to compare their Goal coverage side by side.";
+    return;
+  }
+  const names = cs.map(short);
+  const last = names.pop();
+  $('[data-title]').textContent = (names.length ? names.join(", ") + " and " + last : last) + ", same settings";
+
+  const acts = cs.map(c => rec(c).activities);
+  const uneven = Math.max(...acts) / Math.min(...acts) > 2;
+  $('[data-lead]').textContent = cs.length + " reports analysed with an identical classifier and thresholds. " +
+    cs.map(c => short(c) + " described " + rec(c).activities + " activities in " + rec(c).pages + " pages").join("; ") + ". " +
+    (uneven
+      ? "Those extraction depths differ by more than double, so raw counts are not comparable — read the share of report instead."
+      : "Extraction depths are comparable, so raw counts can be read directly.");
+}
+
+function paintTable() {
+  const cs = picked();
+  const two = cs.length === 2;
+  if (cs.length < 2) { $('[data-tablewrap]').style.display = "none"; return; }
+  $('[data-tablewrap]').style.display = "";
+
+  const rows = Object.keys(GN).map(Number).sort((a, b) => {
+    const w = i => cs.reduce((s, c) => s + rec(c).counts[i] / rec(c).activities, 0);
+    return w(b) - w(a) || GN[a].localeCompare(GN[b]);
+  });
+
+  const head = '<thead><tr><th style="width:230px">Goal</th>' +
+    cs.map(c => '<th><div style="display:flex;flex-direction:column;gap:2px;align-items:center">' +
+      '<span style="font-size:12.5px;text-transform:none;letter-spacing:0;font-weight:700;color:var(--color-text)">' + short(c) + '</span>' +
+      '<span style="font-weight:400">' + DATA.get(c.lga_code).latest_year + ' · ' + rec(c).activities + ' activities</span></div></th>').join('') +
+    (two ? '<th style="width:140px">Difference</th>' : '') + '</tr></thead>';
+
+  const body = '<tbody>' + rows.map(i => {
+    const shares = cs.map(c => rec(c).counts[i] / rec(c).activities);
+    const cells = cs.map((c, k) => {
+      const r = rec(c);
+      const v = MODE === "mean" ? r.means[i] : r.counts[i];
+      const on = MODE === "mean" ? true : v > 0;
+      const strength = MODE === "mean" ? Math.min(1, r.means[i] / 0.55) : Math.min(1, shares[k] / 0.5);
+      const label = MODE === "count" ? (v === 0 ? "—" : v)
+        : MODE === "share" ? (shares[k] * 100).toFixed(0) + "%" : r.means[i].toFixed(3);
+      return '<td style="text-align:center"><span class="cell" style="background:' +
+        (on ? "color-mix(in srgb, " + GC[i] + " " + Math.round(12 + strength * 76) + "%, var(--color-surface))" : "transparent") +
+        ';color:' + (on && strength > 0.5 ? "#fff" : on ? "var(--color-text)" : "color-mix(in srgb, var(--color-text) 40%, transparent)") +
+        '">' + label + '</span></td>';
+    }).join('');
+    let diff = "";
+    if (two) {
+      const d = shares[0] - shares[1];
+      const txt = (shares[0] === 0 && shares[1] === 0) ? "neither"
+        : Math.abs(d) > 0.012 ? (d > 0 ? short(cs[0]) : short(cs[1])) + " +" + Math.abs(d * 100).toFixed(0) + " pts"
+        : "same share";
+      diff = '<td style="text-align:center;font-size:12.5px;color:color-mix(in srgb, var(--color-text) ' +
+        ((shares[0] === 0 && shares[1] === 0) ? "40" : "62") + '%, transparent)">' + txt + '</td>';
+    }
+    return '<tr><td><div style="display:flex;align-items:center;gap:11px">' +
+      '<span class="gnum" style="background:' + GC[i] + '">' + pad(i) + '</span>' +
+      '<span style="font-size:13.5px;font-weight:600">' + GN[i] + '</span></div></td>' + cells + diff + '</tr>';
+  }).join('') + '</tbody>';
+
+  $('[data-table]').innerHTML = head + body;
+}
+
+/* Notes are computed from the selection — never a stored sentence about
+   two particular councils. */
+function paintNotes() {
+  const cs = picked();
+  if (cs.length < 2) { $('[data-notes]').innerHTML = ""; return; }
+  const notes = [];
+
+  const shareOf = (c, i) => rec(c).counts[i] / rec(c).activities;
+  const leads = cs.map(c => {
+    const top = Object.keys(GN).map(Number).sort((a, b) => shareOf(c, b) - shareOf(c, a))[0];
+    return { c, top, share: shareOf(c, top) };
+  });
+  const sameLead = leads.every(l => l.top === leads[0].top);
+  notes.push(sameLead
+    ? { k: "A shared centre of gravity",
+        b: "Every one of these reports puts most of its aligned activity into Goal " + leads[0].top + ", " +
+           (GFULL[leads[0].top] || GN[leads[0].top]) + " — " +
+           leads.map(l => Math.round(l.share * 100) + "% for " + short(l.c)).join(", ") + "." }
+    : { k: "Different centres of gravity",
+        b: leads.map(l => short(l.c) + " leads on Goal " + l.top + " (" + Math.round(l.share * 100) + "%)").join("; ") +
+           ". The reports are describing different kinds of work, or describing it differently." });
+
+  const zeros = Object.keys(GN).map(Number).filter(i => cs.every(c => rec(c).counts[i] === 0));
+  if (zeros.length) {
+    notes.push({ k: "Absent from all of them",
+      b: zeros.map(i => GFULL[i] || GN[i]).join(", ") + " " + (zeros.length === 1 ? "has" : "have") +
+         " no described activity in any of these reports. In our experience the work usually exists; the description does not credit it." });
+  }
+
+  const depth = cs.map(c => ({ c, d: (rec(c).activities / rec(c).pages) * 100 })).sort((a, b) => b.d - a.d);
+  if (depth[0].d / depth[depth.length - 1].d > 2) {
+    notes.push({ k: "Read this comparison carefully",
+      b: short(depth[0].c) + " described " + depth[0].d.toFixed(1) + " activities per 100 pages against " +
+         short(depth[depth.length - 1].c) + "'s " + depth[depth.length - 1].d.toFixed(1) +
+         ". Much of the difference below is how the reports are written, not what the councils did." });
+  } else {
+    const ge = cs.map(c => ({ c, n: rec(c).goals_evidenced })).sort((a, b) => b.n - a.n);
+    notes.push({ k: "Breadth of coverage",
+      b: ge.map(x => short(x.c) + " evidenced " + x.n + " of 17").join("; ") +
+         ". Extraction depths here are comparable, so this difference is more likely to be real." });
+  }
+
+  $('[data-notes]').innerHTML = notes.map(n =>
+    '<div class="card" style="padding:24px 26px;gap:9px">' +
+    '<span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:var(--color-accent-700)">' + n.k + '</span>' +
+    '<p style="font-size:14.5px;line-height:1.6">' + n.b + '</p></div>').join('');
+}
+
+function paintModes() {
+  $('[data-modes]').innerHTML = MODES.map(([v, l]) =>
+    '<button class="chip' + (MODE === v ? ' on' : '') + '" data-m="' + v + '">' + l + '</button>').join('');
+  $('[data-modes]').querySelectorAll('[data-m]').forEach(b =>
+    b.onclick = () => { MODE = b.dataset.m; paintModes(); paintTable(); });
+  $('[data-modenote]').textContent = MODENOTE[MODE];
+}
+
+function paint() { syncUrl(); paintPicks(); paintHeader(); paintModes(); paintTable(); paintNotes(); }
+
+/* ── add-council modal ── */
+function renderList(q) {
+  const hits = COV.councils
+    .filter(c => !q || c.name.toLowerCase().includes(q.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  $('[data-list]').innerHTML = hits.map(c => {
+    const on = SEL.includes(c.lga_code);
+    return '<div class="opt' + (on ? ' dim' : '') + '" data-pick="' + c.lga_code + '">' +
+      '<span style="font-size:14px;font-weight:600">' + c.name + '</span>' +
+      '<span style="margin-left:auto;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">' +
+      c.state + ' · ' + c.goals_evidenced + '/17' + (on ? ' · added' : '') + '</span></div>';
+  }).join('');
+  $('[data-list]').querySelectorAll('[data-pick]').forEach(el => el.onclick = async () => {
+    const code = el.dataset.pick;
+    if (SEL.includes(code)) return;
+    if (!await load(code)) {
+      el.classList.add('dim');
+      el.querySelector('span:last-child').textContent = 'unavailable';
+      return;
+    }
+    SEL.push(code);
+    closeModal();
+    paint();
+  });
+}
+function openModal() { $('[data-modal]').classList.add('on'); $('[data-search]').value = ''; renderList(''); $('[data-search]').focus(); }
+function closeModal() { $('[data-modal]').classList.remove('on'); }
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = closeModal);
+$('[data-search]').addEventListener('input', e => renderList(e.target.value));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function fail(msg) {
+  $('[data-title]').textContent = "Compare councils";
+  $('[data-lead]').textContent = msg;
+  $('[data-picks]').innerHTML = '';
+  $('[data-modes]').innerHTML = '';
+  $('[data-modenote]').textContent = '';
+  $('[data-tablewrap]').style.display = "none";
+  $('[data-notes]').innerHTML =
+    '<div class="card" style="padding:24px 26px;gap:9px">' +
+    '<span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:var(--color-accent-700)">Nothing to compare yet</span>' +
+    '<p style="font-size:14.5px;line-height:1.6">The dataset could not be reached. ' +
+    '<a href="Browse.html">Browse councils</a> to try again, or <a href="Landing.html">start from the map</a>.</p></div>';
+}
+
+(async () => {
+  try {
+    COV = await fetch('data/coverage.json').then(r => { if (!r.ok) throw 0; return r.json(); });
+  } catch (e) {
+    fail("Could not load the dataset. This is usually temporary — try again in a moment.");
+    return;
+  }
+  const p = new URLSearchParams(location.search).get('councils');
+  const asked = (p ? p.split(',') : ['24600', '22620']).filter(c => COV.councils.some(x => x.lga_code === c));
+
+  // One unreachable council must not take the page down with it.
+  const got = await Promise.all(asked.map(async c => (await load(c)) ? c : null));
+  SEL = got.filter(Boolean);
+
+  if (!SEL.length) {
+    fail("None of the requested councils could be loaded. Pick some below.");
+    paintPicks();
+    return;
+  }
+  paint();
+  if (SEL.length < asked.length) {
+    $('[data-lead]').textContent += " " + (asked.length - SEL.length) +
+      " requested council" + (asked.length - SEL.length === 1 ? " was" : "s were") + " unavailable and has been left out.";
+  }
+})();
+</script>
+
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#f5ead8"/><rect x="24" y="34" width="30" height="52" rx="8" fill="#c67139"/><rect x="66" y="48" width="30" height="38" rx="8" fill="#7a8a5e"/></svg>
+</template>
+</body>
+</html>

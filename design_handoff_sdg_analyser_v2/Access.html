@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — SDG Alignment Analyser</title>
+<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
+<style>
+  body { margin: 0; background: var(--color-bg); font-family: var(--font-body); color: var(--color-text); }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; margin: 0; }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); cursor: pointer; }
+  a:hover { color: var(--color-accent-800); }
+  *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  p { margin: 0; text-wrap: pretty; }
+
+  .nav2 { display: flex; align-items: center; gap: 22px; padding: 16px 56px; }
+  .brand { font-family: var(--font-heading); font-size: 19px; line-height: 1; }
+  .navlink { font-size: 13.5px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 58%, transparent); }
+
+  .fld { display: flex; flex-direction: column; gap: 6px; }
+  .fld label { font-size: 12.5px; font-weight: 600; }
+  .in { width: 100%; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent); background: var(--color-bg); border-radius: 999px; font-family: var(--font-body); font-size: 15px; padding: 12px 18px; color: var(--color-text); }
+  .in::placeholder { color: color-mix(in srgb, var(--color-text) 42%, transparent); }
+  select.in { appearance: none; background-image: none; }
+
+  .opt { display: flex; gap: 14px; padding: 16px 20px; border-radius: 22px; border: 1.5px solid color-mix(in srgb, var(--color-text) 13%, transparent); cursor: pointer; background: var(--color-bg); }
+  .opt:hover { border-color: color-mix(in srgb, var(--color-accent) 50%, transparent); }
+  .opt.on { border-color: var(--color-accent); background: var(--color-accent-100); }
+  .dot2 { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 2px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--color-text) 26%, transparent); }
+  .opt.on .dot2 { border-color: var(--color-accent); border-width: 6px; }
+
+  .tick { display: flex; gap: 13px; cursor: pointer; align-items: flex-start; }
+  .bx { width: 20px; height: 20px; flex: 0 0 auto; margin-top: 1px; border-radius: 7px; border: 1.5px solid color-mix(in srgb, var(--color-text) 26%, transparent); display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; }
+  .tick.on .bx { background: var(--color-accent); border-color: var(--color-accent); }
+
+  .ladder { display: flex; flex-direction: column; }
+  .rung { display: flex; flex-direction: column; gap: 7px; padding: 18px 0; border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent); }
+  .rung:last-child { border-bottom: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent); }
+  .can { display: flex; align-items: baseline; gap: 9px; font-size: 13.5px; line-height: 1.5; }
+  .can i { font-style: normal; color: var(--color-accent-700); }
+  .can.no { color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+  .can.no i { color: color-mix(in srgb, var(--color-text) 30%, transparent); }
+  .hide { display: none; }
+
+  /* Both tracks need a floor: with a rigid 440px card, all compression lands on the prose. */
+  .wrap { display: grid; grid-template-columns: minmax(380px, 1fr) minmax(340px, 440px); gap: 72px; padding: 30px 56px 90px; max-width: 1180px; }
+  @media (max-width: 900px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 24px 28px 72px; }
+    .wrap > *:last-child { position: static !important; order: -1; }
+    .nav2 { padding: 16px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav2">
+  <a href="Landing.html" class="brand" style="border: none; color: var(--color-text)">SDG Alignment Analyser</a>
+  <a href="Browse.html" class="navlink" style="border: none">The dataset</a>
+  <a href="Limitations.html" class="navlink" style="border: none">About</a>
+</div>
+
+<div class="wrap">
+
+  <!-- what an account is for -->
+  <div style="display: flex; flex-direction: column; gap: 26px; padding-top: 8px">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">Accounts</span>
+      <h1 style="font-size: 38px; line-height: 1.06; max-width: 480px">Reading the analysis needs no account</h1>
+      <p style="font-size: 16.5px; line-height: 1.6; max-width: 520px; color: color-mix(in srgb, var(--color-text) 74%, transparent)">Every published result is open to anyone. An account exists for the two things that carry an obligation with them: taking data off the site, and putting a report on it.</p>
+    </div>
+
+    <div class="ladder" style="max-width: 540px">
+      <div class="rung">
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <h3 style="font-size: 19px">Anyone</h3>
+          <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">no account</span>
+        </div>
+        <div class="can"><i>&#10003;</i><span>Browse every council, every analysed year</span></div>
+        <div class="can"><i>&#10003;</i><span>Read the passage behind every match</span></div>
+        <div class="can"><i>&#10003;</i><span>Compare councils you choose</span></div>
+      </div>
+
+      <div class="rung">
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <h3 style="font-size: 19px">Registered</h3>
+          <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">free, sign up in a minute</span>
+        </div>
+        <div class="can"><i>&#10003;</i><span>Everything above</span></div>
+        <div class="can"><i>&#10003;</i><span><strong>Export</strong> results as PDF, CSV or JSON</span></div>
+        <div class="can"><i>&#10003;</i><span>Save comparisons and return to them</span></div>
+        <p style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 55%, transparent); padding-top: 2px">Export is what registration is for. An exported file travels without the context around it, so we ask you to agree to how it may be used.</p>
+      </div>
+
+      <div class="rung">
+        <div style="display: flex; align-items: baseline; gap: 12px">
+          <h3 style="font-size: 19px">Council officer</h3>
+          <span style="font-size: 12px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">verified work email</span>
+        </div>
+        <div class="can"><i>&#10003;</i><span>Everything above</span></div>
+        <div class="can"><i>&#10003;</i><span><strong>Upload your own council's annual report</strong></span></div>
+        <div class="can"><i>&#10003;</i><span>Keep a result private until you publish it</span></div>
+        <div class="can no"><i>&times;</i><span>Cannot upload for another council, or change a published result</span></div>
+      </div>
+    </div>
+
+    <p style="font-size: 13px; line-height: 1.55; max-width: 520px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">No account can alter an analysis. Results are produced by the classifier and are the same for everyone. <a href="Limitations.html">About this analysis and its limits</a></p>
+  </div>
+
+  <!-- the form -->
+  <div style="position: sticky; top: 30px; align-self: start">
+
+    <!-- sign in -->
+    <div class="card elev-md" style="padding: 32px 34px; gap: 20px" data-p="signin">
+      <div style="display: flex; flex-direction: column; gap: 7px">
+        <h2 style="font-size: 26px">Sign in</h2>
+        <p style="font-size: 14px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 65%, transparent)">Reading the analysis needs no account &mdash; sign in to export or upload.</p>
+      </div>
+      <div class="fld">
+        <label for="si-email">Email</label>
+        <input class="in" id="si-email" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="fld">
+        <label for="si-pw">Password</label>
+        <input class="in" id="si-pw" type="password" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" style="border-radius: 999px">Sign in</button>
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 13px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+        <a data-go="sent">Email me a link instead</a>
+        <a data-go="sent">Forgot password</a>
+      </div>
+      <p style="font-size: 13px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 62%, transparent); padding-top: 2px; border-top: 1px solid color-mix(in srgb, var(--color-text) 11%, transparent); margin-top: 2px">No account yet? <a data-go="request">Create one</a> &mdash; free, and you can export straight away.</p>
+    </div>
+
+    <!-- request access -->
+    <div class="card elev-md hide" style="padding: 32px 34px; gap: 22px" data-p="request">
+      <div style="display: flex; flex-direction: column; gap: 7px">
+        <h2 style="font-size: 26px">Create an account</h2>
+        <p style="font-size: 14px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 65%, transparent)">Reading needs no account. Tell us which of the other two you need.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div class="opt on" data-role="registered">
+          <span class="dot2"></span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14.5px; font-weight: 600">I want to export results</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Active as soon as you agree to the terms below. No waiting.</span>
+          </div>
+        </div>
+        <div class="opt" data-role="officer">
+          <span class="dot2"></span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14.5px; font-weight: 600">I upload my council's annual report</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Checked by hand against your council's published contact details. Usually two working days.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fld">
+        <label for="rq-name">Name</label>
+        <input class="in" id="rq-name" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="fld">
+        <label for="rq-email">Email</label>
+        <input class="in" id="rq-email" type="email" placeholder="you@example.com" autocomplete="email">
+        <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 55%, transparent)" data-emailnote>Any email address.</span>
+      </div>
+      <div class="fld">
+        <label for="rq-pw">Choose a password</label>
+        <input class="in" id="rq-pw" type="password" placeholder="At least 10 characters" autocomplete="new-password">
+      </div>
+
+      <div class="fld hide" data-officeronly>
+        <label for="rq-council">Your council</label>
+        <select class="in" id="rq-council"><option>Loading councils…</option></select>
+      </div>
+      <div class="fld hide" data-officeronly>
+        <label for="rq-role">Your position</label>
+        <input class="in" id="rq-role" placeholder="e.g. Sustainability Officer">
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 20px 22px; border-radius: 24px; background: var(--color-accent-100)">
+        <div style="display: flex; flex-direction: column; gap: 5px">
+          <h3 style="font-size: 17px; color: var(--color-accent-800)">Before you can export</h3>
+          <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800)">Exported files leave this site and are easily forwarded without the context around them. These conditions apply to every file you export and to any figure you take from one.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px" data-ticks>
+          <div class="tick" data-t="1"><span class="bx"></span><span style="font-size: 13px; line-height: 1.5; color: var(--color-accent-800)"><strong>These results are indicative, not authoritative.</strong> Produced by automated text analysis, not reviewed or endorsed by the councils, the United Nations, or any government body.</span></div>
+          <div class="tick" data-t="2"><span class="bx"></span><span style="font-size: 13px; line-height: 1.5; color: var(--color-accent-800)"><strong>They measure reporting, not performance.</strong> I will not present them as a measure of a council's performance, compliance, or contribution to the Goals.</span></div>
+          <div class="tick" data-t="3"><span class="bx"></span><span style="font-size: 13px; line-height: 1.5; color: var(--color-accent-800)"><strong>I will not rank or score councils</strong> using this data, including league tables and grades.</span></div>
+          <div class="tick" data-t="4"><span class="bx"></span><span style="font-size: 13px; line-height: 1.5; color: var(--color-accent-800)"><strong>I will carry the attribution and the limitations</strong> with any figure I publish, quote or circulate, including the report year it refers to.</span></div>
+        </div>
+        <p style="font-size: 12px; line-height: 1.5; color: var(--color-accent-800); opacity: 0.85">Every export carries this statement in the file itself. Removing it does not remove these conditions.</p>
+      </div>
+
+      <button class="btn btn-primary" style="border-radius: 999px; opacity: 0.45" data-submit disabled>Agree and create account</button>
+      <p style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">Already have an account? <a data-go="signin">Sign in</a></p>
+    </div>
+
+    <!-- sent -->
+    <div class="card elev-md hide" style="padding: 34px; gap: 16px" data-p="sent">
+      <span style="width: 46px; height: 46px; border-radius: 999px; background: var(--color-accent-2-100); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--color-accent-2-700)">&#10003;</span>
+      <h2 style="font-size: 24px">Check your email</h2>
+      <p style="font-size: 14.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent)">We have sent a sign-in link to that address. It works once and expires in 15 minutes. Use it to sign in, or to set a new password.</p>
+      <p style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 58%, transparent)"><a data-go="signin">Back to sign in</a></p>
+    </div>
+
+    <!-- submitted -->
+    <div class="card elev-md hide" style="padding: 34px; gap: 16px" data-p="done">
+      <span style="width: 46px; height: 46px; border-radius: 999px; background: var(--color-accent-2-100); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--color-accent-2-700)">&#10003;</span>
+      <h2 style="font-size: 24px" data-donetitle>Request received</h2>
+      <p style="font-size: 14.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent)" data-donebody></p>
+      <p style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">Meanwhile, <a href="Browse.html">the whole dataset is open to read</a>.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const S = { panel: "signin", role: "registered", ticks: new Set() };
+const $ = s => document.querySelector(s);
+const all = s => [...document.querySelectorAll(s)];
+
+function show() {
+  all('[data-p]').forEach(p => p.classList.toggle('hide', p.dataset.p !== S.panel));
+  all('.opt').forEach(o => o.classList.toggle('on', o.dataset.role === S.role));
+  all('[data-officeronly]').forEach(f => f.classList.toggle('hide', S.role !== 'officer'));
+  $('[data-emailnote]').textContent = S.role === 'officer'
+    ? 'Must be your council work address — we verify it against your council’s published contact details.'
+    : 'Any email address.';
+  all('.tick').forEach(t => {
+    const on = S.ticks.has(t.dataset.t);
+    t.classList.toggle('on', on);
+    t.querySelector('.bx').innerHTML = on ? '&#10003;' : '';
+  });
+  const ok = S.ticks.size === 4;
+  const btn = $('[data-submit]');
+  btn.textContent = S.role === 'officer' ? 'Agree and request access' : 'Agree and create account';
+  btn.disabled = !ok;
+  btn.style.opacity = ok ? 1 : 0.45;
+}
+
+all('[data-go]').forEach(b => b.addEventListener('click', () => { S.panel = b.dataset.go; show(); }));
+all('.opt').forEach(o => o.addEventListener('click', () => { S.role = o.dataset.role; show(); }));
+all('.tick').forEach(t => t.addEventListener('click', () => {
+  S.ticks.has(t.dataset.t) ? S.ticks.delete(t.dataset.t) : S.ticks.add(t.dataset.t);
+  show();
+}));
+$('[data-submit]').addEventListener('click', () => {
+  if (S.ticks.size < 4) return;
+  S.panel = 'done';
+  $('[data-donetitle]').textContent = S.role === 'officer' ? 'Request received' : 'You can export now';
+  $('[data-donebody]').textContent = S.role === 'officer'
+    ? 'We will check your address against your council’s published contact details and email you, usually within two working days.'
+    : 'Your account is active. Export is available from any result, and every file carries the statement you agreed to.';
+  show();
+});
+
+fetch('data/coverage.json').then(r => r.json()).then(cov => {
+  const sel = $('#rq-council');
+  sel.innerHTML = '<option value="">Select your council</option>' +
+    (cov.councils || []).slice().sort((a, b) => a.name.localeCompare(b.name))
+      .map(c => '<option value="' + c.lga_code + '">' + c.name + ' &middot; ' + c.state + '</option>').join('');
+}).catch(() => { $('#rq-council').innerHTML = '<option>Council list unavailable</option>'; });
+
+show();
+</script>
+
+<template id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#f5ead8"/><rect x="36" y="54" width="48" height="36" rx="9" fill="#c67139"/><path d="M48 54v-9a12 12 0 0 1 24 0v9" fill="none" stroke="#7a8a5e" stroke-width="7"/></svg>
+</template>
+</body>
+</html>

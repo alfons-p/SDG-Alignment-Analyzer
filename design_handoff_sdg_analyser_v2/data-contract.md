@@ -62,13 +62,15 @@ reads it, and falls back to a sample when absent.
       "lga_code": "24600",
       "name": "Melbourne",
       "state": "VIC",
-      "type": "City",
       "class": "Metro",
       "postcodes": ["3000"],
       "goals_evidenced": 13,
+      "goals": [2,3,4,5,7,8,9,11,12,13,15,16,17],
       "years_available": 3,
+      "latest_year": 2025,
       "by_year": {
-        "2025": { "goals_evidenced": 13, "activities": 176, "extraction": "rich" }
+        "2025": { "goals_evidenced": 13, "goals": [2,3,4,5,7,8,9,11,12,13,15,16,17],
+                  "activities": 176, "pages": 338, "extraction": "rich" }
       }
     }
   ]
@@ -76,6 +78,15 @@ reads it, and falls back to a sample when absent.
 ```
 
 - `goals_evidenced` = `sum(1 for n in 1..17 if coverage[n] > 0)`.
+- **`goals`** — the Goal numbers actually evidenced, e.g. `[4, 11, 15]`. Required by the Browse
+  screen's 17-dot strip, which shows *which* Goals a council evidenced rather than only how
+  many. Send it inside each `by_year` record; the top-level copy mirrors the latest year.
+- **`class`** — `Metro` / `Regional` / `Rural`, from the existing `urban_rural` field. Drives the
+  peer-group chips on the landing page and the Setting filter on Browse. This is the **only**
+  peer dimension in scope — council type (city/shire) and population band were considered and
+  dropped.
+- **`latest_year`** — the most recent year with an analysed report. Drives the default map
+  shading and the Browse strip when no year filter is set.
 - `by_year` is optional; supply it and a 2023/2024/2025 selector appears above the map.
 - `national` keys are all optional; whichever are present overwrite the headline figures.
 - Councils with no analysed report may be omitted or sent with `goals_evidenced: null`.
