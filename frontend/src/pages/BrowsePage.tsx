@@ -8,6 +8,12 @@ import './council.css'
 const muted = 'color-mix(in srgb, var(--color-text) 60%, transparent)'
 const STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'NT', 'ACT']
 
+/** Join labels as "A", "A or B", "A, B or C". */
+function listJoin(xs: string[]): string {
+  if (xs.length <= 1) return xs[0] ?? ''
+  return xs.slice(0, -1).join(', ') + ' or ' + xs[xs.length - 1]
+}
+
 /** "2023–25" contiguous, "2023, 2025" with a gap, "2024" single. */
 function reportsSpan(years: number[]): string {
   if (!years.length) return '—'
@@ -47,11 +53,14 @@ export function BrowsePage() {
   const councils = useMemo(() => data?.councils ?? [], [data])
   const classes = useMemo(() => Array.from(new Set(councils.map((c) => c.class).filter(Boolean))) as string[], [councils])
   const years = useMemo(() => (data?.years ?? []).map(String), [data])
+  // A valid key (class) with a value the dataset does not hold (e.g. a stale
+  // ?class=Regional link). Don't silently return zero — ignore it and say so.
+  const classInvalid = !!fClass && classes.length > 0 && !classes.includes(fClass)
 
   const rows = useMemo(() => {
     let out = councils.filter((c) => {
       if (fState && c.state !== fState) return false
-      if (fClass && c.class !== fClass) return false
+      if (fClass && !classInvalid && c.class !== fClass) return false
       if (q && !c.name.toLowerCase().includes(q.toLowerCase())) return false
       if (fYear && !(c.by_year && c.by_year[fYear])) return false
       if (fExtraction) {
@@ -66,11 +75,11 @@ export function BrowsePage() {
         : a.name.localeCompare(b.name),
     )
     return out
-  }, [councils, fState, fClass, fYear, fExtraction, q, sort])
+  }, [councils, fState, fClass, classInvalid, fYear, fExtraction, q, sort])
 
   const activeFilters = [
     fState && { k: 'state', label: fState },
-    fClass && { k: 'class', label: fClass },
+    fClass && !classInvalid && { k: 'class', label: fClass },
     fYear && { k: 'year', label: fYear },
     fExtraction && { k: 'extraction', label: fExtraction },
   ].filter(Boolean) as { k: string; label: string }[]
@@ -122,6 +131,12 @@ export function BrowsePage() {
               Order is not a ranking. How plainly a report is written drives coverage as much as the work behind it does.
             </span>
           </div>
+
+          {classInvalid && (
+            <div style={{ padding: '12px 16px', borderRadius: 16, background: 'var(--color-accent-100)', color: 'var(--color-accent-800)', fontSize: 13.5, lineHeight: 1.55, marginBottom: 12, textWrap: 'pretty' }}>
+              Asked for <strong>{fClass}</strong>. The dataset groups councils as {listJoin(classes)}. Showing all {rows.length} councils instead.
+            </div>
+          )}
 
           <div className="card" style={{ padding: '8px 0', gap: 0 }}>
             {rows.length === 0 ? (

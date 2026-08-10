@@ -92,10 +92,8 @@ const PAGE_HTML = `
       <div style="display:flex;flex-direction:column;gap:12px">
         <h2 style="margin:0;font-size:24px">Compare like with like</h2>
         <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 68%, transparent);text-wrap:pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:7px">
+        <div style="display:flex;flex-wrap:wrap;gap:7px" data-classes>
           <button class="chip" data-goto="">All councils</button>
-          <button class="chip" data-goto="class=Urban">Urban</button>
-          <button class="chip" data-goto="class=Rural">Rural</button>
         </div>
         <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
       </div>
@@ -430,6 +428,17 @@ export function LandingPage() {
     page.querySelectorAll<HTMLElement>('[data-states]').forEach((el) => {
       el.innerHTML = STATES.map((s) => '<button class="chip" data-goto="state=' + s + '">' + s + '</button>').join('')
     })
+    // Setting chips are generated from the classes the data actually holds — the
+    // same values Browse filters on — so a chip can never point at a value that
+    // returns zero councils. Re-run after live data loads (sample classes differ).
+    function paintClasses() {
+      const cls = Array.from(new Set(DATA.map((d) => d.class).filter(Boolean))) as string[]
+      page.querySelectorAll<HTMLElement>('[data-classes]').forEach((el) => {
+        el.innerHTML = '<button class="chip" data-goto="">All councils</button>' +
+          cls.sort().map((c) => '<button class="chip" data-goto="class=' + c + '">' + c + '</button>').join('')
+      })
+    }
+    paintClasses()
     page.querySelectorAll<HTMLElement>('[data-legend]').forEach((el) => {
       el.innerHTML = [2, 5, 8, 11, 14, 17].map((g) =>
         '<span style="width:18px;height:18px;border-radius:999px;background:' + shade(g) + '"></span>').join('')
@@ -476,7 +485,7 @@ export function LandingPage() {
         paintNational(cov.national, DATA, cov.narrative)
       }
       indexData()
-      paintYears(); mapHint()
+      paintYears(); mapHint(); paintClasses()
       if (topo && topo.objects) drawLGA(topo); else drawPoints()
     })
 
