@@ -8,8 +8,8 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
-<script src="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/_ds_bundle.js"></script>
+<link rel="stylesheet" href="_ds/organic/styles.css">
+<script src="_ds/organic/_ds_bundle.js"></script>
 <style>
   body { margin: 0; background: var(--color-bg); }
   a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); }
@@ -541,6 +541,90 @@
     </div>
   </sc-if>
 
+  <!-- ══════════ HEATMAP ══════════ -->
+  <sc-if value="{{ isHeatmap }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Heatmap" style="padding: 34px 44px 64px; display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 780px">
+          <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">Every activity against every Goal</span>
+          <h1 style="margin: 0; font-size: 34px; line-height: 1.05">Activities &times; Goals</h1>
+          <p style="margin: 0; font-size: 15.5px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent)">Each row is one extracted activity, each column one Goal. A filled cell cleared that Goal&rsquo;s threshold. Ringed cells came within a tenth of it &mdash; near misses, where how the work is described decides the result.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+          <div style="display: flex; gap: 5px; padding: 5px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">
+            <sc-for list="{{ hmSorts }}" as="f" hint-placeholder-count="3">
+              <button onClick="{{ f.pick }}" style="border: none; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 999px; background: {{ f.bg }}; color: {{ f.fg }}; box-shadow: {{ f.shadow }}" style-hover="opacity: 0.85">{{ f.label }}</button>
+            </sc-for>
+          </div>
+          <button onClick="{{ hmToggleNear }}" style="border: 1.5px solid {{ hmNearEdge }}; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; padding: 8px 15px; border-radius: 999px; background: {{ hmNearBg }}; color: {{ hmNearFg }}" style-hover="opacity: 0.85">Near misses only</button>
+        </div>
+      </div>
+
+      <div class="card elev-md" style="padding: 18px 20px 18px; gap: 14px">
+        <div style="overflow: auto; max-height: 560px">
+          <div style="min-width: 780px; display: flex; flex-direction: column; gap: 3px">
+            <div style="position: sticky; top: 0; z-index: 2; background: var(--color-surface); padding-bottom: 7px; display: grid; grid-template-columns: minmax(250px, 1fr) repeat(17, minmax(0, 1fr)); gap: 3px; align-items: center">
+              <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">{{ hmRowLabel }}</span>
+              <sc-for list="{{ hmCols }}" as="c" hint-placeholder-count="17">
+                <button onClick="{{ c.open }}" title="{{ c.title }}" style="border: none; cursor: pointer; font-family: var(--font-body); height: 24px; border-radius: 7px; font-size: 10.5px; font-weight: 700; color: #fff; background: {{ c.color }}" style-hover="opacity: 0.8">{{ c.num }}</button>
+              </sc-for>
+            </div>
+            <sc-for list="{{ hmRows }}" as="r" hint-placeholder-count="10">
+              <div style="display: grid; grid-template-columns: minmax(250px, 1fr) repeat(17, minmax(0, 1fr)); gap: 3px; align-items: center; border-radius: 10px" style-hover="background: color-mix(in srgb, var(--color-text) 4%, transparent)">
+                <div title="{{ r.full }}" style="display: flex; flex-direction: column; gap: 1px; padding: 4px 10px 4px 2px; min-width: 0">
+                  <span style="font-size: 12.5px; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.label }}</span>
+                  <span style="font-size: 11px; color: color-mix(in srgb, var(--color-text) 52%, transparent)">{{ r.meta }}</span>
+                </div>
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="17">
+                  <button onClick="{{ c.pick }}" title="{{ c.title }}" style="height: 26px; padding: 0; cursor: pointer; border-radius: 7px; border: {{ c.edge }}; background: {{ c.bg }}; outline: {{ c.sel }}; outline-offset: 1px"></button>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap; font-size: 12px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+          <div style="display: flex; align-items: center; gap: 7px">
+            <span style="width: 22px; height: 16px; border-radius: 5px; background: var(--color-accent-2-600)"></span>
+            <span>Cleared the threshold</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 7px">
+            <span style="width: 22px; height: 16px; border-radius: 5px; background: color-mix(in srgb, var(--color-accent) 16%, transparent); border: 1.5px dashed color-mix(in srgb, var(--color-accent) 60%, transparent)"></span>
+            <span>Within 0.10 of it</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 7px">
+            <span style="width: 22px; height: 16px; border-radius: 5px; background: color-mix(in srgb, var(--color-text) 12%, transparent)"></span>
+            <span>Below &mdash; darker is closer</span>
+          </div>
+          <span style="margin-left: auto">{{ hmSummary }}</span>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasHmSel }}" hint-placeholder-val="{{ false }}">
+        <div class="card elev-sm" style="padding: 24px 28px; gap: 16px; border-left: 5px solid {{ hmSelColor }}">
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+            <span style="width: 30px; height: 30px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; background: {{ hmSelColor }}">{{ hmSelNum }}</span>
+            <span style="font-family: var(--font-heading); font-size: 20px">{{ hmSelGoal }}</span>
+            <span style="font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; background: {{ hmSelBadgeBg }}; color: {{ hmSelBadgeFg }}">{{ hmSelVerdict }}</span>
+            <button onClick="{{ hmClear }}" class="btn btn-ghost" style="margin-left: auto; border-radius: 999px">Close</button>
+          </div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.6; text-wrap: pretty">{{ hmSelText }}</p>
+          <div style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap; font-size: 13px; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+            <span>Score <strong style="color: var(--color-text)">{{ hmSelScore }}</strong></span>
+            <span>Goal threshold <strong style="color: var(--color-text)">{{ hmSelThresh }}</strong></span>
+            <span>Margin <strong style="color: var(--color-text)">{{ hmSelMargin }}</strong></span>
+            <span>{{ hmSelSection }}</span>
+            <button onClick="{{ hmSelOpen }}" class="btn btn-secondary" style="margin-left: auto; border-radius: 999px">Open Goal detail</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding: 18px 24px; border-radius: 26px; background: color-mix(in srgb, var(--color-text) 4%, transparent); font-size: 12.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent)">
+        <span style="flex: 1 1 460px">{{ hmFootnote }}</span>
+      </div>
+    </div>
+  </sc-if>
+
   <!-- ══════════ GAPS ══════════ -->
   <sc-if value="{{ isGaps }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Gaps" style="padding: 34px 44px 72px; display: flex; flex-direction: column; gap: 30px; max-width: 1320px">
@@ -1046,7 +1130,7 @@ const VIEWS = [
   ["depth","Breadth vs depth","For scrutiny: where the count and the strength of the language disagree."],
   ["trend","Three-year trend","How this council's reporting has changed across the years analysed."]
 ];
-const NAV = [["results","Results"],["goal","Goal detail"],["activities","Activities"],["gaps","Gaps"],["compare","Comparison"],["export","Export"]];
+const NAV = [["results","Results"],["goal","Goal detail"],["activities","Activities"],["heatmap","Heatmap"],["gaps","Gaps"],["compare","Comparison"],["export","Export"]];
 
 /* Admin: every LGA's analysis state. status ∈ published | analysed | queued | failed | none */
 const RUNS = [
@@ -1117,11 +1201,19 @@ class Component extends DCLogic {
   state = { screen: null, report: "melbourne", view: null, open: 11, goal: 11, progress: 0,
     query: "", section: "All", drawer: false, format: 0, cmpMode: "share", showExt: false,
     selected: ["melbourne", "bendigo"], adminTab: "runs", year: null,
+    hmSort: "score", hmNear: false, hmSel: null,
     includes: { statement: true, ledger: true, activities: true, gaps: true, method: false } };
 
   componentWillUnmount() { clearInterval(this._t); }
 
-  screen() { return this.state.screen || "results"; }
+  screen() {
+    const sc = this.state.screen || "results";
+    const role = this.props.viewerRole ?? "admin";
+    const mayUpload = role === "admin" || role === "officer";
+    if (!mayUpload && (sc === "upload" || sc === "processing")) return "results";
+    if (role !== "admin" && sc === "admin") return "results";
+    return sc;
+  }
   view() { return this.state.view || this.props.defaultView || "statement"; }
   r() { return REPORTS[this.state.report]; }
 
@@ -1240,6 +1332,89 @@ class Component extends DCLogic {
     };
   }
 
+  /* Deterministic sub-threshold score for an activity against a Goal it did not align to.
+     The prototype carries only each activity's top score; the built version reads the real
+     17-value vector from the classifier. Seeded by text so cells never move between renders. */
+  hmScore(a, i, r) {
+    const key = a.t + "#" + i;
+    let h = 2166136261;
+    for (let k = 0; k < key.length; k++) { h ^= key.charCodeAt(k); h = Math.imul(h, 16777619); }
+    const n = (h >>> 0) / 4294967296;
+    const pos = a.g.indexOf(i);
+    if (pos >= 0) {
+      const over = 0.03 + (pos === 0 ? 0.10 : 0.02) + n * (pos === 0 ? 0.16 : 0.07);
+      return Math.min(0.999, Math.max(a.s, THRESH[i] * (1 + over)));
+    }
+    const base = (r.mean[i] || 0.2) * 0.85 + n * 0.42 * THRESH[i];
+    return Math.max(0.08, Math.min(THRESH[i] - 0.004, base));
+  }
+
+  heat() {
+    const r = this.r(), goals = Object.keys(NAMES).map(Number);
+    const sel = this.state.hmSel;
+    let aligned = 0, nearTotal = 0;
+
+    let rows = r.acts.map((a, ri) => {
+      let nearN = 0, alignedN = 0;
+      const cells = goals.map(i => {
+        const s = this.hmScore(a, i, r), t = THRESH[i], gap = t - s;
+        const hit = s >= t, near = !hit && gap <= 0.10;
+        if (hit) { aligned++; alignedN++; } else if (near) { nearTotal++; nearN++; }
+        const w = Math.max(0, Math.min(1, (s - t) / 0.22));
+        const closeness = Math.max(0, Math.min(1, 1 - gap / 0.55));
+        return {
+          bg: hit ? "color-mix(in srgb, " + COLORS[i] + " " + Math.round(62 + w * 38) + "%, var(--color-surface))"
+            : near ? "color-mix(in srgb, var(--color-accent) 16%, transparent)"
+            : "color-mix(in srgb, var(--color-text) " + Math.round(3 + closeness * 13) + "%, transparent)",
+          edge: near ? "1.5px dashed color-mix(in srgb, var(--color-accent) 60%, transparent)" : "1px solid transparent",
+          sel: sel && sel.ri === ri && sel.gi === i ? "2px solid var(--color-text)" : "none",
+          title: "Goal " + i + " " + NAMES[i] + " · score " + s.toFixed(3) + " · threshold " + t.toFixed(3) + (hit ? " · aligned" : near ? " · near miss" : ""),
+          pick: () => this.setState({ hmSel: { ri, gi: i } })
+        };
+      });
+      return { ri, a, cells, nearN, alignedN, full: a.t,
+        label: a.t.length > 88 ? a.t.slice(0, 88) + "…" : a.t,
+        meta: a.sec + " · top score " + a.s.toFixed(3) + " · " + alignedN + (alignedN === 1 ? " Goal" : " Goals") + (nearN ? " · " + nearN + " near" : "") };
+    });
+
+    if (this.state.hmNear) rows = rows.filter(x => x.nearN > 0);
+    if (this.state.hmSort === "score") rows = rows.slice().sort((x, y) => y.a.s - x.a.s);
+    if (this.state.hmSort === "near") rows = rows.slice().sort((x, y) => y.nearN - x.nearN || y.a.s - x.a.s);
+
+    const s = sel ? this.hmScore(r.acts[sel.ri], sel.gi, r) : 0;
+    const t = sel ? THRESH[sel.gi] : 0, hit = s >= t, near = !hit && t - s <= 0.10;
+
+    return {
+      hmCols: goals.map(i => ({ num: pad(i), color: COLORS[i],
+        title: "Goal " + i + " " + NAMES[i] + " · threshold " + THRESH[i].toFixed(3),
+        open: () => this.setState({ screen: "goal", goal: i }) })),
+      hmRows: rows,
+      hmRowLabel: rows.length + " of " + r.acts.length + " activities",
+      hmSorts: [["score", "Top score"], ["doc", "Report order"], ["near", "Most near misses"]]
+        .map(([id, label]) => Object.assign({ label, pick: () => this.setState({ hmSort: id }) }, pill(this.state.hmSort === id))),
+      hmToggleNear: () => this.setState(st => ({ hmNear: !st.hmNear })),
+      hmNearBg: this.state.hmNear ? "var(--color-accent)" : "transparent",
+      hmNearFg: this.state.hmNear ? "#fff" : "color-mix(in srgb, var(--color-text) 68%, transparent)",
+      hmNearEdge: this.state.hmNear ? "var(--color-accent)" : "color-mix(in srgb, var(--color-text) 18%, transparent)",
+      hmSummary: aligned + " cells cleared · " + nearTotal + " within 0.10",
+      hmFootnote: "Thresholds are per-Goal and calibrated, so a cell is shaded by how far the score sits from its own Goal's line, not by the raw number. Goal 11 clears at 0.459 and Goal 14 at 0.973 — comparing raw scores across columns would tell you nothing.",
+      hasHmSel: !!sel,
+      hmSelNum: sel ? pad(sel.gi) : "",
+      hmSelColor: sel ? COLORS[sel.gi] : "transparent",
+      hmSelGoal: sel ? "Goal " + sel.gi + " · " + NAMES[sel.gi] : "",
+      hmSelText: sel ? r.acts[sel.ri].t : "",
+      hmSelScore: sel ? s.toFixed(3) : "",
+      hmSelThresh: sel ? t.toFixed(3) : "",
+      hmSelMargin: sel ? (s - t >= 0 ? "+" : "−") + Math.abs(s - t).toFixed(3) : "",
+      hmSelSection: sel ? r.acts[sel.ri].sec + " section" : "",
+      hmSelVerdict: hit ? "Aligned" : near ? "Near miss" : "Below threshold",
+      hmSelBadgeBg: hit ? "var(--color-accent-2-100)" : near ? "color-mix(in srgb, var(--color-accent) 16%, transparent)" : "color-mix(in srgb, var(--color-text) 7%, transparent)",
+      hmSelBadgeFg: hit ? "var(--color-accent-2-700)" : near ? "var(--color-accent-700)" : "color-mix(in srgb, var(--color-text) 62%, transparent)",
+      hmClear: () => this.setState({ hmSel: null }),
+      hmSelOpen: () => this.setState({ screen: "goal", goal: sel ? sel.gi : 11 })
+    };
+  }
+
   rows() {
     const q = this.state.query.trim().toLowerCase(), sec = this.state.section;
     return this.r().acts.filter(a => (sec === "All" || a.sec === sec) && (!q || a.t.toLowerCase().includes(q)))
@@ -1335,6 +1510,7 @@ class Component extends DCLogic {
       analysed: sc !== "upload" && sc !== "processing",
       isUpload: sc === "upload", isProcessing: sc === "processing", isResults: sc === "results",
       isGoal: sc === "goal", isActivities: sc === "activities", isGaps: sc === "gaps",
+      isHeatmap: sc === "heatmap", ...this.heat(),
       isCompare: sc === "compare", isExport: sc === "export",
       canUpload: role === "admin" || role === "officer",
       goHome: () => this.go("results"), goUpload: () => this.go("upload"),

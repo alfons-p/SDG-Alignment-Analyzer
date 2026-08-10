@@ -1,5 +1,73 @@
 # Handoff: SDG Alignment Analyser V2
 
+## Changed in this revision — the landing page
+
+The landing page was reviewed against the live site and substantially extended. `Landing.html`
+is the only page that changed; the other five are unchanged from the previous handoff.
+
+**What is new on the page**
+
+1. **The peer-group chips are gone.** They navigated away to Browse and, in this copy, pointed at
+   a `class` value the data did not hold (`Regional`), which returns an empty list with no
+   explanation. In their place, "Compare like with like" is now a **national snapshot**: the share
+   of councils evidencing each of the 17 Goals, as a bar per Goal. One control switches between
+   *All councils* and an **Urban / Rural split**, which draws two bars per Goal.
+2. **Two trend charts** — mean Goals evidenced per council per reporting year, one split by peer
+   group and one by state. Same measure, same 0–17 scale, same legend style, aligned geometry.
+3. **Three more figures in the hero** — share of described activities matching no Goal, median
+   activities per 100 pages with its range, and how many councils have more than one year
+   analysed. Each hides itself when the dataset lacks its field.
+4. **A generated commentary paragraph** under the lead, distinguishing the two measures on the
+   page: the headline counts *activities*, the snapshot counts *councils*. It also names the Goal
+   where urban and rural councils diverge most, and stays silent when the gap is under 8 points.
+5. **The map pans and zooms** — scroll or pinch, drag to pan, double-click or *Reset view* to
+   return. Strokes scale inversely so borders stay hairline.
+6. **The "Recently added" and "Or add this year's report" cards were removed** to make room. The
+   officer upload path survives as one line of copy under the snapshot; keep it or replace it with
+   something better, but do not drop it silently — it is the only in-page explanation that
+   uploading exists and that results stay private until published.
+
+**What blocks it going live** — ⚠️ **The field list below was read from commit `cf0e806` and is
+stale by roughly 52 commits. Verify against current `V2` (`3f95bf6` or later) before acting on
+it — some or all of it may already be done.** The design tooling that produced this bundle was
+pinned to an old snapshot and could not see current head.
+
+The landing page needs four things per council in the public coverage payload. As of `cf0e806`
+they were absent; all four were derivable inside `build_public_coverage`:
+
+- `goals: [n]` per `by_year` record — the snapshot chart and Browse's 17-dot strip
+- `class` on the council — the Urban / Rural split
+- `barren` per `by_year` record — the "matches no Goal" figure
+- `activities_per_100_pages` per `by_year` record — the extraction-depth figure
+
+See `data-contract.md`, Part B, Option 2. Every element degrades to hidden rather than wrong when
+a field is absent, so adding them is additive and safe in any order.
+
+Also recorded there, and **equally unverified against current head**: an extraction-grade
+vocabulary mismatch (`moderate` vs `adequate`, and 40/15 vs 40/25 cutoffs) between the backend and
+`Browse.html`.
+
+**`Landing Critique.dc.html`** is the review that produced this work — four criticisms, each shown
+as it stands and as changed. Read it for the reasoning; two of the four are still open (the map's
+all-years encoding, and the nav, where *Findings* has no destination and *Method* resolves to
+`/limitations`).
+
+## Changed in the previous revision
+
+Three things moved after the first build.
+
+1. **New screen: Heatmap** (`SDG Analyser V2.dc.html`, nav position between Activities and
+   Gaps). Activities × 17 Goals, one cell each, shaded by distance from that Goal's own
+   threshold — filled = cleared, dashed ring = within 0.10 (near miss), grey = below, darker
+   being closer. Sort by top score / report order / most near misses, filter to near misses
+   only, click any cell for the passage, score, threshold and margin. See section 9 below.
+2. **Upload, Processing and Admin are now role-gated by route**, not only hidden in the nav.
+   Guests and registered users cannot reach Upload or Processing; only the admin reaches Admin.
+   `data-contract.md` Part C.0 covers the server-side requirement.
+3. **`data-contract.md` gained the heatmap's data need** — a `scores=full` variant of the
+   activities endpoint returning all 17 scores per activity, plus the per-Goal thresholds.
+   The prototype fakes the sub-threshold values; they are placeholders, not findings.
+
 ## Overview
 
 A public dataset and analysis tool for UN Sustainable Development Goal alignment in Australian
@@ -57,8 +125,8 @@ in `Limitations.html` for contact address and last-updated date.
 
 ### The app — `SDG Analyser V2.dc.html`
 
-Upload · Processing · Results (4 modes) · Goal detail · Activities · Gaps · Comparison ·
-Export · Admin (3 sub-tabs).
+Upload · Processing · Results (4 modes) · Goal detail · Activities · Heatmap · Gaps ·
+Comparison · Export · Admin (3 sub-tabs).
 
 ---
 
@@ -467,3 +535,42 @@ Serve over HTTP (`python3 -m http.server`) — `file://` blocks the JSON fetches
 4. Officer app: Results with the evidence ledger, then Goal detail and Activities.
 5. Officer Comparison — needs the backend `coverage` fix first.
 6. Admin, once publish/unpublish exists.
+
+
+---
+
+## 9. Heatmap — activities × Goals
+
+Rebuilt from V1, which had a heatmap the V2 port dropped. It answers a question no other screen
+does: **what almost aligned.** The ledger shows what cleared each threshold; the heatmap shows
+the whole matrix, so an officer can see that eleven activities sat within a hundredth of Goal 13
+and none of them made it.
+
+**Grid.** `grid-template-columns: minmax(250px, 1fr) repeat(17, minmax(0, 1fr))`, 3px gap, 26px
+row height, 7px cell radius. Header row sticky at `top: 0` inside a `max-height: 560px` scroll
+container; column headers are the Goal number on the official Goal colour, clicking one opens
+Goal detail. Row label is the activity text on one line with ellipsis, full text in the
+`title`, section and top score beneath it.
+
+**Cell shading — by distance from the Goal's own threshold, never by raw score.** Thresholds
+differ by an order of magnitude across Goals (11 clears at 0.459, 14 at 0.973), so a shared
+colour ramp on raw scores would be actively misleading. Three states:
+
+| State | Test | Treatment |
+| --- | --- | --- |
+| Aligned | `score >= threshold` | Goal colour, `62% + 38% × min(1, (score − threshold) / 0.22)` mixed against `--color-surface` |
+| Near miss | `threshold − score <= 0.10` | `--color-accent` at 16%, 1.5px dashed accent border |
+| Below | otherwise | `--color-text` at `3% + 13% × (1 − gap / 0.55)` — darker is closer |
+
+Selected cell takes a 2px `--color-text` outline and opens the detail card below the grid:
+passage, verdict badge, score, threshold, signed margin, section, and a button through to Goal
+detail.
+
+**Controls.** Sort pills (Top score / Report order / Most near misses) and a "Near misses only"
+toggle that filters rows to those with at least one. The footnote under the legend states the
+threshold caveat — keep it; without it the columns invite exactly the wrong comparison.
+
+**Data.** Needs the full 17-value score vector per activity, which the API does not return yet
+(`data-contract.md` Part C.5). The prototype generates sub-threshold values deterministically
+from the report's per-Goal means so cells do not move between renders — that code is seeded
+placeholder, and the comment in `hmScore()` says so. Do not port it.

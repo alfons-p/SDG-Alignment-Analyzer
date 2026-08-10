@@ -80,7 +80,7 @@
    "lga_code": "10500",
    "name": "Bayside (NSW)",
    "state": "NSW",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2023": {
      "goals_evidenced": 10,
@@ -206,7 +206,7 @@
    "lga_code": "70200",
    "name": "Alice Springs",
    "state": "NT",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2024": {
      "goals_evidenced": 4,
@@ -532,7 +532,7 @@
    "lga_code": "36370",
    "name": "Rockhampton",
    "state": "QLD",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2023": {
      "goals_evidenced": 6,
@@ -600,7 +600,7 @@
    "lga_code": "36510",
    "name": "Scenic Rim",
    "state": "QLD",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2023": {
      "goals_evidenced": 10,
@@ -688,7 +688,7 @@
    "lga_code": "36580",
    "name": "Somerset",
    "state": "QLD",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2023": {
      "goals_evidenced": 12,
@@ -934,7 +934,7 @@
    "lga_code": "47700",
    "name": "Tea Tree Gully",
    "state": "SA",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2023": {
      "goals_evidenced": 9,
@@ -1082,7 +1082,7 @@
    "lga_code": "61610",
    "name": "Devonport",
    "state": "TAS",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2023": {
      "goals_evidenced": 10,
@@ -1238,7 +1238,7 @@
    "lga_code": "22620",
    "name": "Greater Bendigo",
    "state": "VIC",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2024": {
      "goals_evidenced": 4,
@@ -1270,7 +1270,7 @@
    "lga_code": "24600",
    "name": "Melbourne",
    "state": "VIC",
-   "class": "Metro",
+   "class": "Urban",
    "by_year": {
     "2025": {
      "goals_evidenced": 13,

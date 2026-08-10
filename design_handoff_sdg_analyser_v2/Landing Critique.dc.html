@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/organic/styles.css">
+<style>
+  body { margin: 0; background: var(--color-bg); }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; margin: 0; }
+  p { margin: 0; text-wrap: pretty; }
+  a { color: var(--color-accent-700); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent); }
+  a:hover { color: var(--color-accent-800); }
+</style>
+</helmet>
+
+<div style="font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); max-width: 1180px; margin: 0 auto; padding: 56px 56px 110px; display: flex; flex-direction: column; gap: 64px">
+
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 760px">
+    <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)">Landing page review</span>
+    <h1 style="font-size: 40px; line-height: 1.08">The page argues that description, not action, explains the gaps. Four things on it argue the opposite.</h1>
+    <p style="font-size: 16.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Every criticism below is about the same failure: an element that reads as a verdict on councils when the project's whole claim is that it is measuring language. Each is shown as it stands now, then as I would change it.</p>
+  </div>
+
+  <!-- ─────────── 01 ─────────── -->
+  <div style="display: flex; flex-direction: column; gap: 26px">
+    <div style="display: flex; gap: 20px; align-items: baseline; border-top: 2px solid var(--color-text); padding-top: 18px">
+      <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; color: var(--color-accent); flex: 0 0 auto">01</span>
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px">
+        <h2 style="font-size: 27px; line-height: 1.2">The map is coloured by a number that rewards filing more reports</h2>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">With <strong>All years</strong> selected, a council is shaded by the Goals it evidenced in <em>any</em> report from 2023 to 2025. A council that filed three reports had three chances to evidence each Goal; one that filed once had one. The caption says so. But the caption is 12px and the map is 400px, and colour is read before text is.</p>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">The result is that the largest object on the landing page is a league table of reporting frequency, presented in the visual language of performance.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px">
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 26px 28px; border-radius: 28px; border: 1.5px dashed color-mix(in srgb, var(--color-text) 24%, transparent)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">As it stands</span>
+        <p style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 65%, transparent)">Two councils evidencing the same eight Goals per report, shaded by the union across all years.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 4px">
+          <div style="display: flex; align-items: center; gap: 14px">
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13.5px; font-weight: 700">Council A</span>
+              <div style="display: flex; gap: 4px">
+                <span style="font-size: 11px; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent)">2023 · 8</span>
+                <span style="font-size: 11px; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent)">2024 · 8</span>
+                <span style="font-size: 11px; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent)">2025 · 8</span>
+              </div>
+            </div>
+            <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 5px">
+              <div style="width: 52px; height: 52px; border-radius: 14px; background: #f2951f"></div>
+              <span style="font-size: 11px; font-weight: 700">union 12</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 14px">
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13.5px; font-weight: 700">Council B</span>
+              <div style="display: flex; gap: 4px">
+                <span style="font-size: 11px; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 8%, transparent)">2024 · 8</span>
+              </div>
+            </div>
+            <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 5px">
+              <div style="width: 52px; height: 52px; border-radius: 14px; background: #f8d9ae"></div>
+              <span style="font-size: 11px; font-weight: 700">union 8</span>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800); padding-top: 2px">Identical reporting behaviour. Two shades apart on the map.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 26px 28px; border-radius: 28px; background: var(--color-surface); box-shadow: var(--shadow-sm)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700)">What I would do</span>
+        <p style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 65%, transparent)">Shade by <strong>one reporting year</strong>. Every council on screen is then measured against one report, and the comparison is like for like.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 4px">
+          <div style="display: flex; align-items: center; gap: 14px">
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13.5px; font-weight: 700">Council A</span>
+              <div style="display: flex; gap: 4px">
+                <span style="font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--color-accent-100); color: var(--color-accent-800); font-weight: 700">2024 · 8</span>
+              </div>
+            </div>
+            <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 5px">
+              <div style="width: 52px; height: 52px; border-radius: 14px; background: #f8d9ae"></div>
+              <span style="font-size: 11px; font-weight: 700">8 of 17</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 14px">
+            <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 5px">
+              <span style="font-size: 13.5px; font-weight: 700">Council B</span>
+              <div style="display: flex; gap: 4px">
+                <span style="font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--color-accent-100); color: var(--color-accent-800); font-weight: 700">2024 · 8</span>
+              </div>
+            </div>
+            <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 5px">
+              <div style="width: 52px; height: 52px; border-radius: 14px; background: #f8d9ae"></div>
+              <span style="font-size: 11px; font-weight: 700">8 of 17</span>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800); padding-top: 2px">Same behaviour, same shade. The year chips stay, but one is always active — there is no All years.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 26px; border-radius: 24px; background: var(--color-accent-2-100)">
+      <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 55%, transparent); flex: 0 0 90px; padding-top: 3px">Also worth</span>
+      <p style="font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 78%, transparent)">Consider dropping the choropleth entirely and making the map a locator — uniform fill, one dot for the council you searched. The map is genuinely useful for <em>finding</em> a council and actively misleading for <em>ranking</em> them. Right now it is asked to do both.</p>
+    </div>
+  </div>
+
+  <!-- ─────────── 02 ─────────── -->
+  <div style="display: flex; flex-direction: column; gap: 26px">
+    <div style="display: flex; gap: 20px; align-items: baseline; border-top: 2px solid var(--color-text); padding-top: 18px">
+      <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; color: var(--color-accent); flex: 0 0 auto">02</span>
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px">
+        <h2 style="font-size: 27px; line-height: 1.2">Grey means &ldquo;no report&rdquo; and reads as &ldquo;worst&rdquo;</h2>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">South Australia and the Northern Territory are grey on the live map. The legend runs <strong>few → many</strong> with no fourth state, so grey has no declared meaning and inherits the one at the pale end of the ramp. A reader looking at the NT concludes the NT is failing, when the truth is the dataset does not cover it yet.</p>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">The footnote already says 516 of 560 LGAs have an analysed report. That fact belongs in the legend, where the eye is.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px">
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 28px; border: 1.5px dashed color-mix(in srgb, var(--color-text) 24%, transparent)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">As it stands</span>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">few</span>
+          <div style="display: flex; gap: 4px">
+            <span style="width: 20px; height: 20px; border-radius: 999px; background: #fbe6c8"></span>
+            <span style="width: 20px; height: 20px; border-radius: 999px; background: #f8d09a"></span>
+            <span style="width: 20px; height: 20px; border-radius: 999px; background: #f5b86c"></span>
+            <span style="width: 20px; height: 20px; border-radius: 999px; background: #f2a13e"></span>
+            <span style="width: 20px; height: 20px; border-radius: 999px; background: #ef8a10"></span>
+          </div>
+          <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">many</span>
+        </div>
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800)">Grey appears on the map but not in the key.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 28px; background: var(--color-surface); box-shadow: var(--shadow-sm)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700)">What I would do</span>
+        <div style="display: flex; flex-direction: column; gap: 11px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">1 goal</span>
+            <div style="display: flex; gap: 4px">
+              <span style="width: 20px; height: 20px; border-radius: 999px; background: #fbe6c8"></span>
+              <span style="width: 20px; height: 20px; border-radius: 999px; background: #f8d09a"></span>
+              <span style="width: 20px; height: 20px; border-radius: 999px; background: #f5b86c"></span>
+              <span style="width: 20px; height: 20px; border-radius: 999px; background: #f2a13e"></span>
+              <span style="width: 20px; height: 20px; border-radius: 999px; background: #ef8a10"></span>
+            </div>
+            <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">17 goals</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="width: 20px; height: 20px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 13%, transparent); flex: 0 0 auto"></span>
+            <span style="font-size: 12.5px; line-height: 1.45; color: color-mix(in srgb, var(--color-text) 68%, transparent)">No analysed report for this year &mdash; 44 of 560 councils</span>
+          </div>
+        </div>
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800)">Ends the ramp at a stated maximum, and gives absence its own line rather than the faintest shade of present.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── 03 ─────────── -->
+  <div style="display: flex; flex-direction: column; gap: 26px">
+    <div style="display: flex; gap: 20px; align-items: baseline; border-top: 2px solid var(--color-text); padding-top: 18px">
+      <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; color: var(--color-accent); flex: 0 0 auto">03</span>
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px">
+        <h2 style="font-size: 27px; line-height: 1.2">The live chips are fine. The failure mode behind them is not.</h2>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">Live shows <strong>All councils · Urban · Rural</strong>, which presumably match the values live data carries. The handoff copy of this page still offers Metro, Regional and Rural, and the sample dataset holds only Metro and Rural &mdash; so <em>Regional</em> there is a chip pointing at a value nothing holds. That is drift between the handoff and what shipped, not a live bug.</p>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">What the episode exposes is worth fixing anyway: because <code style="font-size: 14px; background: color-mix(in srgb, var(--color-text) 7%, transparent); padding: 1px 6px; border-radius: 6px">class</code> is a recognised parameter, a value the data does not hold returns zero councils with no explanation. Browse&rsquo;s existing &ldquo;this filter is not supported&rdquo; notice only fires for unrecognised <em>keys</em>, never unrecognised <em>values</em>. Any stale link, old bookmark or renamed category fails the same silent way.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px">
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 28px; border: 1.5px dashed color-mix(in srgb, var(--color-text) 24%, transparent)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Live, and correct</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 7px">
+          <span style="font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent)">All councils</span>
+          <span style="font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent)">Urban</span>
+          <span style="font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent)">Rural</span>
+        </div>
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent); padding-top: 6px">Handoff copy, drifted</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 7px">
+          <span style="font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent)">Metro &rarr;</span>
+          <span style="font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: var(--color-accent-100); color: var(--color-accent-800)">Regional &rarr;</span>
+          <span style="font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 5%, transparent)">Rural &rarr;</span>
+        </div>
+        <div style="padding: 22px 20px; border-radius: 20px; background: color-mix(in srgb, var(--color-text) 4%, transparent); text-align: center; font-size: 14px; color: color-mix(in srgb, var(--color-text) 55%, transparent)">No council matches these filters.</div>
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800)">A dead end that reads as a finding about the dataset.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 28px; background: var(--color-surface); box-shadow: var(--shadow-sm)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700)">What I would do</span>
+        <div style="display: flex; flex-direction: column; gap: 9px; padding: 18px 20px; border-radius: 22px; background: var(--color-bg)">
+          <span style="font-size: 12.5px; font-weight: 700; color: var(--color-accent-800)">Asked for Regional</span>
+          <span style="font-size: 13px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 72%, transparent)">The dataset groups councils as Urban or Rural. Showing all 533 councils instead.</span>
+          <div style="display: flex; gap: 7px; padding-top: 4px">
+            <span style="font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 999px; background: var(--color-accent); color: #fff">Urban</span>
+            <span style="font-size: 12.5px; font-weight: 600; padding: 7px 14px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 6%, transparent)">Rural</span>
+          </div>
+        </div>
+        <p style="font-size: 13.5px; line-height: 1.58; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Browse already has this notice &mdash; it just never fires for a bad value on a good key. Extending it costs almost nothing and covers every stale link, not only these chips.</p>
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800)">Then generate the chips from the same values Browse filters on, so the two cannot drift again.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── 04 ─────────── -->
+  <div style="display: flex; flex-direction: column; gap: 26px">
+    <div style="display: flex; gap: 20px; align-items: baseline; border-top: 2px solid var(--color-text); padding-top: 18px">
+      <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; color: var(--color-accent); flex: 0 0 auto">04</span>
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 720px">
+        <h2 style="font-size: 27px; line-height: 1.2">Findings goes nowhere, and Method goes somewhere that answers a different question</h2>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">Method resolves to <strong>/limitations</strong>. Those are two different promises. A reader clicking Method wants to know what the classifier reads, what a threshold is, how an activity gets extracted &mdash; the case <em>for</em> trusting the number. Limitations is the case against. Both are worth publishing; under one label, the caveats page has to pretend to be the method page, and the sceptic who came for the mechanism leaves without it.</p>
+        <p style="font-size: 15.5px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 72%, transparent)">Findings has no destination at all. An item that never responds teaches people the whole header is decorative, which costs the two links that do work.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px">
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 28px; border: 1.5px dashed color-mix(in srgb, var(--color-text) 24%, transparent)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">As it stands</span>
+        <div style="display: flex; align-items: center; gap: 20px; padding: 14px 18px; border-radius: 20px; background: color-mix(in srgb, var(--color-text) 4%, transparent)">
+          <span style="font-family: var(--font-heading); font-size: 16px">SDG Alignment Analyser</span>
+          <span style="font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 60%, transparent)">The dataset</span>
+          <span style="font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 60%, transparent); text-decoration: line-through">Findings</span>
+          <span style="font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 60%, transparent)">Method</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px; padding: 14px 18px; border-radius: 18px; background: color-mix(in srgb, var(--color-text) 4%, transparent)">
+          <span style="font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">Method leads to</span>
+          <span style="font-size: 13.5px; font-weight: 700">/limitations</span>
+        </div>
+        <p style="font-size: 13px; line-height: 1.55; color: var(--color-accent-800)">One dead item, and one whose label promises the mechanism but delivers the caveats.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 28px; background: var(--color-surface); box-shadow: var(--shadow-sm)">
+        <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-700)">What I would do</span>
+        <div style="display: flex; align-items: center; gap: 20px; padding: 14px 18px; border-radius: 20px; background: var(--color-bg)">
+          <span style="font-family: var(--font-heading); font-size: 16px">SDG Alignment Analyser</span>
+          <span style="font-size: 13px; font-weight: 600">The dataset</span>
+          <span style="font-size: 13px; font-weight: 600; color: color-mix(in srgb, var(--color-text) 60%, transparent)">How it works</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px; padding: 14px 18px; border-radius: 18px; background: var(--color-bg)">
+          <span style="font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">How it works leads to</span>
+          <span style="font-size: 13.5px; font-weight: 700">What we read &rarr; What a match means &rarr; What this cannot tell you</span>
+        </div>
+        <p style="font-size: 13.5px; line-height: 1.58; color: color-mix(in srgb, var(--color-text) 70%, transparent)">Two items, both real. <strong>How it works</strong> is one page in three parts, ending on the existing Limitations copy &mdash; so the caveats keep their home and stop being the answer to &ldquo;what is your method.&rdquo; Findings goes until there is a findings page worth the click; the numbers on the landing page are already doing that job.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px; padding: 30px 34px; border-radius: 30px; background: var(--color-accent-100); max-width: 800px">
+    <h2 style="font-size: 22px; color: var(--color-accent-800)">If you only do one</h2>
+    <p style="font-size: 15px; line-height: 1.62; color: var(--color-accent-800)">Change the map to a single year. It is the cheapest of the four and the only one that is currently telling readers something untrue on the page they land on.</p>
+  </div>
+
+</div>
+
+</x-dc>
+</body>
+</html>

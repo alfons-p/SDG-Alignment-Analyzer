@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SDG Alignment Analyser — Australian local government</title>
-<link rel="stylesheet" href="_ds/organic-b9f0b9fb-6236-41b9-9bd6-dd8d8ef34760/styles.css">
+<link rel="stylesheet" href="_ds/organic/styles.css">
 <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
 <style>
@@ -50,11 +50,11 @@
   </div>
 
   <!-- ── Above the fold: finding left, dataset right ── -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 52px; padding: 26px 56px 44px; align-items: start">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 52px; padding: 26px 56px 44px; align-items: stretch">
 
     <div style="display: flex; flex-direction: column; gap: 18px">
       <span style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent-700)" data-stat="kicker">Australian council annual reports</span>
-      <h1 style="margin: 0; font-size: 38px; line-height: 1.07; text-wrap: pretty" data-stat="headline">Two activities in every five describe the same Goal. Australian councils write about cities plainly, and everything else obliquely.</h1>
+      <h1 style="margin: 0; font-size: 34px; line-height: 1.09; text-wrap: pretty" data-stat="headline">Two activities in every five describe the same Goal. Australian councils write about cities plainly, and everything else obliquely.</h1>
 
       <div style="display: flex; flex-direction: column; margin-top: 6px">
         <div style="display: flex; align-items: baseline; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)">
@@ -78,6 +78,39 @@
             <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="mediannote">Computed from the published dataset.</span>
           </div>
         </div>
+
+        <div style="display: none; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)" data-row="barren">
+          <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; width: 84px; flex: 0 0 auto" data-stat="barren">&mdash;</span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14px; font-weight: 600; line-height: 1.4">of described activities match no Goal at all</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="barrennote"></span>
+          </div>
+        </div>
+
+        <div style="display: none; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)" data-row="depth">
+          <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; width: 84px; flex: 0 0 auto" data-stat="depth">&mdash;</span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14px; font-weight: 600; line-height: 1.4">activities described per 100 pages, median report</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="depthnote"></span>
+          </div>
+        </div>
+
+        <div style="display: none; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent)" data-row="repeat">
+          <span style="font-family: var(--font-heading); font-size: 30px; line-height: 1; width: 84px; flex: 0 0 auto; color: var(--color-accent-2-700)" data-stat="repeat">&mdash;</span>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <span style="font-size: 14px; font-weight: 600; line-height: 1.4">councils have more than one year analysed</span>
+            <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="repeatnote"></span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: none; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 20px" data-trendwrap>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; min-height: 18px">
+          <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Goals evidenced per council, by reporting year</span>
+        </div>
+        <div data-trend></div>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; min-height: 20px" data-trendkey></div>
+        <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty; min-height: 54px" data-trendnote></span>
       </div>
     </div>
 
@@ -91,6 +124,7 @@
 
       <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
         <span style="font-size: 12.5px; color: color-mix(in srgb, var(--color-text) 58%, transparent)" data-maphint>Shaded by Goals evidenced in the council's most recent report.</span>
+        <button class="chip" style="padding: 6px 13px; font-size: 12px" data-mapreset>Reset view</button>
         <div style="margin-left: auto; display: flex; align-items: center; gap: 8px">
           <span style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 50%, transparent)">few</span>
           <div style="display: flex; gap: 3px" data-legend></div>
@@ -102,47 +136,46 @@
         <div style="display: flex; gap: 6px" data-years></div>
         <div style="display: flex; flex-wrap: wrap; gap: 6px" data-states></div>
       </div>
+
+      <div style="display: none; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 20px" data-statetrendwrap>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; min-height: 18px">
+          <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">The same measure by state</span>
+        </div>
+        <div data-statetrend></div>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; min-height: 20px" data-statetrendkey></div>
+        <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty; min-height: 54px" data-statetrendnote></span>
+      </div>
     </div>
   </div>
 
   <!-- ── Below the fold ── -->
   <p style="margin: 0; padding: 4px 56px 30px; max-width: 860px; font-size: 18px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 74%, transparent); text-wrap: pretty" data-stat="lead">Across the councils analysed so far, two in every five of the activities described in their annual reports align to Goal&nbsp;11, Sustainable Cities and Communities. The work behind the other sixteen Goals is being done &mdash; it just isn't being written down in language that credits it.</p>
 
+  <p style="margin: 0; padding: 0 56px 30px; max-width: 860px; font-size: 15px; line-height: 1.62; color: color-mix(in srgb, var(--color-text) 64%, transparent); text-wrap: pretty" data-commentary></p>
+
+  <!-- ── National snapshot: how many councils evidence each Goal ── -->
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 52px; padding: 8px 56px 48px; align-items: start">
 
-    <div style="display: flex; flex-direction: column; gap: 22px">
-      <div style="display: flex; flex-direction: column; gap: 12px">
-        <h2 style="margin: 0; font-size: 24px">Compare like with like</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 7px">
-          <button class="chip leaves" data-goto="class=Metro">Metro</button>
-          <button class="chip leaves" data-goto="class=Regional">Regional</button>
-          <button class="chip leaves" data-goto="class=Rural">Rural</button>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <h2 style="margin: 0; font-size: 24px">Compare like with like</h2>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
 
-        </div>
-        <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
-      </div>
+      <div style="display: flex; gap: 7px; flex-wrap: wrap" data-groups></div>
+
+      <span style="font-size: 13.5px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 62%, transparent); text-wrap: pretty" data-snaplede>The share of councils whose report describes at least one activity aligned to each Goal.</span>
+
+      <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); text-wrap: pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
+
       <span style="font-size: 12px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 52%, transparent)" data-mapsource></span>
+
+      <span style="font-size: 13px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 62%, transparent); padding-top: 6px; border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); text-wrap: pretty">Council officers can <a href="Access.html">upload a newly published annual report</a> and see the analysis in minutes. Results stay private until you publish them.</span>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 20px">
-      <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px 28px; border-radius: 28px; background: color-mix(in srgb, var(--color-text) 3.5%, transparent)">
-        <span style="font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: color-mix(in srgb, var(--color-text) 52%, transparent)">Recently added</span>
-        <div style="display: flex; align-items: baseline; gap: 12px">
-          <span style="font-family: var(--font-heading); font-size: 20px">City of Melbourne</span>
-          <span style="font-size: 13px; color: color-mix(in srgb, var(--color-text) 58%, transparent)">2024&ndash;25</span>
-        </div>
-        <span style="font-size: 14px; line-height: 1.55; color: color-mix(in srgb, var(--color-text) 68%, transparent); text-wrap: pretty">176 activities described, 13 of 17 Goals evidenced. Half of everything reported is city-shaping work.</span>
-        <a href="SDG Analyser V2.dc.html" style="font-size: 14px; align-self: flex-start">Open the analysis</a>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 12px; padding: 28px 30px; border-radius: 28px; background: var(--color-accent-100)">
-        <h2 style="margin: 0; font-size: 24px; color: var(--color-accent-800)">Or add this year's report</h2>
-        <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--color-accent-800); text-wrap: pretty">Council officers can upload a newly published annual report and see the analysis in minutes. Your result stays private until you choose to publish it.</p>
-        <div style="display: flex; align-items: center; gap: 14px; padding-top: 2px; flex-wrap: wrap">
-          <button class="btn btn-primary" style="border-radius: 999px">Upload a report</button>
-          <span style="font-size: 13px; color: var(--color-accent-800)">Verified council accounts</span>
-        </div>
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: grid; grid-template-columns: 1fr; gap: 0" data-snapshot></div>
+      <div style="display: flex; align-items: center; gap: 22px; flex-wrap: wrap">
+        <span style="font-size: 12.5px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 58%, transparent); flex: 1 1 260px; text-wrap: pretty" data-snapnote></span>
+        <div style="display: none; align-items: center; gap: 14px" data-refkey></div>
       </div>
     </div>
   </div>
@@ -161,53 +194,53 @@
 <script>
 // name, state, type, class, lat, lon, goals evidenced (latest), years available
 const C = [
-  ["City of Melbourne","VIC","City","Metro",-37.814,144.963,13,3],
-  ["City of Greater Bendigo","VIC","City","Regional",-36.758,144.280,4,3],
-  ["City of Sydney","NSW","City","Metro",-33.868,151.209,15,3],
-  ["Brisbane City","QLD","City","Metro",-27.470,153.021,14,3],
-  ["City of Perth","WA","City","Metro",-31.953,115.857,11,3],
-  ["City of Adelaide","SA","City","Metro",-34.928,138.600,12,3],
-  ["City of Hobart","TAS","City","Metro",-42.883,147.331,9,3],
-  ["City of Darwin","NT","City","Metro",-12.462,130.842,8,2],
-  ["Unincorporated ACT","ACT","Territory","Metro",-35.282,149.128,14,3],
-  ["City of Greater Geelong","VIC","City","Regional",-38.149,144.361,14,3],
-  ["City of Ballarat","VIC","City","Regional",-37.562,143.850,10,3],
-  ["City of Newcastle","NSW","City","Regional",-32.927,151.776,12,3],
-  ["Wollongong City","NSW","City","Regional",-34.424,150.893,11,3],
-  ["Cairns Regional","QLD","Regional","Regional",-16.920,145.771,9,3],
-  ["Townsville City","QLD","City","Regional",-19.259,146.818,10,2],
-  ["Toowoomba Regional","QLD","Regional","Regional",-27.560,151.954,8,3],
-  ["Gold Coast City","QLD","City","Metro",-28.002,153.430,13,3],
-  ["Sunshine Coast Regional","QLD","Regional","Regional",-26.650,153.066,12,3],
-  ["City of Launceston","TAS","City","Regional",-41.439,147.139,7,3],
+  ["City of Melbourne","VIC","City","Urban",-37.814,144.963,13,3],
+  ["City of Greater Bendigo","VIC","City","Urban",-36.758,144.280,4,3],
+  ["City of Sydney","NSW","City","Urban",-33.868,151.209,15,3],
+  ["Brisbane City","QLD","City","Urban",-27.470,153.021,14,3],
+  ["City of Perth","WA","City","Urban",-31.953,115.857,11,3],
+  ["City of Adelaide","SA","City","Urban",-34.928,138.600,12,3],
+  ["City of Hobart","TAS","City","Urban",-42.883,147.331,9,3],
+  ["City of Darwin","NT","City","Urban",-12.462,130.842,8,2],
+  ["Unincorporated ACT","ACT","Territory","Urban",-35.282,149.128,14,3],
+  ["City of Greater Geelong","VIC","City","Urban",-38.149,144.361,14,3],
+  ["City of Ballarat","VIC","City","Urban",-37.562,143.850,10,3],
+  ["City of Newcastle","NSW","City","Urban",-32.927,151.776,12,3],
+  ["Wollongong City","NSW","City","Urban",-34.424,150.893,11,3],
+  ["Cairns Regional","QLD","Regional","Urban",-16.920,145.771,9,3],
+  ["Townsville City","QLD","City","Urban",-19.259,146.818,10,2],
+  ["Toowoomba Regional","QLD","Regional","Urban",-27.560,151.954,8,3],
+  ["Gold Coast City","QLD","City","Urban",-28.002,153.430,13,3],
+  ["Sunshine Coast Regional","QLD","Regional","Urban",-26.650,153.066,12,3],
+  ["City of Launceston","TAS","City","Urban",-41.439,147.139,7,3],
   ["Alice Springs Town","NT","Town","Rural",-23.698,133.881,5,2],
   ["Shire of Broome","WA","Shire","Rural",-17.958,122.236,6,2],
   ["City of Kalgoorlie-Boulder","WA","City","Rural",-30.749,121.466,5,3],
-  ["City of Bunbury","WA","City","Regional",-33.327,115.641,7,3],
+  ["City of Bunbury","WA","City","Urban",-33.327,115.641,7,3],
   ["Mildura Rural City","VIC","Rural City","Rural",-34.186,142.158,6,3],
-  ["Greater Shepparton City","VIC","City","Regional",-36.383,145.398,7,3],
-  ["Wagga Wagga City","NSW","City","Regional",-35.108,147.369,8,3],
-  ["Albury City","NSW","City","Regional",-36.081,146.916,7,3],
+  ["Greater Shepparton City","VIC","City","Urban",-36.383,145.398,7,3],
+  ["Wagga Wagga City","NSW","City","Urban",-35.108,147.369,8,3],
+  ["Albury City","NSW","City","Urban",-36.081,146.916,7,3],
   ["Dubbo Regional","NSW","Regional","Rural",-32.246,148.601,6,2],
   ["Tamworth Regional","NSW","Regional","Rural",-31.090,150.929,6,3],
-  ["Coffs Harbour City","NSW","City","Regional",-30.296,153.114,8,3],
-  ["Port Macquarie-Hastings","NSW","Council","Regional",-31.431,152.909,7,3],
-  ["Rockhampton Regional","QLD","Regional","Regional",-23.378,150.512,7,3],
-  ["Mackay Regional","QLD","Regional","Regional",-21.144,149.187,6,2],
-  ["Bundaberg Regional","QLD","Regional","Regional",-24.866,152.351,7,3],
+  ["Coffs Harbour City","NSW","City","Urban",-30.296,153.114,8,3],
+  ["Port Macquarie-Hastings","NSW","Council","Urban",-31.431,152.909,7,3],
+  ["Rockhampton Regional","QLD","Regional","Urban",-23.378,150.512,7,3],
+  ["Mackay Regional","QLD","Regional","Urban",-21.144,149.187,6,2],
+  ["Bundaberg Regional","QLD","Regional","Urban",-24.866,152.351,7,3],
   ["Whyalla City","SA","City","Rural",-33.033,137.564,4,2],
-  ["Mount Gambier City","SA","City","Regional",-37.829,140.783,6,3],
+  ["Mount Gambier City","SA","City","Urban",-37.829,140.783,6,3],
   ["Port Lincoln City","SA","City","Rural",-34.726,135.858,4,2],
   ["City of Greater Geraldton","WA","City","Rural",-28.775,114.615,6,3],
   ["City of Karratha","WA","City","Rural",-20.736,116.846,5,2],
-  ["Devonport City","TAS","City","Regional",-41.181,146.350,6,3],
-  ["Burnie City","TAS","City","Regional",-41.052,145.904,5,2],
+  ["Devonport City","TAS","City","Urban",-41.181,146.350,6,3],
+  ["Burnie City","TAS","City","Urban",-41.052,145.904,5,2],
   ["Katherine Town","NT","Town","Rural",-14.465,132.263,3,1],
-  ["Warrnambool City","VIC","City","Regional",-38.381,142.487,7,3],
-  ["Latrobe City","VIC","City","Regional",-38.194,146.540,8,3],
+  ["Warrnambool City","VIC","City","Urban",-38.381,142.487,7,3],
+  ["Latrobe City","VIC","City","Urban",-38.194,146.540,8,3],
   ["Horsham Rural City","VIC","Rural City","Rural",-36.712,142.199,5,3],
-  ["Orange City","NSW","City","Regional",-33.283,149.101,6,3],
-  ["Bathurst Regional","NSW","Regional","Regional",-33.420,149.577,6,2],
+  ["Orange City","NSW","City","Urban",-33.283,149.101,6,3],
+  ["Bathurst Regional","NSW","Regional","Urban",-33.420,149.577,6,2],
   ["Griffith City","NSW","City","Rural",-34.288,146.050,5,2],
   ["Broken Hill City","NSW","City","Rural",-31.960,141.467,3,2],
   ["Shire of Esperance","WA","Shire","Rural",-33.861,121.891,4,2],
@@ -372,6 +405,55 @@ function shareWords(share) {
   return Math.round(share * 100) + "%";
 }
 
+/* The headline is written by the data, so its length varies by a third between
+   the provisional and national voices. Size follows the sentence. */
+/* Three supporting figures. Each is hidden rather than faked when the
+   published dataset does not carry the field it needs. */
+function paintSupport(councils) {
+  const show = (k, on) => {
+    const el = document.querySelector('[data-row="' + k + '"]');
+    if (el) el.style.display = on ? "flex" : "none";
+  };
+  const recs = [];
+  (councils || []).forEach(c => Object.values(c.by_year || {}).forEach(r => recs.push(r)));
+  if (!recs.length) { ["barren", "depth", "repeat"].forEach(k => show(k, false)); return; }
+
+  const withBarren = recs.filter(r => r.barren != null && r.activities);
+  if (withBarren.length) {
+    const b = withBarren.reduce((s, r) => s + r.barren, 0);
+    const a = withBarren.reduce((s, r) => s + r.activities, 0);
+    set("barren", Math.round(b / a * 100) + "%");
+    set("barrennote", "Described work the classifier could not place under any Goal \u2014 usually governance, finance and administration.");
+    show("barren", true);
+  } else show("barren", false);
+
+  const depths = recs.map(r => r.activities_per_100_pages != null ? r.activities_per_100_pages
+    : (r.pages ? r.activities / r.pages * 100 : null)).filter(v => v != null).sort((x, y) => x - y);
+  if (depths.length) {
+    const med = depths[Math.floor(depths.length / 2)];
+    set("depth", med.toFixed(1));
+    set("depthnote", "From " + depths[0].toFixed(1) + " to " + depths[depths.length - 1].toFixed(1) +
+      ". A thin report yields little described activity, so its coverage understates the work.");
+    show("depth", true);
+  } else show("depth", false);
+
+  const multi = (councils || []).filter(c => Object.keys(c.by_year || {}).length > 1).length;
+  if (councils && councils.length) {
+    set("repeat", multi + " of " + councils.length);
+    set("repeatnote", multi < 2
+      ? "Change over time needs a second report from the same council."
+      : "Only these can show a direction of travel rather than a single reading.");
+    show("repeat", true);
+  } else show("repeat", false);
+}
+
+function fitHeadline() {
+  const el = document.querySelector('[data-stat="headline"]');
+  if (!el) return;
+  const n = (el.textContent || "").length;
+  el.style.fontSize = (n > 150 ? 30 : n > 110 ? 33 : 36) + "px";
+}
+
 function paintNational(n, councils, narrative) {
   if (!n && !councils) return;
   n = n || {};
@@ -439,6 +521,7 @@ function paintNational(n, councils, narrative) {
       if (narrative.cards.trailing) set("goal14note", narrative.cards.trailing);
       if (narrative.cards.median) set("mediannote", narrative.cards.median);
     }
+    fitHeadline();
     return;
   }
 
@@ -458,6 +541,8 @@ function paintNational(n, councils, narrative) {
       " of the activities described in their annual reports align to Goal\u00a0" + top[0] + ", " +
       GOAL_FULL[top[0]] + ". The work behind the other sixteen Goals is being done \u2014 it just isn't being written down in language that credits it.");
   }
+  paintSupport(councils);
+  fitHeadline();
 }
 
 /* ── search ── */
@@ -511,6 +596,280 @@ function mapHint() {
       " \u2014 councils with more reports have more chances to evidence one.";
 }
 
+/* ── National snapshot ──────────────────────────────────────────
+   Share of councils evidencing each Goal, split by the peer-group
+   values the dataset itself carries. Chips are generated from the
+   data, so they cannot drift from what Browse filters on. */
+/* "All" = every council in one bar. "split" = one bar per peer group. */
+let GROUP = "All";
+const SPLIT_COLORS = ["var(--color-accent)", "var(--color-accent-2)", "var(--color-accent-600)"];
+
+/* Which Goals a council evidenced, honouring the selected year. */
+function goalListOf(d) {
+  if (!d) return [];
+  if (YEAR && d.by_year) return (d.by_year[YEAR] && d.by_year[YEAR].goals) || [];
+  if (d.by_year) {
+    const u = new Set();
+    Object.values(d.by_year).forEach(r => (r.goals || []).forEach(g => u.add(g)));
+    if (u.size) return [...u];
+  }
+  return d.goals || [];
+}
+const inScope = d => YEAR ? !!(d.by_year && d.by_year[YEAR]) : true;
+
+/* ── Trend: mean Goals evidenced per council per year, split by peer group ──
+   Averaged over councils that filed in that year, so a year with fewer
+   reports is not penalised for the ones that are missing. */
+/* ── Commentary ───────────────────────────────────────────────
+   The headline counts ACTIVITIES; the chart below counts COUNCILS. Two
+   different questions, and a reader comparing them will assume they are
+   the same one unless the page says otherwise. Written from the data. */
+function paintCommentary() {
+  const el = document.querySelector("[data-commentary]");
+  if (!el) return;
+  const pool = DATA.filter(inScope);
+  if (!pool.some(d => goalListOf(d).length)) { el.textContent = ""; return; }
+
+  const pct = list => Array.from({ length: 17 }, (_, i) =>
+    list.length ? Math.round(list.filter(d => goalListOf(d).includes(i + 1)).length / list.length * 100) : 0);
+
+  const all = pct(pool);
+  const ranked = Array.from({ length: 17 }, (_, i) => i + 1).sort((a, b) => all[b - 1] - all[a - 1]);
+  const top = ranked[0], bottom = ranked[ranked.length - 1];
+
+  const parts = ["Counted a second way \u2014 by councils rather than by activities \u2014 " + all[top - 1] +
+    "% describe at least one activity under Goal " + top + ", " + GOAL_FULL[top] + ", and " + all[bottom - 1] +
+    "% reach Goal " + bottom + ", " + GOAL_FULL[bottom] + "."];
+
+  const classes = [...new Set(pool.map(d => d.class).filter(Boolean))].sort();
+  if (classes.length === 2) {
+    const a = pct(pool.filter(d => d.class === classes[0])), b = pct(pool.filter(d => d.class === classes[1]));
+    const g = Array.from({ length: 17 }, (_, i) => i + 1)
+      .sort((p, q) => Math.abs(a[q - 1] - b[q - 1]) - Math.abs(a[p - 1] - b[p - 1]))[0];
+    const gap = Math.abs(a[g - 1] - b[g - 1]);
+    if (gap >= 8) {
+      const lead = a[g - 1] > b[g - 1] ? classes[0] : classes[1];
+      parts.push("The peer groups part company most on Goal " + g + ", " + GOAL_FULL[g] + ": " +
+        classes[0].toLowerCase() + " councils " + a[g - 1] + "%, " + classes[1].toLowerCase() + " councils " +
+        b[g - 1] + "% \u2014 a " + gap + " point spread in " + lead.toLowerCase() + " councils' favour.");
+    }
+  }
+
+  parts.push("A council counts once here however much it described, so this measures how widely a Goal is spoken about, not how much of the work sits under it.");
+  el.textContent = parts.join(" ");
+}
+
+/* Australian state and territory colours (official main colour). NSW sky blue
+   and WA gold are too light to hold a line against the cream ground, so both
+   are darkened; the rest are the published hex values. */
+const STATE_COLOURS = {
+  ACT: "#003087", NSW: "#3E9BD6", NT: "#C75B12", QLD: "#73182C",
+  SA: "#D50032", TAS: "#006747", VIC: "#201547", WA: "#C9A200"
+};
+const stateColour = s => STATE_COLOURS[s] || "color-mix(in srgb, var(--color-text) 42%, transparent)";
+
+/* One legend, both charts. */
+function legendHTML(groups) {
+  return groups.map(g =>
+    '<span style="display:flex;align-items:center;gap:6px">' +
+      '<span style="width:10px;height:10px;border-radius:999px;background:' + g.colour + '"></span>' +
+      '<span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">' + g.key + '</span>' +
+    '</span>').join("");
+}
+
+/* One line chart, two callers: peer groups and states. */
+function lineChart(years, series, opts) {
+  const o = opts || {}, W2 = 380, H2 = o.height || 140, L = 30, R = o.right || 8, T = 10, B = 20;
+  const X = i => years.length < 2 ? (L + (W2 - L - R) / 2) : L + i * (W2 - L - R) / (years.length - 1);
+  const Y = v => T + (1 - v / 17) * (H2 - T - B);
+
+  const grid = [0, 5, 10, 15].map(v =>
+    '<line x1="' + L + '" x2="' + (W2 - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="color-mix(in srgb, var(--color-text) 10%, transparent)" stroke-width="1"/>' +
+    '<text x="' + (L - 7) + '" y="' + (Y(v) + 3.5) + '" text-anchor="end" font-size="9.5" fill="color-mix(in srgb, var(--color-text) 45%, transparent)">' + v + '</text>').join("");
+
+  const xlabels = years.map((yr, i) =>
+    '<text x="' + X(i) + '" y="' + (H2 - 5) + '" text-anchor="middle" font-size="10" fill="color-mix(in srgb, var(--color-text) 52%, transparent)">' + yr + '</text>').join("");
+
+  const drawn = series.map(g => ({ g, pts: g.pts.map((p, i) => ({ i, p })).filter(x => x.p.v != null) }))
+    .filter(d => d.pts.length);
+
+  /* End labels are nudged apart so close series stay legible. */
+  const ends = drawn.map(d => {
+    const last = d.pts[d.pts.length - 1];
+    return { key: d.g.key, colour: d.g.colour, x: X(last.i), y: Y(last.p.v) };
+  }).sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) {
+    if (ends[i].y - ends[i - 1].y < 11) ends[i].y = ends[i - 1].y + 11;
+  }
+
+  const body = drawn.map(d => {
+    const g = d.g, pts = d.pts;
+    const line = pts.length > 1
+      ? '<polyline fill="none" stroke="' + g.colour + '" stroke-width="' + (o.thin ? 1.6 : 2.25) +
+        '" stroke-linecap="round" stroke-linejoin="round" points="' + pts.map(x => X(x.i) + "," + Y(x.p.v)).join(" ") + '"/>' : "";
+    return line + pts.map(x =>
+      '<circle cx="' + X(x.i) + '" cy="' + Y(x.p.v) + '" r="' + (o.thin ? 2.6 : 3.6) + '" fill="' + g.colour +
+      '" stroke="var(--color-surface)" stroke-width="1.4"><title>' + g.key + " " + x.p.yr + ": " +
+      x.p.v.toFixed(1) + " of 17, " + x.p.n + " council" + (x.p.n === 1 ? "" : "s") + "</title></circle>").join("");
+  }).join("");
+
+  const tags = !o.endLabels ? "" : ends.map(e =>
+    '<text x="' + (e.x + 6) + '" y="' + (e.y + 3.5) + '" font-size="9.5" font-weight="700" fill="' +
+    e.colour + '">' + e.key + '</text>').join("");
+
+  return '<svg viewBox="0 0 ' + W2 + ' ' + H2 + '" style="display:block;width:100%;height:auto;overflow:visible">' +
+    grid + xlabels + body + tags + '</svg>';
+}
+
+/* Mean Goals evidenced per council per year, over whichever councils match. */
+function meanSeries(key, filter) {
+  return { key, pts: (YEARS || []).map(yr => {
+    const vals = DATA.filter(d => d.by_year && d.by_year[yr] && filter(d))
+      .map(d => d.by_year[yr].goals_evidenced).filter(v => v != null);
+    return { yr, n: vals.length, v: vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null };
+  }) };
+}
+
+/* A mean over one or two councils is noise, not a state trend. */
+const STATE_MIN = 3;
+
+function paintStateTrend() {
+  const wrap = document.querySelector("[data-statetrendwrap]");
+  if (!wrap) return;
+  const years = (YEARS || []).slice();
+  if (years.length < 2 || !DATA.some(d => d.by_year)) { wrap.style.display = "none"; return; }
+
+  const present = [...new Set(DATA.map(d => d.state).filter(Boolean))];
+  const built = present.map(s => meanSeries(s, d => d.state === s));
+  const heldBack = [];
+  built.forEach(g => g.pts.forEach(p => {
+    if (p.n > 0 && p.n < STATE_MIN) { p.v = null; heldBack.push(g.key); }
+  }));
+  const shown = built.filter(g => g.pts.some(p => p.v != null));
+  if (!shown.length) { wrap.style.display = "none"; return; }
+  wrap.style.display = "flex";
+
+  shown.forEach(g => { g.colour = stateColour(g.key); });
+  shown.sort((a, b) => a.key.localeCompare(b.key));
+  document.querySelector("[data-statetrend]").innerHTML =
+    lineChart(years, shown, { thin: true, right: 8, height: 210 });
+  document.querySelector("[data-statetrendkey]").innerHTML = legendHTML(shown);
+
+  const shownKeys = shown.map(g => g.key);
+  const dropped = [...new Set(heldBack)].filter(s => !shownKeys.includes(s));
+  document.querySelector("[data-statetrendnote]").textContent =
+    "State colours after the official state and territory colours; NSW sky blue and WA gold darkened to read on this ground. States with at least " +
+    STATE_MIN + " analysed councils in a year." +
+    (dropped.length ? " " + dropped.join(", ") + " held back as too few to average." : "") +
+    " Hover a point for its council count.";
+}
+
+function paintTrend() {
+  const wrap = document.querySelector("[data-trendwrap]");
+  if (!wrap) return;
+  const host = document.querySelector("[data-trend]");
+  const years = (YEARS || []).slice();
+  if (!years.length || !DATA.some(d => d.by_year)) { wrap.style.display = "none"; return; }
+  wrap.style.display = "flex";
+
+  const classes = [...new Set(DATA.map(d => d.class).filter(Boolean))].sort();
+  const keys = classes.length > 1 ? classes : ["All councils"];
+  const groups = keys.map((k, i) => Object.assign(
+    meanSeries(k, d => classes.length > 1 ? d.class === k : true),
+    { colour: SPLIT_COLORS[i % SPLIT_COLORS.length] }));
+
+  host.innerHTML = lineChart(years, groups, { height: 210, right: 8 });
+
+  document.querySelector("[data-trendkey]").innerHTML = legendHTML(groups);
+
+  /* One year is not a trend, and the page must not imply it is. */
+  const moves = groups.map(g => {
+    const p = g.pts.filter(q => q.v != null);
+    return p.length < 2 ? null : { key: g.key, d: p[p.length - 1].v - p[0].v, from: p[0].yr, to: p[p.length - 1].yr };
+  }).filter(Boolean);
+  const note = document.querySelector("[data-trendnote]");
+  if (!moves.length) {
+    note.textContent = "One reporting year analysed so far \u2014 direction of travel needs a second.";
+    return;
+  }
+  const word = d => Math.abs(d) < 0.25 ? "held steady" : (d > 0 ? "rose " + d.toFixed(1) : "fell " + Math.abs(d).toFixed(1));
+  note.textContent = "Mean of 17, across councils that filed in each year. " +
+    moves.map(m => m.key + " " + word(m.d)).join("; ") + " between " + moves[0].from + " and " + moves[0].to +
+    ". A rise can mean broader work or plainer writing.";
+}
+
+function paintSnapshot() {
+  const host = document.querySelector("[data-snapshot]");
+  if (!host) return;
+  const note = document.querySelector("[data-snapnote]");
+  const lede = document.querySelector("[data-snaplede]");
+  const refkey = document.querySelector("[data-refkey]");
+
+  const pool = DATA.filter(inScope);
+  const classes = [...new Set(pool.map(d => d.class).filter(Boolean))].sort();
+  if (GROUP !== "All" && GROUP !== "split") GROUP = "All";
+
+  /* Per-Goal detail only exists once the published dataset carries it. */
+  if (!pool.some(d => goalListOf(d).length)) {
+    host.innerHTML = "";
+    document.querySelector("[data-groups]").innerHTML = "";
+    note.textContent = "Per-Goal shares appear once the published dataset carries each council's evidenced Goals.";
+    refkey.style.display = "none";
+    return;
+  }
+
+  const pct = list => Array.from({ length: 17 }, (_, i) =>
+    list.length ? Math.round(list.filter(d => goalListOf(d).includes(i + 1)).length / list.length * 100) : 0);
+
+  const all = pct(pool);
+  const split = GROUP === "split" && classes.length > 1;
+  const groups = split
+    ? classes.map(k => { const list = pool.filter(d => d.class === k); return { key: k, list, pct: pct(list) }; })
+    : [{ key: "All", list: pool, pct: all }];
+
+  const chips = [{ k: "All", label: "All councils \u00b7 " + pool.length }];
+  if (classes.length > 1) chips.push({ k: "split", label: classes.join(" / ") });
+  document.querySelector("[data-groups]").innerHTML = chips
+    .map(c => '<button class="chip' + ((GROUP === c.k || (c.k === "All" && !split && GROUP !== "All")) ? " on" : "") + '" data-group="' + c.k + '">' + c.label + '</button>')
+    .join("");
+  document.querySelectorAll("[data-group]").forEach(b =>
+    b.addEventListener("click", () => { GROUP = b.dataset.group; paintSnapshot(); }));
+
+  const bar = (v, colour) =>
+    '<div style="flex:1 1 60px;height:' + (split ? 7 : 10) + 'px;border-radius:999px;background:color-mix(in srgb, var(--color-text) 7%, transparent)">' +
+      '<div style="height:100%;border-radius:999px;background:' + colour + ';width:' + (v === 0 ? 0 : Math.max(2, v)) + '%"></div>' +
+    '</div>' +
+    '<span style="flex:0 0 38px;text-align:right;font-size:' + (split ? "12px" : "13px") + ';font-weight:700">' + v + '%</span>';
+
+  host.innerHTML = Array.from({ length: 17 }, (_, i) => i + 1)
+    .sort((a, b) => all[b - 1] - all[a - 1] || a - b)
+    .map(i =>
+      '<div style="display:flex;align-items:center;gap:12px;padding:' + (split ? "8px" : "7px") + ' 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent)">' +
+        '<span style="flex:0 0 auto;width:23px;height:23px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;background:' + GOAL_COLORS[i] + '">' + String(i).padStart(2, "0") + '</span>' +
+        '<span style="flex:0 0 138px;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + GOAL_NAMES[i] + '</span>' +
+        '<div style="flex:1 1 100px;display:flex;flex-direction:column;gap:4px">' +
+          groups.map((g, k) => '<div style="display:flex;align-items:center;gap:10px">' +
+            bar(g.pct[i - 1], SPLIT_COLORS[k % SPLIT_COLORS.length]) + '</div>').join("") +
+        '</div>' +
+      '</div>')
+    .join("");
+
+  lede.textContent = "The share of councils whose " + (YEAR ? YEAR + " report describes" : "reports describe") +
+    " at least one activity aligned to each Goal. Not how much they described \u2014 whether they described any at all.";
+  note.textContent = (split
+    ? groups.map(g => g.list.length + " " + g.key.toLowerCase()).join(", ") + " of " + pool.length + " councils"
+    : pool.length + (pool.length === 1 ? " council" : " councils")) +
+    (YEAR ? " with a " + YEAR + " report" : ", every analysed year combined") +
+    (LIVE ? "" : " \u00b7 sample data");
+
+  refkey.style.display = split ? "flex" : "none";
+  refkey.innerHTML = !split ? "" : groups.map((g, k) =>
+    '<span style="display:flex;align-items:center;gap:7px">' +
+      '<span style="width:11px;height:11px;border-radius:999px;background:' + SPLIT_COLORS[k % SPLIT_COLORS.length] + '"></span>' +
+      '<span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">' + g.key + '</span>' +
+    '</span>').join("");
+}
+
 function paintYears() {
   const el = document.querySelector("[data-years]");
   if (!el) return;
@@ -520,7 +879,7 @@ function paintYears() {
     '<button class="chip' + (YEAR === null ? " on" : "") + '" data-year="">All years</button>';
   el.querySelectorAll("[data-year]").forEach(b => b.addEventListener("click", () => {
     YEAR = b.dataset.year ? +b.dataset.year : null;
-    paintYears(); mapHint(); repaint();
+    paintYears(); mapHint(); paintSnapshot(); paintCommentary(); repaint();
   }));
 }
 
@@ -530,6 +889,22 @@ const svg = d3.select(host).append("svg")
   .attr("viewBox", "0 0 " + W + " " + H)
   .style("display", "block").style("width", "100%").style("height", "auto");
 let repaint = () => {};
+
+/* Pan and zoom. Strokes are divided by the scale so borders stay hairline
+   as you zoom in. Double-click returns to the full country. */
+function attachZoom(layer, strokeAt1) {
+  const z = d3.zoom().scaleExtent([1, 12])
+    .translateExtent([[0, 0], [W, H]]).extent([[0, 0], [W, H]])
+    .on("zoom", e => {
+      layer.attr("transform", e.transform);
+      if (strokeAt1) layer.selectAll("path,circle").attr("stroke-width", strokeAt1 / e.transform.k);
+      hideTip();
+    });
+  svg.style("cursor", "grab").call(z).on("dblclick.zoom", null)
+    .on("dblclick", () => svg.transition().duration(400).call(z.transform, d3.zoomIdentity));
+  const reset = document.querySelector("[data-mapreset]");
+  if (reset) reset.addEventListener("click", () => svg.transition().duration(400).call(z.transform, d3.zoomIdentity));
+}
 
 Promise.all([
   d3.json("data/coverage.json").catch(() => null),
@@ -543,6 +918,10 @@ Promise.all([
   indexData();
   paintYears();
   mapHint();
+  paintSnapshot();
+  paintTrend();
+  paintStateTrend();
+  paintCommentary();
   if (topo && topo.objects) drawLGA(topo); else drawPoints();
 });
 
@@ -560,7 +939,8 @@ function drawLGA(topo) {
   const lookup = p => (codeOf(p) && byCode.get(String(codeOf(p)))) ||
     byName.get(norm(nameOf(p)) + "|" + (ST[p.STE_NAME21 || p.STATE_NAME_2021] || ""));
 
-  const shapes = svg.append("g").selectAll("path").data(feats).join("path")
+  const layer = svg.append("g");
+  const shapes = layer.selectAll("path").data(feats).join("path")
     .attr("class", "lga").attr("d", path)
     .attr("stroke", "var(--color-surface)").attr("stroke-width", 0.35)
     .on("mousemove", (e, d) => {
@@ -574,6 +954,7 @@ function drawLGA(topo) {
 
   repaint = () => shapes.attr("fill", d => shade(goalsOf(lookup(d.properties))));
   repaint();
+  attachZoom(layer, 0.35);
 
   const matched = feats.filter(f => lookup(f.properties)).length;
   document.querySelector("[data-mapsource]").textContent =
@@ -586,12 +967,13 @@ function drawPoints() {
   d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json").then(topo => {
     const aus = topojson.feature(topo, topo.objects.countries).features.find(f => f.properties.name === "Australia");
     const proj = d3.geoMercator().fitExtent([[16, 16], [W - 16, H - 16]], aus);
-    svg.append("path").datum(aus).attr("d", d3.geoPath(proj))
+    const layer = svg.append("g");
+    layer.append("path").datum(aus).attr("d", d3.geoPath(proj))
       .attr("fill", "color-mix(in srgb, var(--color-text) 6%, transparent)")
       .attr("stroke", "color-mix(in srgb, var(--color-text) 20%, transparent)").attr("stroke-width", 1);
 
     const pts = DATA.filter(d => d.lat != null && d.lon != null);
-    const dots = svg.append("g").selectAll("circle").data(pts).join("circle")
+    const dots = layer.append("g").selectAll("circle").data(pts).join("circle")
       .attr("class", "dot")
       .attr("cx", d => proj([d.lon, d.lat])[0]).attr("cy", d => proj([d.lon, d.lat])[1])
       .attr("r", d => 5 + (yearsOf(d) - 1) * 2.2)
@@ -604,6 +986,7 @@ function drawPoints() {
 
     repaint = () => dots.attr("fill", d => shade(goalsOf(d)));
     repaint();
+    attachZoom(layer, 1.2);
 
     document.querySelector("[data-maphint]").textContent =
       "One point per analysed council, shaded by Goals evidenced and sized by years available.";
