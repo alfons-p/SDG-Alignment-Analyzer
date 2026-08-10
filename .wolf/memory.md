@@ -1889,3 +1889,8 @@
 | 10:19 | Edited frontend/src/pages/DashboardPage.tsx | added optional chaining | ~75 |
 | 10:19 | Edited frontend/src/pages/DashboardPage.tsx | 8→10 lines | ~144 |
 | 10:24 | Session end: 117 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107702 tok |
+| 10:27 | Session end: 117 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107702 tok |
+| 10:40 | Edited frontend/src/pages/LandingPage.tsx | 5→10 lines | ~156 |
+| 10:40 | Edited frontend/src/pages/LandingPage.tsx | added 1 condition(s) | ~37 |
+| 10:40 | Edited frontend/src/pages/LandingPage.tsx | 5→6 lines | ~46 |
+| 10:44 | Session end: 120 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107944 tok |
