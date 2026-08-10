@@ -92,12 +92,16 @@ def build_public_coverage(db: Session) -> dict[str, Any]:
             },
         )
         goals = [n for n in range(1, 18) if cov.get(n, 0) > 0]
+        acts = (a.result or {}).get("activities", []) or []
+        barren = sum(1 for act in acts if int(act.get("num_aligned", 0) or 0) == 0)
         year_key = str(a.year) if a.year else "unknown"
         c["by_year"][year_key] = {
             "goals_evidenced": len(goals),
             "goals": goals,
             "activities": total,
             "pages": page_count,
+            "barren": barren,
+            "activities_per_100_pages": round(total / page_count * 100, 1) if page_count else None,
             "extraction": _extraction_grade(total, page_count),
         }
 

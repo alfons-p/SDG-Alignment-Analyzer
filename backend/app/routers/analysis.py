@@ -288,6 +288,7 @@ def get_result_activities(
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sdg: Optional[int] = Query(None, ge=1, le=17),
+    q: Optional[str] = Query(None),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -308,6 +309,11 @@ def get_result_activities(
             ).get("is_aligned", False)
         ]
 
+    # Server-side text search (was client-side per data-contract Part A).
+    if q and q.strip():
+        needle = q.strip().lower()
+        activities = [a for a in activities if needle in (a.get("activity_text", "") or "").lower()]
+
     total = len(activities)
     start = (page - 1) * page_size
     paged = activities[start : start + page_size]
@@ -315,6 +321,45 @@ def get_result_activities(
     return ActivityPageResponse(
         activities=paged, page=page, page_size=page_size, total=total, sdg_filter=sdg
     )
+
+
+@router.get("/results/{analysis_id}/heatmap")
+def get_result_heatmap(analysis_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Full per-activity score vector (all 17 Goals, aligned or not) plus the
+    per-Goal thresholds — the near-misses are the point of the heatmap, and a
+    raw score is meaningless without its own threshold. Opt-in: ~17x the payload
+    of the ordinary activity list. (data-contract Part C #5)"""
+    analysis = _get_user_analysis(analysis_id, user, db)
+    if analysis.status != "completed" or not analysis.result:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Results not available — status: {analysis.status}")
+
+    def cell(sc: dict, n: int) -> dict:
+        return sc.get(n, sc.get(str(n), {})) or {}
+
+    activities = analysis.result.get("activities", []) or []
+    rows = []
+    for i, a in enumerate(activities):
+        sc = a.get("sdg_scores", {}) or {}
+        rows.append({
+            "id": i,
+            "text": a.get("activity_text", ""),
+            "section_type": a.get("section_type", ""),
+            "scores": {n: round(float(cell(sc, n).get("score", 0) or 0), 3) for n in range(1, 18)},
+            "aligned": [n for n in range(1, 18) if cell(sc, n).get("is_aligned")],
+        })
+
+    # Thresholds: custom per-Goal from the run's settings if present, else the
+    # config defaults for the engine mode used.
+    settings = analysis.settings or {}
+    custom = settings.get("sdg_thresholds") or {}
+    if custom:
+        thresholds = {int(k): round(float(v), 3) for k, v in custom.items()}
+    else:
+        from src.config.threshold_config import get_all_thresholds
+        mode = "hybrid" if settings.get("use_hybrid", True) else "st"
+        thresholds = {int(k): round(float(v), 3) for k, v in get_all_thresholds(mode).items()}
+
+    return {"activities": rows, "thresholds": thresholds, "total": len(rows)}
 
 
 @router.get("/results/{analysis_id}/export/csv")

@@ -48,9 +48,11 @@ export async function getActivities(
   page: number = 1,
   pageSize: number = 50,
   sdg?: number,
+  q?: string,
 ): Promise<ActivityPage> {
   const params: Record<string, string | number> = { page, page_size: pageSize }
   if (sdg) params.sdg = sdg
+  if (q && q.trim()) params.q = q.trim()
   const { data } = await api.get(`/api/analysis/results/${analysisId}/activities`, { params })
   return data
 }

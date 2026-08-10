@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft } from 'lucide-react'
@@ -24,6 +24,14 @@ export function ActivitiesPage() {
   const [query, setQuery] = useState('')
   const [section, setSection] = useState('All')
 
+  // Debounce the text search into the server query (data-contract Part A:
+  // free-text filtering moved from client to a `q` param).
+  const [debouncedQ, setDebouncedQ] = useState('')
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(query.trim()), 300)
+    return () => clearTimeout(t)
+  }, [query])
+
   const { data: result } = useQuery({
     queryKey: ['results', id],
     queryFn: () => getResults(id!),
@@ -31,9 +39,10 @@ export function ActivitiesPage() {
   })
 
   const { data: page } = useQuery({
-    queryKey: ['all-activities', id],
-    queryFn: () => getActivities(id!, 1, 200),
+    queryKey: ['all-activities', id, debouncedQ],
+    queryFn: () => getActivities(id!, 1, 200, undefined, debouncedQ),
     enabled: !!id,
+    placeholderData: (prev) => prev,
   })
 
   const activities = useMemo(() => page?.activities ?? [], [page])
@@ -44,12 +53,12 @@ export function ActivitiesPage() {
     return ['All', ...[...set].sort()]
   }, [activities])
 
+  // Text search is server-side now; section filter + sort stay client-side.
   const rows = useMemo(() => {
-    const q = query.trim().toLowerCase()
     return activities
-      .filter((a) => (section === 'All' || a.section_type === section) && (!q || a.activity_text.toLowerCase().includes(q)))
+      .filter((a) => section === 'All' || a.section_type === section)
       .sort((x, y) => y.top_score - x.top_score)
-  }, [activities, query, section])
+  }, [activities, section])
 
   if (!id) return null
   if (!result || !page) return <div style={{ fontSize: 14, color: 'color-mix(in srgb, var(--color-text) 50%, transparent)' }}>Loading…</div>

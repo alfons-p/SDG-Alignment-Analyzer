@@ -59,6 +59,27 @@ const PAGE_HTML = `
             <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="mediannote">Computed from the published dataset.</span>
           </div>
         </div>
+        <div style="display:none;align-items:baseline;gap:16px;padding:10px 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 13%, transparent)" data-row="barren">
+          <span style="font-family:var(--font-heading);font-size:30px;line-height:1;width:84px;flex:0 0 auto" data-stat="barren">&mdash;</span>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:14px;font-weight:600;line-height:1.4">of described work sits under no Goal</span>
+            <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="barrennote"></span>
+          </div>
+        </div>
+        <div style="display:none;align-items:baseline;gap:16px;padding:10px 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 13%, transparent)" data-row="depth">
+          <span style="font-family:var(--font-heading);font-size:30px;line-height:1;width:84px;flex:0 0 auto" data-stat="depth">&mdash;</span>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:14px;font-weight:600;line-height:1.4">described activities per 100 pages, median</span>
+            <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="depthnote"></span>
+          </div>
+        </div>
+        <div style="display:none;align-items:baseline;gap:16px;padding:10px 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 13%, transparent)" data-row="repeat">
+          <span style="font-family:var(--font-heading);font-size:30px;line-height:1;width:84px;flex:0 0 auto;color:var(--color-accent-2-700)" data-stat="repeat">&mdash;</span>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-size:14px;font-weight:600;line-height:1.4">councils with a second reporting year</span>
+            <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 60%, transparent)" data-stat="repeatnote"></span>
+          </div>
+        </div>
       </div>
 
       <div style="display:none;flex-direction:column;gap:10px;margin-top:auto;padding-top:20px" data-trendwrap>
@@ -99,7 +120,8 @@ const PAGE_HTML = `
   </div>
 
   <!-- ── Below the fold ── -->
-  <p id="findings" style="margin:0;padding:4px 56px 30px;max-width:860px;font-size:18px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty;scroll-margin-top:80px" data-stat="lead">The findings below are computed from every report analysed.</p>
+  <p id="findings" style="margin:0;padding:4px 56px 8px;max-width:860px;font-size:18px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty;scroll-margin-top:80px" data-stat="lead">The findings below are computed from every report analysed.</p>
+  <p style="margin:0;padding:0 56px 30px;max-width:860px;font-size:15px;line-height:1.62;color:color-mix(in srgb, var(--color-text) 64%, transparent);text-wrap:pretty" data-commentary></p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;padding:8px 56px 48px;align-items:start">
     <div style="display:flex;flex-direction:column;gap:16px">
@@ -227,7 +249,7 @@ export function LandingPage() {
     type Rec = {
       code?: string; lga_code: string | null; name: string; state: string | null; type?: string; class?: string
       lat?: number | null; lon?: number | null; goals_evidenced: number | null
-      years_available: number; by_year?: Record<string, { goals_evidenced: number; goals?: number[] }>
+      years_available: number; by_year?: Record<string, { goals_evidenced: number; goals?: number[]; activities?: number; pages?: number | null; barren?: number; activities_per_100_pages?: number | null }>
       postcodes?: (string | number)[]
     }
     const goCouncil = (d: Rec | null | undefined) => { if (d?.code) navigate('/council/' + d.code) }
@@ -583,6 +605,62 @@ export function LandingPage() {
       refkey.innerHTML = !split ? '' : groups.map((g, k) => '<span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:999px;background:' + SPLIT_COLORS[k % SPLIT_COLORS.length] + '"></span><span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">' + g.key + '</span></span>').join('')
     }
 
+    // Three supporting figures (barren share, extraction depth, repeat years);
+    // each hides itself when the dataset does not carry its field.
+    function paintSupport(councils: Rec[]) {
+      const show = (k: string, on: boolean) => { const el = page.querySelector<HTMLElement>('[data-row="' + k + '"]'); if (el) el.style.display = on ? 'flex' : 'none' }
+      const recs: NonNullable<Rec['by_year']>[string][] = []
+      councils.forEach((c) => Object.values(c.by_year || {}).forEach((r) => recs.push(r)))
+      if (!recs.length) { ['barren', 'depth', 'repeat'].forEach((k) => show(k, false)); return }
+      const withBarren = recs.filter((r) => r.barren != null && r.activities)
+      if (withBarren.length) {
+        const b = withBarren.reduce((s, r) => s + (r.barren || 0), 0)
+        const a = withBarren.reduce((s, r) => s + (r.activities || 0), 0)
+        set('barren', Math.round((b / a) * 100) + '%')
+        set('barrennote', 'Described work the classifier could not place under any Goal — usually governance, finance and administration.')
+        show('barren', true)
+      } else show('barren', false)
+      const depths = recs.map((r) => (r.activities_per_100_pages != null ? r.activities_per_100_pages : r.pages ? (r.activities || 0) / r.pages * 100 : null)).filter((v): v is number => v != null).sort((x, y) => x - y)
+      if (depths.length) {
+        const med = depths[Math.floor(depths.length / 2)]
+        set('depth', med.toFixed(1))
+        set('depthnote', 'From ' + depths[0].toFixed(1) + ' to ' + depths[depths.length - 1].toFixed(1) + '. A thin report yields little described activity, so its coverage understates the work.')
+        show('depth', true)
+      } else show('depth', false)
+      const multi = councils.filter((c) => Object.keys(c.by_year || {}).length > 1).length
+      if (councils.length) {
+        set('repeat', multi + ' of ' + councils.length)
+        set('repeatnote', multi < 2 ? 'Change over time needs a second report from the same council.' : 'Only these can show a direction of travel rather than a single reading.')
+        show('repeat', true)
+      } else show('repeat', false)
+    }
+
+    // Commentary: the headline counts activities, the snapshot counts councils —
+    // name the difference so a reader doesn't assume they're the same question.
+    function paintCommentary() {
+      const el = page.querySelector<HTMLElement>('[data-commentary]')
+      if (!el) return
+      const pool = DATA.filter(inScope)
+      if (!pool.some((d) => goalListOf(d).length)) { el.textContent = ''; return }
+      const pct = (list: Rec[]) => Array.from({ length: 17 }, (_, i) => (list.length ? Math.round(list.filter((d) => goalListOf(d).includes(i + 1)).length / list.length * 100) : 0))
+      const all = pct(pool)
+      const ranked = Array.from({ length: 17 }, (_, i) => i + 1).sort((a, b) => all[b - 1] - all[a - 1])
+      const top = ranked[0], bottom = ranked[ranked.length - 1]
+      const parts = ['Counted a second way — by councils rather than by activities — ' + all[top - 1] + '% describe at least one activity under Goal ' + top + ', ' + GOAL_FULL[top] + ', and ' + all[bottom - 1] + '% reach Goal ' + bottom + ', ' + GOAL_FULL[bottom] + '.']
+      const classes = Array.from(new Set(pool.map((d) => d.class).filter(Boolean))).sort() as string[]
+      if (classes.length === 2) {
+        const a = pct(pool.filter((d) => d.class === classes[0])), b = pct(pool.filter((d) => d.class === classes[1]))
+        const g = Array.from({ length: 17 }, (_, i) => i + 1).sort((p, q) => Math.abs(a[q - 1] - b[q - 1]) - Math.abs(a[p - 1] - b[p - 1]))[0]
+        const gap = Math.abs(a[g - 1] - b[g - 1])
+        if (gap >= 8) {
+          const lead = a[g - 1] > b[g - 1] ? classes[0] : classes[1]
+          parts.push('The peer groups part company most on Goal ' + g + ', ' + GOAL_FULL[g] + ': ' + classes[0].toLowerCase() + ' councils ' + a[g - 1] + '%, ' + classes[1].toLowerCase() + ' councils ' + b[g - 1] + '% — a ' + gap + ' point spread in ' + lead.toLowerCase() + ' councils’ favour.')
+        }
+      }
+      parts.push('A council counts once here however much it described, so this measures how widely a Goal is spoken about, not how much of the work sits under it.')
+      el.textContent = parts.join(' ')
+    }
+
     function mapHint() {
       const el = page.querySelector<HTMLElement>('[data-maphint]')
       if (!el) return
@@ -601,7 +679,7 @@ export function LandingPage() {
         '<button class="chip' + (YEAR === null ? ' on' : '') + '" data-year="">All years</button>'
       el.querySelectorAll<HTMLButtonElement>('[data-year]').forEach((b) => b.addEventListener('click', () => {
         YEAR = b.dataset.year ? +b.dataset.year : null
-        paintYears(); mapHint(); paintSnapshot(); repaint()
+        paintYears(); mapHint(); paintSnapshot(); paintCommentary(); repaint()
       }))
     }
 
@@ -640,7 +718,7 @@ export function LandingPage() {
         paintNational(cov.national, DATA, cov.narrative)
       }
       indexData()
-      paintYears(); mapHint(); paintSnapshot(); paintTrend(); paintStateTrend()
+      paintYears(); mapHint(); paintSnapshot(); paintTrend(); paintStateTrend(); paintSupport(DATA); paintCommentary()
       if (topo && topo.objects) drawLGA(topo); else drawPoints()
     })
 
