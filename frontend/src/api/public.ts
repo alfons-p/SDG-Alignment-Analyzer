@@ -34,6 +34,8 @@ export interface EvidencePassage {
 export interface CouncilYearDetail {
   activities: number
   pages: number | null
+  extraction: string
+  activities_per_100_pages: number | null
   barren: number
   goals_evidenced: number
   counts: Record<string, number>

@@ -17,15 +17,15 @@ const GOAL_FULL: Record<number, string> = {
 
 const muted = 'color-mix(in srgb, var(--color-text) 60%, transparent)'
 
-function extractionGrade(activities: number, pages: number | null): { label: string; per100: number; note: string } | null {
-  if (!pages) return null
-  const per100 = (activities / pages) * 100
-  const g = per100 >= 40 ? 'rich' : per100 >= 25 ? 'adequate' : 'thin'
+// Grade + density come from the backend (rich/moderate/thin @ 40/15) so the
+// council page and Browse never label the same report differently.
+function extractionGrade(grade: string, per100: number | null): { label: string; per100: number; note: string } | null {
+  if (per100 == null) return null
   return {
-    label: g,
+    label: grade,
     per100,
     note:
-      g === 'thin'
+      grade === 'thin'
         ? 'This report is written largely as tables and status grids rather than prose, so it yielded little described activity. Read its Goal coverage as a floor, not a measure.'
         : 'Enough discrete activity was described for the Goal coverage here to be read as a property of the work rather than of the document.',
   }
@@ -82,7 +82,7 @@ export function CouncilPage() {
   const lede = lead
     ? `This report describes ${yd.activities} activities. ${evidenced} of the 17 Goals carry evidence, and ${GOAL_FULL[lead.sdg]} accounts for the largest share.`
     : `This report describes ${yd.activities} activities across ${evidenced} of the 17 Goals.`
-  const grade = extractionGrade(yd.activities, yd.pages)
+  const grade = extractionGrade(yd.extraction, yd.activities_per_100_pages)
 
   return (
     <Shell>

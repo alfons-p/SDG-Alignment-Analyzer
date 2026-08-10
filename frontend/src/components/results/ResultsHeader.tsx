@@ -28,7 +28,8 @@ export function ResultsHeader({
 
   const pages = summary.page_count ?? null
   const per100 = pages ? (summary.total_activities / pages) * 100 : null
-  const grade = per100 == null ? null : per100 >= 40 ? 'rich' : per100 >= 25 ? 'adequate' : 'thin'
+  // Same grade + cutoffs as the public pages (rich/moderate/thin @ 40/15).
+  const grade = per100 == null ? null : per100 >= 40 ? 'rich' : per100 >= 15 ? 'moderate' : 'thin'
   const metaBits = [state, pages ? `${pages} pages` : null].filter(Boolean)
 
   return (

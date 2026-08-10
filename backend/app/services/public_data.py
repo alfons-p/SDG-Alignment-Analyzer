@@ -163,9 +163,14 @@ def _year_detail(a: Analysis) -> dict[str, Any]:
     for n in range(1, 18):
         evidence[n] = sorted(evidence[n], key=lambda e: -e["s"])[:3]
 
+    pages = ((a.result or {}).get("metadata", {}) or {}).get("page_count")
     return {
         "activities": total,
-        "pages": ((a.result or {}).get("metadata", {}) or {}).get("page_count"),
+        "pages": pages,
+        # Same grade + cutoffs as coverage (rich/moderate/thin @ 40/15), so the
+        # council page and Browse can never label the same report differently.
+        "extraction": _extraction_grade(total, pages),
+        "activities_per_100_pages": round(total / pages * 100, 1) if pages else None,
         "barren": barren,
         "goals_evidenced": sum(1 for n in range(1, 18) if counts[n] > 0),
         "counts": {str(n): counts[n] for n in range(1, 18)},
