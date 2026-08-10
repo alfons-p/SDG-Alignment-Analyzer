@@ -70,6 +70,7 @@ const PAGE_HTML = `
       <div style="border-radius:30px;background:var(--color-surface);box-shadow:var(--shadow-sm);padding:10px" data-map></div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <span style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent)" data-maphint>Shaded by Goals evidenced in the council's most recent report.</span>
+        <button class="chip" style="padding:6px 13px;font-size:12px" data-mapreset>Reset view</button>
         <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
           <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent)">few</span>
           <div style="display:flex;gap:3px" data-legend></div>
@@ -473,6 +474,22 @@ export function LandingPage() {
       .style('display', 'block').style('width', '100%').style('height', 'auto')
     let repaint: () => void = () => {}
 
+    // Pan + zoom. Strokes divide by the scale so borders stay hairline when
+    // zoomed in; double-click or the Reset button returns to the full country.
+    function attachZoom(layer: any, strokeAt1: number) {
+      const z = d3.zoom<SVGSVGElement, unknown>().scaleExtent([1, 12])
+        .translateExtent([[0, 0], [W, H]]).extent([[0, 0], [W, H]])
+        .on('zoom', (e: any) => {
+          layer.attr('transform', e.transform)
+          if (strokeAt1) layer.selectAll('path,circle').attr('stroke-width', strokeAt1 / e.transform.k)
+          hideTip()
+        })
+      svg.style('cursor', 'grab').call(z as any).on('dblclick.zoom', null)
+        .on('dblclick', () => svg.transition().duration(400).call(z.transform as any, d3.zoomIdentity))
+      const reset = page.querySelector<HTMLButtonElement>('[data-mapreset]')
+      if (reset) reset.onclick = () => svg.transition().duration(400).call(z.transform as any, d3.zoomIdentity)
+    }
+
     Promise.all([
       getPublicCoverage().catch(() => null),
       fetch('/data/lga2025.topo.json').then((r) => (r.ok ? r.json() : null)).catch(() => null),
@@ -501,7 +518,8 @@ export function LandingPage() {
       const lookup = (p: any) => (codeOf(p) && byCode.get(String(codeOf(p)))) ||
         byName.get(norm(nameOf(p)) + '|' + (ST[p.STE_NAME21 || p.STATE_NAME_2021] || ''))
 
-      const shapes = svg.append('g').selectAll('path').data(feats).join('path')
+      const layer = svg.append('g')
+      const shapes = layer.selectAll('path').data(feats).join('path')
         .attr('class', 'lga').attr('d', path as any)
         .attr('stroke', 'var(--color-surface)').attr('stroke-width', 0.35)
         .on('mousemove', (e: MouseEvent, d: any) => {
@@ -515,6 +533,7 @@ export function LandingPage() {
 
       repaint = () => shapes.attr('fill', (d: any) => shade(goalsOf(lookup(d.properties))))
       repaint()
+      attachZoom(layer, 0.35)
 
       const matched = feats.filter((f: any) => lookup(f.properties)).length
       page.querySelector('[data-mapsource]')!.textContent =
@@ -527,12 +546,13 @@ export function LandingPage() {
       d3.json<any>('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then((topo) => {
         const aus = (feature(topo, topo.objects.countries) as any).features.find((f: any) => f.properties.name === 'Australia')
         const proj = d3.geoMercator().fitExtent([[16, 16], [W - 16, H - 16]], aus)
-        svg.append('path').datum(aus).attr('d', d3.geoPath(proj) as any)
+        const layer = svg.append('g')
+        layer.append('path').datum(aus).attr('d', d3.geoPath(proj) as any)
           .attr('fill', 'color-mix(in srgb, var(--color-text) 6%, transparent)')
           .attr('stroke', 'color-mix(in srgb, var(--color-text) 20%, transparent)').attr('stroke-width', 1)
 
         const pts = DATA.filter((d) => d.lat != null && d.lon != null)
-        const dots = svg.append('g').selectAll('circle').data(pts).join('circle')
+        const dots = layer.append('g').selectAll('circle').data(pts).join('circle')
           .attr('class', 'dot')
           .attr('cx', (d) => proj([d.lon!, d.lat!])![0]).attr('cy', (d) => proj([d.lon!, d.lat!])![1])
           .attr('r', (d) => 5 + (yearsOf(d) - 1) * 2.2)
@@ -543,6 +563,7 @@ export function LandingPage() {
 
         repaint = () => dots.attr('fill', (d) => shade(goalsOf(d)))
         repaint()
+        attachZoom(layer, 1.2)
 
         page.querySelector('[data-maphint]')!.textContent =
           'One point per analysed council, shaded by Goals evidenced and sized by years available.'
