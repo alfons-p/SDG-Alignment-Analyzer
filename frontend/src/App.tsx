@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from './components/layout'
 import { ProtectedRoute, RequireUploader } from './components/ProtectedRoute'
-import { LandingPage, CouncilPage, BrowsePage, PublicComparePage, AccessPage, LimitationsPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, AdminPage } from './pages'
+import { LandingPage, CouncilPage, BrowsePage, PublicComparePage, AccessPage, LimitationsPage, HowItWorksPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, AdminPage } from './pages'
 
 export default function App() {
   return (
@@ -12,6 +12,7 @@ export default function App() {
       <Route path="/compare" element={<PublicComparePage />} />
       <Route path="/access" element={<AccessPage />} />
       <Route path="/limitations" element={<LimitationsPage />} />
+      <Route path="/how-it-works" element={<HowItWorksPage />} />
       <Route path="/login" element={<Navigate to="/access" replace />} />
       <Route path="/register" element={<Navigate to="/access" replace />} />
       <Route

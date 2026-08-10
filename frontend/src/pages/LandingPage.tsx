@@ -24,8 +24,7 @@ const PAGE_HTML = `
   <div class="nav2" style="display:flex;align-items:center;gap:24px;padding:20px 56px">
     <span class="brand" data-nav="home" style="font-family:var(--font-heading);font-size:21px;line-height:1">SDG Alignment Analyser</span>
     <span class="navlink" data-nav="browse">The dataset</span>
-    <span class="navlink" data-nav="findings">Findings</span>
-    <span class="navlink" data-nav="limits">Method</span>
+    <span class="navlink" data-nav="howitworks">How it works</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
       <button class="btn btn-ghost" style="border-radius:999px" data-nav="login">Sign in</button>
       <button class="btn btn-primary" style="border-radius:999px" data-nav="upload">Upload a report</button>
@@ -571,9 +570,8 @@ export function LandingPage() {
       if (nav === 'find') {
         e.preventDefault()
         page.querySelector<HTMLInputElement>('[data-input]')?.focus()
-      } else if (nav === 'findings') {
-        e.preventDefault()
-        page.querySelector('#findings')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else if (nav === 'howitworks') {
+        e.preventDefault(); navigate('/how-it-works')
       } else if (nav === 'browse') {
         e.preventDefault(); navigate('/councils')
       } else if (nav === 'upload') {
