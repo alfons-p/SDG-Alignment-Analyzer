@@ -88,35 +88,27 @@ const PAGE_HTML = `
   <p id="findings" style="margin:0;padding:4px 56px 30px;max-width:860px;font-size:18px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 74%, transparent);text-wrap:pretty;scroll-margin-top:80px" data-stat="lead">The findings below are computed from every report analysed.</p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:52px;padding:8px 56px 48px;align-items:start">
-    <div style="display:flex;flex-direction:column;gap:22px">
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <h2 style="margin:0;font-size:24px">Compare like with like</h2>
-        <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 68%, transparent);text-wrap:pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:7px" data-classes>
-          <button class="chip" data-goto="">All councils</button>
-        </div>
-        <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
-      </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <h2 style="margin:0;font-size:24px">Compare like with like</h2>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 68%, transparent);text-wrap:pretty" data-stat="findblurb">Published analysis, with the passage behind every match. No account needed.</p>
+      <div style="display:flex;gap:7px;flex-wrap:wrap" data-groups></div>
+      <span style="font-size:13.5px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 62%, transparent);text-wrap:pretty" data-snaplede>The share of councils whose report describes at least one activity aligned to each Goal.</span>
+      <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty">You choose the peer group. Comparing a capital city with a rural shire on raw counts misleads, so we never rank councils for you.</span>
       <span style="font-size:12px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 52%, transparent)" data-mapsource></span>
+      <span style="font-size:13px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 62%, transparent);padding-top:6px;border-top:1px solid color-mix(in srgb, var(--color-text) 12%, transparent);text-wrap:pretty">Council officers can <a href="#" data-nav="upload">upload a newly published annual report</a> and see the analysis in minutes. Results stay private until you publish them.</span>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:20px">
-      <div style="display:flex;flex-direction:column;gap:12px;padding:24px 28px;border-radius:28px;background:color-mix(in srgb, var(--color-text) 3.5%, transparent)">
-        <span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent)">Recently added</span>
-        <div style="display:flex;align-items:baseline;gap:12px">
-          <span style="font-family:var(--font-heading);font-size:20px">City of Melbourne</span>
-          <span style="font-size:13px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">2024&ndash;25</span>
-        </div>
-        <span style="font-size:14px;line-height:1.55;color:color-mix(in srgb, var(--color-text) 68%, transparent);text-wrap:pretty">176 activities described, 13 of 17 Goals evidenced. Half of everything reported is city-shaping work.</span>
-        <a href="#" data-nav="login" style="font-size:14px;align-self:flex-start">Open the analysis</a>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr;gap:0" data-snapshot></div>
+      <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+        <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);flex:1 1 260px;text-wrap:pretty" data-snapnote></span>
+        <div style="display:none;align-items:center;gap:14px" data-refkey></div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;padding:28px 30px;border-radius:28px;background:var(--color-accent-100)">
-        <h2 style="margin:0;font-size:24px;color:var(--color-accent-800)">Or add this year's report</h2>
-        <p style="margin:0;font-size:14.5px;line-height:1.6;color:var(--color-accent-800);text-wrap:pretty">Council officers can upload a newly published annual report and see the analysis in minutes. Your result stays private until you choose to publish it.</p>
-        <div style="display:flex;align-items:center;gap:14px;padding-top:2px;flex-wrap:wrap">
-          <button class="btn btn-primary" style="border-radius:999px" data-nav="upload">Upload a report</button>
-          <span style="font-size:13px;color:var(--color-accent-800)">Verified council accounts</span>
-        </div>
+      <div style="display:none;flex-direction:column;gap:10px;margin-top:8px;padding-top:20px;border-top:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)" data-trendwrap>
+        <span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent)">Goals evidenced per council, by reporting year</span>
+        <div data-trend></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;min-height:20px" data-trendkey></div>
+        <span style="font-size:12px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty" data-trendnote></span>
       </div>
     </div>
   </div>
@@ -428,21 +420,131 @@ export function LandingPage() {
     page.querySelectorAll<HTMLElement>('[data-states]').forEach((el) => {
       el.innerHTML = STATES.map((s) => '<button class="chip" data-goto="state=' + s + '">' + s + '</button>').join('')
     })
-    // Setting chips are generated from the classes the data actually holds — the
-    // same values Browse filters on — so a chip can never point at a value that
-    // returns zero councils. Re-run after live data loads (sample classes differ).
-    function paintClasses() {
-      const cls = Array.from(new Set(DATA.map((d) => d.class).filter(Boolean))) as string[]
-      page.querySelectorAll<HTMLElement>('[data-classes]').forEach((el) => {
-        el.innerHTML = '<button class="chip" data-goto="">All councils</button>' +
-          cls.sort().map((c) => '<button class="chip" data-goto="class=' + c + '">' + c + '</button>').join('')
-      })
-    }
-    paintClasses()
     page.querySelectorAll<HTMLElement>('[data-legend]').forEach((el) => {
       el.innerHTML = [2, 5, 8, 11, 14, 17].map((g) =>
         '<span style="width:18px;height:18px;border-radius:999px;background:' + shade(g) + '"></span>').join('')
     })
+
+    // ── National snapshot: share of councils evidencing each Goal, split by the
+    // peer-group values the data carries; plus an over-time trend. Ported from
+    // the Aug-5 handoff.
+    const GOAL_NAMES: Record<number, string> = { 1: 'No Poverty', 2: 'Zero Hunger', 3: 'Good Health', 4: 'Quality Education', 5: 'Gender Equality', 6: 'Clean Water', 7: 'Clean Energy', 8: 'Decent Work', 9: 'Innovation', 10: 'Reduced Inequalities', 11: 'Sustainable Cities', 12: 'Responsible Consumption', 13: 'Climate Action', 14: 'Life Below Water', 15: 'Life on Land', 16: 'Peace & Justice', 17: 'Partnerships' }
+    const SPLIT_COLORS = ['var(--color-accent)', 'var(--color-accent-2)', 'var(--color-accent-600)']
+    let GROUP = 'All'
+
+    function goalListOf(d: Rec | null | undefined): number[] {
+      if (!d) return []
+      if (YEAR && d.by_year) return (d.by_year[YEAR] && d.by_year[YEAR].goals) || []
+      if (d.by_year) {
+        const u = new Set<number>()
+        Object.values(d.by_year).forEach((r) => (r.goals || []).forEach((g) => u.add(g)))
+        if (u.size) return [...u]
+      }
+      return []
+    }
+    const inScope = (d: Rec) => (YEAR ? !!(d.by_year && d.by_year[YEAR]) : true)
+
+    function legendHTML(groups: { key: string; colour: string }[]): string {
+      return groups.map((g) =>
+        '<span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:999px;background:' + g.colour + '"></span>' +
+        '<span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">' + g.key + '</span></span>').join('')
+    }
+
+    type Pt = { yr: number; n: number; v: number | null }
+    function meanSeries(key: string, filter: (d: Rec) => boolean): { key: string; pts: Pt[]; colour: string } {
+      return {
+        key, colour: '',
+        pts: (YEARS || []).map((yr) => {
+          const vals = DATA.filter((d) => d.by_year && d.by_year[yr] && filter(d))
+            .map((d) => d.by_year![yr].goals_evidenced).filter((v) => v != null) as number[]
+          return { yr, n: vals.length, v: vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null }
+        }),
+      }
+    }
+
+    function lineChart(years: number[], series: { key: string; pts: Pt[]; colour: string }[], o: { thin?: boolean; right?: number; height?: number } = {}): string {
+      const W2 = 380, H2 = o.height || 210, L = 30, R = o.right || 8, T = 10, B = 20
+      const X = (i: number) => (years.length < 2 ? L + (W2 - L - R) / 2 : L + i * (W2 - L - R) / (years.length - 1))
+      const Y = (v: number) => T + (1 - v / 17) * (H2 - T - B)
+      const grid = [0, 5, 10, 15].map((v) =>
+        '<line x1="' + L + '" x2="' + (W2 - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="color-mix(in srgb, var(--color-text) 10%, transparent)" stroke-width="1"/>' +
+        '<text x="' + (L - 7) + '" y="' + (Y(v) + 3.5) + '" text-anchor="end" font-size="9.5" fill="color-mix(in srgb, var(--color-text) 45%, transparent)">' + v + '</text>').join('')
+      const xlabels = years.map((yr, i) =>
+        '<text x="' + X(i) + '" y="' + (H2 - 5) + '" text-anchor="middle" font-size="10" fill="color-mix(in srgb, var(--color-text) 52%, transparent)">' + yr + '</text>').join('')
+      const drawn = series.map((g) => ({ g, pts: g.pts.map((p, i) => ({ i, p })).filter((x) => x.p.v != null) })).filter((d) => d.pts.length)
+      const body = drawn.map((d) => {
+        const g = d.g, pts = d.pts
+        const line = pts.length > 1
+          ? '<polyline fill="none" stroke="' + g.colour + '" stroke-width="' + (o.thin ? 1.6 : 2.25) + '" stroke-linecap="round" stroke-linejoin="round" points="' + pts.map((x) => X(x.i) + ',' + Y(x.p.v!)).join(' ') + '"/>' : ''
+        return line + pts.map((x) =>
+          '<circle cx="' + X(x.i) + '" cy="' + Y(x.p.v!) + '" r="' + (o.thin ? 2.6 : 3.6) + '" fill="' + g.colour + '" stroke="var(--color-surface)" stroke-width="1.4"><title>' + g.key + ' ' + x.p.yr + ': ' + x.p.v!.toFixed(1) + ' of 17, ' + x.p.n + ' council' + (x.p.n === 1 ? '' : 's') + '</title></circle>').join('')
+      }).join('')
+      return '<svg viewBox="0 0 ' + W2 + ' ' + H2 + '" style="display:block;width:100%;height:auto;overflow:visible">' + grid + xlabels + body + '</svg>'
+    }
+
+    function paintTrend() {
+      const wrap = page.querySelector<HTMLElement>('[data-trendwrap]')
+      if (!wrap) return
+      const host = page.querySelector<HTMLElement>('[data-trend]')!
+      const years = (YEARS || []).slice()
+      if (!years.length || !DATA.some((d) => d.by_year)) { wrap.style.display = 'none'; return }
+      wrap.style.display = 'flex'
+      const classes = Array.from(new Set(DATA.map((d) => d.class).filter(Boolean))).sort() as string[]
+      const keys = classes.length > 1 ? classes : ['All councils']
+      const groups = keys.map((k, i) => { const s = meanSeries(k, (d) => (classes.length > 1 ? d.class === k : true)); s.colour = SPLIT_COLORS[i % SPLIT_COLORS.length]; return s })
+      host.innerHTML = lineChart(years, groups, { height: 210, right: 8 })
+      page.querySelector<HTMLElement>('[data-trendkey]')!.innerHTML = legendHTML(groups)
+      const moves = groups.map((g) => { const p = g.pts.filter((q) => q.v != null); return p.length < 2 ? null : { key: g.key, d: p[p.length - 1].v! - p[0].v!, from: p[0].yr, to: p[p.length - 1].yr } }).filter(Boolean) as { key: string; d: number; from: number; to: number }[]
+      const note = page.querySelector<HTMLElement>('[data-trendnote]')!
+      if (!moves.length) { note.textContent = 'One reporting year analysed so far — direction of travel needs a second.'; return }
+      const word = (d: number) => (Math.abs(d) < 0.25 ? 'held steady' : d > 0 ? 'rose ' + d.toFixed(1) : 'fell ' + Math.abs(d).toFixed(1))
+      note.textContent = 'Mean of 17, across councils that filed in each year. ' + moves.map((m) => m.key + ' ' + word(m.d)).join('; ') + ' between ' + moves[0].from + ' and ' + moves[0].to + '. A rise can mean broader work or plainer writing.'
+    }
+
+    function paintSnapshot() {
+      const host = page.querySelector<HTMLElement>('[data-snapshot]')
+      if (!host) return
+      const note = page.querySelector<HTMLElement>('[data-snapnote]')!
+      const lede = page.querySelector<HTMLElement>('[data-snaplede]')!
+      const refkey = page.querySelector<HTMLElement>('[data-refkey]')!
+      const pool = DATA.filter(inScope)
+      const classes = Array.from(new Set(pool.map((d) => d.class).filter(Boolean))).sort() as string[]
+      if (GROUP !== 'All' && GROUP !== 'split') GROUP = 'All'
+      if (!pool.some((d) => goalListOf(d).length)) {
+        host.innerHTML = ''
+        page.querySelector<HTMLElement>('[data-groups]')!.innerHTML = ''
+        note.textContent = 'Per-Goal shares appear once the published dataset carries each council’s evidenced Goals.'
+        refkey.style.display = 'none'
+        return
+      }
+      const pct = (list: Rec[]) => Array.from({ length: 17 }, (_, i) => (list.length ? Math.round(list.filter((d) => goalListOf(d).includes(i + 1)).length / list.length * 100) : 0))
+      const all = pct(pool)
+      const split = GROUP === 'split' && classes.length > 1
+      const groups = split
+        ? classes.map((k) => { const list = pool.filter((d) => d.class === k); return { key: k, list, pct: pct(list) } })
+        : [{ key: 'All', list: pool, pct: all }]
+      const chips = [{ k: 'All', label: 'All councils · ' + pool.length }]
+      if (classes.length > 1) chips.push({ k: 'split', label: classes.join(' / ') })
+      page.querySelector<HTMLElement>('[data-groups]')!.innerHTML = chips
+        .map((c) => '<button class="chip' + (GROUP === c.k || (c.k === 'All' && !split && GROUP !== 'All') ? ' on' : '') + '" data-group="' + c.k + '">' + c.label + '</button>').join('')
+      page.querySelectorAll<HTMLButtonElement>('[data-group]').forEach((b) => b.addEventListener('click', () => { GROUP = b.dataset.group!; paintSnapshot() }))
+      const bar = (v: number, colour: string) =>
+        '<div style="flex:1 1 60px;height:' + (split ? 7 : 10) + 'px;border-radius:999px;background:color-mix(in srgb, var(--color-text) 7%, transparent)"><div style="height:100%;border-radius:999px;background:' + colour + ';width:' + (v === 0 ? 0 : Math.max(2, v)) + '%"></div></div>' +
+        '<span style="flex:0 0 38px;text-align:right;font-size:' + (split ? '12px' : '13px') + ';font-weight:700">' + v + '%</span>'
+      host.innerHTML = Array.from({ length: 17 }, (_, i) => i + 1)
+        .sort((a, b) => all[b - 1] - all[a - 1] || a - b)
+        .map((i) =>
+          '<div style="display:flex;align-items:center;gap:12px;padding:' + (split ? '8px' : '7px') + ' 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent)">' +
+          '<span style="flex:0 0 auto;width:23px;height:23px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;background:' + GOAL_COLORS[i] + '">' + String(i).padStart(2, '0') + '</span>' +
+          '<span style="flex:0 0 138px;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + GOAL_NAMES[i] + '</span>' +
+          '<div style="flex:1 1 100px;display:flex;flex-direction:column;gap:4px">' +
+          groups.map((g, k) => '<div style="display:flex;align-items:center;gap:10px">' + bar(g.pct[i - 1], SPLIT_COLORS[k % SPLIT_COLORS.length]) + '</div>').join('') +
+          '</div></div>').join('')
+      lede.textContent = 'The share of councils whose ' + (YEAR ? YEAR + ' report describes' : 'reports describe') + ' at least one activity aligned to each Goal. Not how much they described — whether they described any at all.'
+      note.textContent = (split ? groups.map((g) => g.list.length + ' ' + g.key.toLowerCase()).join(', ') + ' of ' + pool.length + ' councils' : pool.length + (pool.length === 1 ? ' council' : ' councils')) + (YEAR ? ' with a ' + YEAR + ' report' : ', every analysed year combined') + (LIVE ? '' : ' · sample data')
+      refkey.style.display = split ? 'flex' : 'none'
+      refkey.innerHTML = !split ? '' : groups.map((g, k) => '<span style="display:flex;align-items:center;gap:7px"><span style="width:11px;height:11px;border-radius:999px;background:' + SPLIT_COLORS[k % SPLIT_COLORS.length] + '"></span><span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 62%, transparent)">' + g.key + '</span></span>').join('')
+    }
 
     function mapHint() {
       const el = page.querySelector<HTMLElement>('[data-maphint]')
@@ -462,7 +564,7 @@ export function LandingPage() {
         '<button class="chip' + (YEAR === null ? ' on' : '') + '" data-year="">All years</button>'
       el.querySelectorAll<HTMLButtonElement>('[data-year]').forEach((b) => b.addEventListener('click', () => {
         YEAR = b.dataset.year ? +b.dataset.year : null
-        paintYears(); mapHint(); repaint()
+        paintYears(); mapHint(); paintSnapshot(); repaint()
       }))
     }
 
@@ -501,7 +603,7 @@ export function LandingPage() {
         paintNational(cov.national, DATA, cov.narrative)
       }
       indexData()
-      paintYears(); mapHint(); paintClasses()
+      paintYears(); mapHint(); paintSnapshot(); paintTrend()
       if (topo && topo.objects) drawLGA(topo); else drawPoints()
     })
 
