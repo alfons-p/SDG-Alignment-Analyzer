@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from './components/layout'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import { ProtectedRoute, RequireUploader } from './components/ProtectedRoute'
 import { LandingPage, CouncilPage, BrowsePage, PublicComparePage, AccessPage, LimitationsPage, DashboardPage, UploadPage, ResultsPage, GoalDetailPage, ActivitiesPage, GapsPage, ExportPage, AdminPage } from './pages'
 
 export default function App() {
@@ -21,7 +21,7 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<RequireUploader><DashboardPage /></RequireUploader>} />
         <Route path="/upload" element={<UploadPage />} />
         <Route path="/results/:id" element={<ResultsPage />} />
         <Route path="/results/:id/goal/:sdg" element={<GoalDetailPage />} />

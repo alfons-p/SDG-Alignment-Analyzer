@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { Trash2, FileText, Plus } from 'lucide-react'
 import { listAnalyses, deleteAnalysis } from '../api/analysis'
+import { getMe } from '../api/auth'
 import { StatusBadge } from '../components/analysis/StatusBadge'
 
 const muted = 'color-mix(in srgb, var(--color-text) 55%, transparent)'
@@ -13,6 +14,8 @@ export function DashboardPage() {
     queryKey: ['analyses'],
     queryFn: listAnalyses,
   })
+  const { data: user } = useQuery({ queryKey: ['me'], queryFn: getMe })
+  const canDelete = user?.role === 'admin'  // officers can view but not delete
   const deleteMutation = useMutation({
     mutationFn: deleteAnalysis,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['analyses'] }),
@@ -73,13 +76,15 @@ export function DashboardPage() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 'none' }}>
                 <StatusBadge status={a.status} />
-                <button
-                  onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(a.id) }}
-                  title="Delete"
-                  style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 6, color: muted, borderRadius: 999, display: 'inline-flex' }}
-                >
-                  <Trash2 size={15} />
-                </button>
+                {canDelete && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteMutation.mutate(a.id) }}
+                    title="Delete"
+                    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 6, color: muted, borderRadius: 999, display: 'inline-flex' }}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                )}
               </div>
             </div>
           ))}

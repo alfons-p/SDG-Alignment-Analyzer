@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { login, register } from '../api/auth'
+import { login, register, getMe } from '../api/auth'
 import { getPublicCoverage } from '../api/public'
 import './council.css'
 
@@ -62,7 +62,9 @@ export function AccessPage() {
       if (mode === 'in') {
         const r = await login(email, password)
         localStorage.setItem('token', r.access_token)
-        navigate('/dashboard')
+        // Officer/admin get the Analyses dashboard; registered land on the public site.
+        const me = await getMe()
+        navigate(me.role === 'officer' || me.role === 'admin' ? '/dashboard' : '/')
         return
       }
       const r = await register(email, password, {
@@ -72,9 +74,9 @@ export function AccessPage() {
           : {}),
       })
       localStorage.setItem('token', r.access_token)
-      // Officers land on a "request received" panel; registered users go straight in.
+      // Officers land on a "request received" panel; registered go to the public site.
       if (officer) setSubmitted('officer')
-      else navigate('/dashboard')
+      else navigate('/')
     } catch (e) {
       const detail = (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail
       setErr(detail || (mode === 'in' ? 'Sign-in failed.' : 'Could not create account.'))
@@ -131,7 +133,7 @@ export function AccessPage() {
                 : 'Your account is active. Export is available from any result, and every file carries the statement you agreed to.'}
             </p>
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/')}
               style={{ border: 'none', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontSize: 15, padding: '12px 18px', borderRadius: 999, background: 'var(--color-accent)', color: 'var(--color-bg)' }}
             >
               Continue

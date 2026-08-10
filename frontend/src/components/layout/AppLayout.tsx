@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 import { getMe } from '../../api/auth'
 
 const NAV = [
-  { to: '/dashboard', label: 'Analyses' },
   { to: '/compare', label: 'Compare' },
 ]
 
@@ -16,12 +15,11 @@ const NAV = [
 export function AppLayout() {
   const navigate = useNavigate()
   const { data: user } = useQuery({ queryKey: ['me'], queryFn: getMe })
-  // Upload is officer/admin only; Admin tab is admin only.
+  // Analyses + Upload are officer/admin only; Admin tab is admin only.
   const canUpload = user?.role === 'officer' || user?.role === 'admin'
   const items = [
-    ...NAV.slice(0, 1),
-    ...(canUpload ? [{ to: '/upload', label: 'Upload' }] : []),
-    ...NAV.slice(1),
+    ...(canUpload ? [{ to: '/dashboard', label: 'Analyses' }, { to: '/upload', label: 'Upload' }] : []),
+    ...NAV,
     ...(user?.is_admin ? [{ to: '/admin', label: 'Admin' }] : []),
   ]
 

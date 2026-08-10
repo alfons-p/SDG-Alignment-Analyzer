@@ -362,13 +362,13 @@ def export_results_pdf_ledger(analysis_id: str, user: User = Depends(get_current
 
 @router.get("", response_model=list[AnalysisListItem])
 def list_analyses(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    analyses = (
-        db.query(Analysis)
-        .filter(Analysis.user_id == user.id)
-        .order_by(Analysis.created_at.desc())
-        .limit(50)
-        .all()
-    )
+    q = db.query(Analysis).filter(Analysis.user_id == user.id)
+    # Officers see only their assigned council. Their uploads are already
+    # council-gated, but scope explicitly so a reassignment can't leak another.
+    if effective_role(user) == "officer" and user.assigned_council:
+        q = q.filter(Analysis.council_name == user.assigned_council)
+        q = q.filter(Analysis.state == user.assigned_state) if user.assigned_state else q
+    analyses = q.order_by(Analysis.created_at.desc()).limit(50).all()
     return analyses
 
 
@@ -588,6 +588,9 @@ def unpublish_analysis(analysis_id: str, admin: User = Depends(get_current_admin
 
 @router.delete("/{analysis_id}", status_code=204)
 def delete_analysis(analysis_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    # Officers can view their council's results but not delete them.
+    if effective_role(user) == "officer":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Officers cannot delete analyses.")
     analysis = _get_user_analysis(analysis_id, user, db)
     if analysis.file_path and os.path.exists(analysis.file_path):
         try:
