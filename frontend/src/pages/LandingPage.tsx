@@ -60,6 +60,13 @@ const PAGE_HTML = `
           </div>
         </div>
       </div>
+
+      <div style="display:none;flex-direction:column;gap:10px;margin-top:auto;padding-top:20px" data-trendwrap>
+        <span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent)">Goals evidenced per council, by reporting year</span>
+        <div data-trend></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;min-height:20px" data-trendkey></div>
+        <span style="font-size:12px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty" data-trendnote></span>
+      </div>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:12px">
@@ -80,6 +87,13 @@ const PAGE_HTML = `
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div style="display:flex;gap:6px" data-years></div>
         <div style="display:flex;flex-wrap:wrap;gap:6px" data-states></div>
+      </div>
+
+      <div style="display:none;flex-direction:column;gap:10px;margin-top:auto;padding-top:20px" data-statetrendwrap>
+        <span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent)">The same measure by state</span>
+        <div data-statetrend></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;min-height:20px" data-statetrendkey></div>
+        <span style="font-size:12px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty" data-statetrendnote></span>
       </div>
     </div>
   </div>
@@ -103,12 +117,6 @@ const PAGE_HTML = `
       <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
         <span style="font-size:12.5px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);flex:1 1 260px;text-wrap:pretty" data-snapnote></span>
         <div style="display:none;align-items:center;gap:14px" data-refkey></div>
-      </div>
-      <div style="display:none;flex-direction:column;gap:10px;margin-top:8px;padding-top:20px;border-top:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)" data-trendwrap>
-        <span style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 52%, transparent)">Goals evidenced per council, by reporting year</span>
-        <div data-trend></div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;min-height:20px" data-trendkey></div>
-        <span style="font-size:12px;line-height:1.5;color:color-mix(in srgb, var(--color-text) 58%, transparent);text-wrap:pretty" data-trendnote></span>
       </div>
     </div>
   </div>
@@ -501,6 +509,35 @@ export function LandingPage() {
       note.textContent = 'Mean of 17, across councils that filed in each year. ' + moves.map((m) => m.key + ' ' + word(m.d)).join('; ') + ' between ' + moves[0].from + ' and ' + moves[0].to + '. A rise can mean broader work or plainer writing.'
     }
 
+    // Official state/territory colours (NSW sky blue and WA gold darkened to hold
+    // a line on the cream ground).
+    const STATE_COLOURS: Record<string, string> = { ACT: '#003087', NSW: '#3E9BD6', NT: '#C75B12', QLD: '#73182C', SA: '#D50032', TAS: '#006747', VIC: '#201547', WA: '#C9A200' }
+    const stateColour = (s: string) => STATE_COLOURS[s] || 'color-mix(in srgb, var(--color-text) 42%, transparent)'
+    const STATE_MIN = 3  // a mean over one or two councils is noise, not a state trend
+
+    function paintStateTrend() {
+      const wrap = page.querySelector<HTMLElement>('[data-statetrendwrap]')
+      if (!wrap) return
+      const years = (YEARS || []).slice()
+      if (years.length < 2 || !DATA.some((d) => d.by_year)) { wrap.style.display = 'none'; return }
+      const present = Array.from(new Set(DATA.map((d) => d.state).filter(Boolean))) as string[]
+      const built = present.map((s) => meanSeries(s, (d) => d.state === s))
+      const heldBack: string[] = []
+      built.forEach((g) => g.pts.forEach((p) => { if (p.n > 0 && p.n < STATE_MIN) { p.v = null; heldBack.push(g.key) } }))
+      const shown = built.filter((g) => g.pts.some((p) => p.v != null))
+      if (!shown.length) { wrap.style.display = 'none'; return }
+      wrap.style.display = 'flex'
+      shown.forEach((g) => { g.colour = stateColour(g.key) })
+      shown.sort((a, b) => a.key.localeCompare(b.key))
+      page.querySelector<HTMLElement>('[data-statetrend]')!.innerHTML = lineChart(years, shown, { thin: true, right: 8, height: 210 })
+      page.querySelector<HTMLElement>('[data-statetrendkey]')!.innerHTML = legendHTML(shown)
+      const shownKeys = shown.map((g) => g.key)
+      const dropped = Array.from(new Set(heldBack)).filter((s) => !shownKeys.includes(s))
+      page.querySelector<HTMLElement>('[data-statetrendnote]')!.textContent =
+        'State colours after the official state and territory colours. States with at least ' + STATE_MIN + ' analysed councils in a year.' +
+        (dropped.length ? ' ' + dropped.join(', ') + ' held back as too few to average.' : '') + ' Hover a point for its council count.'
+    }
+
     function paintSnapshot() {
       const host = page.querySelector<HTMLElement>('[data-snapshot]')
       if (!host) return
@@ -603,7 +640,7 @@ export function LandingPage() {
         paintNational(cov.national, DATA, cov.narrative)
       }
       indexData()
-      paintYears(); mapHint(); paintSnapshot(); paintTrend()
+      paintYears(); mapHint(); paintSnapshot(); paintTrend(); paintStateTrend()
       if (topo && topo.objects) drawLGA(topo); else drawPoints()
     })
 
