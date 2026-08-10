@@ -1894,3 +1894,58 @@
 | 10:40 | Edited frontend/src/pages/LandingPage.tsx | added 1 condition(s) | ~37 |
 | 10:40 | Edited frontend/src/pages/LandingPage.tsx | 5→6 lines | ~46 |
 | 10:44 | Session end: 120 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107944 tok |
+| 13:03 | Session end: 120 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107944 tok |
+| 13:34 | Session end: 120 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107944 tok |
+| 13:43 | Session end: 120 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107944 tok |
+| 13:46 | Session end: 120 writes across 33 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 29 reads | ~107944 tok |
+| 13:50 | Edited frontend/src/pages/BrowsePage.tsx | 8→11 lines | ~198 |
+| 13:51 | Edited frontend/src/pages/BrowsePage.tsx | 6→6 lines | ~64 |
+| 13:51 | Edited frontend/src/pages/BrowsePage.tsx | expanded (+6 lines) | ~151 |
+| 13:51 | Edited frontend/src/pages/BrowsePage.tsx | added nullish coalescing | ~98 |
+| 13:51 | Edited frontend/src/pages/LandingPage.tsx | 5→3 lines | ~44 |
+| 13:51 | Edited frontend/src/pages/LandingPage.tsx | expanded (+8 lines) | ~217 |
+| 13:52 | Edited frontend/src/pages/LandingPage.tsx | modified paintClasses() | ~250 |
+| 13:52 | Edited frontend/src/pages/LandingPage.tsx | 3→3 lines | ~37 |
+| 19:05 | Edited frontend/src/pages/LandingPage.tsx | 3→2 lines | ~38 |
+| 19:05 | Edited frontend/src/pages/LandingPage.tsx | modified if() | ~63 |
+| 19:06 | Created frontend/src/pages/HowItWorksPage.tsx | — | ~1906 |
+| 19:06 | Edited frontend/src/pages/index.ts | 1→2 lines | ~29 |
+| 19:06 | Edited frontend/src/App.tsx | inline fix | ~66 |
+| 19:07 | Edited frontend/src/App.tsx | 1→2 lines | ~38 |
+| 19:08 | Edited frontend/src/pages/LandingPage.tsx | CSS: layer, strokeAt1, e | ~286 |
+| 19:08 | Edited frontend/src/pages/LandingPage.tsx | 3→4 lines | ~67 |
+| 19:08 | Edited frontend/src/pages/LandingPage.tsx | 4→5 lines | ~62 |
+| 19:08 | Edited frontend/src/pages/LandingPage.tsx | 7→8 lines | ~155 |
+| 19:08 | Edited frontend/src/pages/LandingPage.tsx | 2→3 lines | ~34 |
+| 19:09 | Edited frontend/src/pages/LandingPage.tsx | CSS: padding | ~126 |
+| 19:13 | Edited frontend/src/pages/LandingPage.tsx | added 11 condition(s) | ~2999 |
+| 19:14 | Edited frontend/src/pages/LandingPage.tsx | reduced (-8 lines) | ~798 |
+| 19:14 | Edited frontend/src/pages/LandingPage.tsx | 3→3 lines | ~41 |
+| 19:14 | Edited frontend/src/pages/LandingPage.tsx | 4→4 lines | ~68 |
+| 19:14 | Edited frontend/src/pages/LandingPage.tsx | removed 12 lines | ~21 |
+| 21:06 | Session end: 145 writes across 35 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 30 reads | ~122669 tok |
+| 21:25 | Edited backend/app/services/public_data.py | 5→10 lines | ~155 |
+| 21:25 | Edited frontend/src/api/public.ts | 4→6 lines | ~46 |
+| 21:25 | Edited frontend/src/pages/CouncilPage.tsx | CSS: grade | ~202 |
+| 21:25 | Edited frontend/src/pages/CouncilPage.tsx | inline fix | ~22 |
+| 21:25 | Edited frontend/src/components/results/ResultsHeader.tsx | 1→2 lines | ~50 |
+| 21:30 | Session end: 150 writes across 38 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 31 reads | ~123703 tok |
+| 21:34 | Edited frontend/src/pages/LandingPage.tsx | expanded (+7 lines) | ~326 |
+| 21:34 | Edited frontend/src/pages/LandingPage.tsx | expanded (+7 lines) | ~242 |
+| 21:34 | Edited frontend/src/pages/LandingPage.tsx | reduced (-6 lines) | ~103 |
+| 21:34 | Edited frontend/src/pages/LandingPage.tsx | added 4 condition(s) | ~679 |
+| 21:34 | Edited frontend/src/pages/LandingPage.tsx | 3→3 lines | ~47 |
+| 21:36 | Session end: 155 writes across 38 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 32 reads | ~124907 tok |
+| 21:38 | Edited backend/app/services/public_data.py | 9→13 lines | ~183 |
+| 21:39 | Edited backend/app/routers/analysis.py | modified get_result_heatmap() | ~601 |
+| 21:39 | Edited backend/app/routers/analysis.py | modified strip() | ~354 |
+| 21:39 | Edited frontend/src/api/analysis.ts | added 1 condition(s) | ~120 |
+| 21:40 | Edited frontend/src/pages/ActivitiesPage.tsx | CSS: A, placeholderData | ~373 |
+| 21:40 | Edited frontend/src/pages/ActivitiesPage.tsx | inline fix | ~15 |
+| 21:41 | Edited frontend/src/pages/LandingPage.tsx | expanded (+21 lines) | ~700 |
+| 21:41 | Edited frontend/src/pages/LandingPage.tsx | 1→2 lines | ~136 |
+| 21:42 | Edited frontend/src/pages/LandingPage.tsx | 3→3 lines | ~92 |
+| 21:42 | Edited frontend/src/pages/LandingPage.tsx | added 9 condition(s) | ~1249 |
+| 21:43 | Edited frontend/src/pages/LandingPage.tsx | 3→3 lines | ~58 |
+| 21:43 | Edited frontend/src/pages/LandingPage.tsx | 3→3 lines | ~41 |
+| 21:54 | Session end: 167 writes across 39 files (UploadPage.tsx, ResultsPage.tsx, results.css, FileDropzone.tsx, ScoreBar.tsx) | 34 reads | ~131856 tok |

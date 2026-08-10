@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-10T00:40:36.642Z
-> Files: 848 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-10T11:43:13.459Z
+> Files: 849 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
 
@@ -147,7 +147,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~8035 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~8663 tok)
 - `auth.py` — Auth router — register, login. (~1549 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~352 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -168,7 +168,7 @@
 - `export_service.py` — Export service — CSV/JSON generation using Reporter. (~418 tok)
 - `identity.py` — Council identity parsed from the V1 filename convention (~385 tok)
 - `pdf_service.py` — PDF export — the two document types the Export screen offers (design_handoff (~4338 tok)
-- `public_data.py` — Aggregate published analyses into the public coverage payload the landing (~2269 tok)
+- `public_data.py` — Aggregate published analyses into the public coverage payload the landing (~2438 tok)
 
 ## backend/tests/
 
@@ -227,16 +227,16 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~504 tok)
+- `App.tsx` — App (~528 tok)
 - `index.css` — Styles: 13 rules, 30 vars (~989 tok)
 - `main.tsx` — queryClient (~172 tok)
 
 ## frontend/src/api/
 
-- `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1257 tok)
+- `analysis.ts` — Record a client event in the server log. Best-effort — never throws. (~1273 tok)
 - `auth.ts` — API routes: POST, GET (7 endpoints) (~428 tok)
 - `client.ts` — Declares api (~441 tok)
-- `public.ts` — Exports CouncilYear, Council, EvidencePassage, CouncilYearDetail + 6 more (~559 tok)
+- `public.ts` — Exports CouncilYear, Council, EvidencePassage, CouncilYearDetail + 6 more (~577 tok)
 - `reference.ts` — API routes: GET (3 endpoints) (~147 tok)
 - `results.ts` — API routes: POST (1 endpoints) (~78 tok)
 
@@ -264,7 +264,7 @@
 
 - `EvidenceLedger.tsx` — Evidence ledger — all 17 Goals ranked by aligned-activity count. A row expands (~1487 tok)
 - `results.css` — Styles: 96 rules (~8099 tok)
-- `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~872 tok)
+- `ResultsHeader.tsx` — Results header band: council identity (parsed from the filename until the API (~894 tok)
 - `ResultsModes.tsx` — The Goal that reads clearly where it appears yet shows up in few activities: (~3627 tok)
 - `ViewSwitcher.tsx` — VIEWS (~377 tok)
 
@@ -287,19 +287,20 @@
 ## frontend/src/pages/
 
 - `AccessPage.tsx` — muted (~3862 tok)
-- `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
+- `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1642 tok)
 - `AdminPage.tsx` — AdminPage (~6248 tok)
-- `BrowsePage.tsx` — "2023–25" contiguous, "2023, 2025" with a gap, "2024" single. (~3298 tok)
+- `BrowsePage.tsx` — Join labels as "A", "A or B", "A, B or C". (~3559 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `council.css` — Styles: 20 rules (~687 tok)
-- `CouncilPage.tsx` — GOAL_FULL (~3821 tok)
+- `CouncilPage.tsx` — GOAL_FULL (~3839 tok)
 - `DashboardPage.tsx` — muted (~1261 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
-- `index.ts` (~219 tok)
+- `HowItWorksPage.tsx` — "How it works" — the case for trusting the number, in three parts. Split out (~1906 tok)
+- `index.ts` (~208 tok)
 - `landing.css` — Styles: 44 rules (~1390 tok)
-- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~10720 tok)
+- `LandingPage.tsx` — Public landing page — the front door, no auth. Recreated from (~16588 tok)
 - `LimitationsPage.tsx` — muted (~2117 tok)
 - `LoginPage.tsx` — LoginPage — renders form (~665 tok)
 - `PublicComparePage.tsx` — GOAL_FULL — renders table (~3005 tok)

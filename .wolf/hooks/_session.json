@@ -98,8 +98,8 @@
       "first_read": "2026-08-04T08:47:12.624Z"
     },
     "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/routers/analysis.py": {
-      "count": 3,
-      "tokens": 7875,
+      "count": 5,
+      "tokens": 8035,
       "first_read": "2026-08-04T08:48:29.631Z"
     },
     "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/types/index.ts": {
@@ -118,13 +118,13 @@
       "first_read": "2026-08-05T01:12:35.712Z"
     },
     "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx": {
-      "count": 11,
-      "tokens": 10606,
+      "count": 16,
+      "tokens": 13901,
       "first_read": "2026-08-05T02:12:08.465Z"
     },
     "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/services/public_data.py": {
-      "count": 1,
-      "tokens": 2269,
+      "count": 3,
+      "tokens": 2360,
       "first_read": "2026-08-05T02:17:28.551Z"
     },
     "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/CouncilPage.tsx": {
@@ -146,6 +146,31 @@
       "count": 1,
       "tokens": 1188,
       "first_read": "2026-08-10T00:18:56.374Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/BrowsePage.tsx": {
+      "count": 2,
+      "tokens": 3381,
+      "first_read": "2026-08-10T03:50:43.596Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/public.ts": {
+      "count": 1,
+      "tokens": 559,
+      "first_read": "2026-08-10T11:25:22.393Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/design_handoff_sdg_analyser_v2/data-contract.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-08-10T11:35:36.408Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/analysis.ts": {
+      "count": 1,
+      "tokens": 1257,
+      "first_read": "2026-08-10T11:39:40.175Z"
+    },
+    "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/ActivitiesPage.tsx": {
+      "count": 1,
+      "tokens": 1519,
+      "first_read": "2026-08-10T11:40:00.645Z"
     }
   },
   "files_written": [
@@ -868,6 +893,288 @@
       "action": "edit",
       "tokens": 46,
       "at": "2026-08-10T00:40:36.653Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/BrowsePage.tsx",
+      "action": "edit",
+      "tokens": 198,
+      "at": "2026-08-10T03:50:56.386Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/BrowsePage.tsx",
+      "action": "edit",
+      "tokens": 64,
+      "at": "2026-08-10T03:51:04.554Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/BrowsePage.tsx",
+      "action": "edit",
+      "tokens": 151,
+      "at": "2026-08-10T03:51:16.424Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/BrowsePage.tsx",
+      "action": "edit",
+      "tokens": 98,
+      "at": "2026-08-10T03:51:29.365Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-08-10T03:51:46.032Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 217,
+      "at": "2026-08-10T03:51:54.312Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 250,
+      "at": "2026-08-10T03:52:17.457Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 37,
+      "at": "2026-08-10T03:52:23.965Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 38,
+      "at": "2026-08-10T09:05:45.762Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 63,
+      "at": "2026-08-10T09:05:54.182Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/HowItWorksPage.tsx",
+      "action": "create",
+      "tokens": 1906,
+      "at": "2026-08-10T09:06:40.989Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/index.ts",
+      "action": "edit",
+      "tokens": 29,
+      "at": "2026-08-10T09:06:51.355Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/App.tsx",
+      "action": "edit",
+      "tokens": 66,
+      "at": "2026-08-10T09:06:58.127Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/App.tsx",
+      "action": "edit",
+      "tokens": 38,
+      "at": "2026-08-10T09:07:03.856Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 286,
+      "at": "2026-08-10T09:08:28.760Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 67,
+      "at": "2026-08-10T09:08:35.980Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 62,
+      "at": "2026-08-10T09:08:42.096Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 155,
+      "at": "2026-08-10T09:08:53.562Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 34,
+      "at": "2026-08-10T09:08:59.903Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 126,
+      "at": "2026-08-10T09:09:33.078Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 2999,
+      "at": "2026-08-10T09:13:18.983Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 798,
+      "at": "2026-08-10T09:14:03.879Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 41,
+      "at": "2026-08-10T09:14:24.566Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 68,
+      "at": "2026-08-10T09:14:30.808Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 21,
+      "at": "2026-08-10T09:14:54.688Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/services/public_data.py",
+      "action": "edit",
+      "tokens": 155,
+      "at": "2026-08-10T11:25:13.080Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/public.ts",
+      "action": "edit",
+      "tokens": 46,
+      "at": "2026-08-10T11:25:28.911Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/CouncilPage.tsx",
+      "action": "edit",
+      "tokens": 202,
+      "at": "2026-08-10T11:25:39.404Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/CouncilPage.tsx",
+      "action": "edit",
+      "tokens": 22,
+      "at": "2026-08-10T11:25:46.654Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/components/results/ResultsHeader.tsx",
+      "action": "edit",
+      "tokens": 50,
+      "at": "2026-08-10T11:25:58.980Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 326,
+      "at": "2026-08-10T11:34:03.152Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 242,
+      "at": "2026-08-10T11:34:11.640Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 103,
+      "at": "2026-08-10T11:34:24.350Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 679,
+      "at": "2026-08-10T11:34:44.756Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 47,
+      "at": "2026-08-10T11:34:58.565Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/services/public_data.py",
+      "action": "edit",
+      "tokens": 183,
+      "at": "2026-08-10T11:38:17.154Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/routers/analysis.py",
+      "action": "edit",
+      "tokens": 601,
+      "at": "2026-08-10T11:39:10.750Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/backend/app/routers/analysis.py",
+      "action": "edit",
+      "tokens": 354,
+      "at": "2026-08-10T11:39:24.631Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/api/analysis.ts",
+      "action": "edit",
+      "tokens": 120,
+      "at": "2026-08-10T11:39:53.747Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/ActivitiesPage.tsx",
+      "action": "edit",
+      "tokens": 373,
+      "at": "2026-08-10T11:40:22.285Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/ActivitiesPage.tsx",
+      "action": "edit",
+      "tokens": 15,
+      "at": "2026-08-10T11:40:29.459Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 700,
+      "at": "2026-08-10T11:41:34.058Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 136,
+      "at": "2026-08-10T11:41:44.657Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 92,
+      "at": "2026-08-10T11:42:24.520Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 1249,
+      "at": "2026-08-10T11:42:50.825Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 58,
+      "at": "2026-08-10T11:43:04.091Z"
+    },
+    {
+      "file": "/Users/alfonspalangkaraya/Documents/GitHub/claude3/sdg-alignment-analyzer/frontend/src/pages/LandingPage.tsx",
+      "action": "edit",
+      "tokens": 41,
+      "at": "2026-08-10T11:43:13.469Z"
     }
   ],
   "edit_counts": {
@@ -880,9 +1187,9 @@
     "frontend/src/components/analysis/ProcessingSettings.tsx": 1,
     "frontend/src/components/analysis/ActivityTable.tsx": 3,
     "backend/app/services/batch_ingest_service.py": 5,
-    "backend/app/routers/analysis.py": 8,
+    "backend/app/routers/analysis.py": 10,
     "scripts/batch_ingest.py": 2,
-    "frontend/src/api/analysis.ts": 1,
+    "frontend/src/api/analysis.ts": 2,
     "frontend/src/pages/AdminPage.tsx": 7,
     "frontend/src/types/index.ts": 3,
     "src/ocr_extractor.py": 5,
@@ -899,16 +1206,23 @@
     "frontend/src/pages/AccessPage.tsx": 11,
     "../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/security-backlog.md": 1,
     "../../../../.claude/projects/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/memory/MEMORY.md": 1,
-    "frontend/src/pages/LandingPage.tsx": 10,
-    "frontend/src/pages/CouncilPage.tsx": 6,
+    "frontend/src/pages/LandingPage.tsx": 38,
+    "frontend/src/pages/CouncilPage.tsx": 8,
     "HANDOFF.md": 1,
     "frontend/src/components/ProtectedRoute.tsx": 1,
-    "frontend/src/App.tsx": 2,
-    "frontend/src/pages/DashboardPage.tsx": 3
+    "frontend/src/App.tsx": 4,
+    "frontend/src/pages/DashboardPage.tsx": 3,
+    "frontend/src/pages/BrowsePage.tsx": 4,
+    "frontend/src/pages/HowItWorksPage.tsx": 1,
+    "frontend/src/pages/index.ts": 1,
+    "backend/app/services/public_data.py": 2,
+    "frontend/src/api/public.ts": 1,
+    "frontend/src/components/results/ResultsHeader.tsx": 1,
+    "frontend/src/pages/ActivitiesPage.tsx": 2
   },
-  "anatomy_hits": 26,
-  "anatomy_misses": 3,
-  "repeated_reads_warned": 28,
+  "anatomy_hits": 30,
+  "anatomy_misses": 4,
+  "repeated_reads_warned": 38,
   "cerebrum_warnings": 0,
-  "stop_count": 44
+  "stop_count": 52
 }
