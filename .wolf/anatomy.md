@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T01:46:52.206Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-10T00:19:21.737Z
 > Files: 848 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../../../private/tmp/claude-501/-Users-alfonspalangkaraya-Documents-GitHub-claude3-sdg-alignment-analyzer/2e57ea91-2026-4f22-bc50-2bd2747815d5/scratchpad/
@@ -147,7 +147,7 @@
 ## backend/app/routers/
 
 - `__init__.py` (~0 tok)
-- `analysis.py` — Analysis router — upload, jobs, results, export. (~7875 tok)
+- `analysis.py` — Analysis router — upload, jobs, results, export. (~8035 tok)
 - `auth.py` — Auth router — register, login. (~1549 tok)
 - `public.py` — Public, unauthenticated read routes for published analyses (data-contract (~352 tok)
 - `reference.py` — Reference router — SDG definitions and metadata. (~330 tok)
@@ -227,7 +227,7 @@
 
 ## frontend/src/
 
-- `App.tsx` — App (~490 tok)
+- `App.tsx` — App (~504 tok)
 - `index.css` — Styles: 13 rules, 30 vars (~989 tok)
 - `main.tsx` — queryClient (~172 tok)
 
@@ -242,7 +242,7 @@
 
 ## frontend/src/components/
 
-- `ProtectedRoute.tsx` — ProtectedRoute (~72 tok)
+- `ProtectedRoute.tsx` — Officer/admin only. Registered users have no analyses, so they land on the (~222 tok)
 
 ## frontend/src/components/analysis/
 
@@ -255,7 +255,7 @@
 
 ## frontend/src/components/layout/
 
-- `AppLayout.tsx` — Authenticated shell — the designed sticky top bar (surface, shadow, accent (~530 tok)
+- `AppLayout.tsx` — Authenticated shell — the designed sticky top bar (surface, shadow, accent (~524 tok)
 - `AuthLayout.tsx` — AuthLayout (~172 tok)
 - `index.ts` (~24 tok)
 - `Sidebar.tsx` — baseLinks (~590 tok)
@@ -286,14 +286,14 @@
 
 ## frontend/src/pages/
 
-- `AccessPage.tsx` — muted (~3815 tok)
+- `AccessPage.tsx` — muted (~3862 tok)
 - `ActivitiesPage.tsx` — Activity explorer — every extracted activity with its aligned-goal chips and (~1519 tok)
 - `AdminPage.tsx` — AdminPage (~6248 tok)
 - `BrowsePage.tsx` — "2023–25" contiguous, "2023, 2025" with a gap, "2024" single. (~3298 tok)
 - `ComparePage.tsx` — Three computed narrative notes: extraction-depth warning, sharpest divergence, shared strength. (~2592 tok)
 - `council.css` — Styles: 20 rules (~687 tok)
 - `CouncilPage.tsx` — GOAL_FULL (~3821 tok)
-- `DashboardPage.tsx` — muted (~1188 tok)
+- `DashboardPage.tsx` — muted (~1261 tok)
 - `ExportPage.tsx` — FORMATS (~2028 tok)
 - `GapsPage.tsx` — Gaps — every Goal the report evidenced with no aligned activity (coverage 0), (~1608 tok)
 - `GoalDetailPage.tsx` — Per-goal threshold from the run settings, if it was recorded. (~2419 tok)
