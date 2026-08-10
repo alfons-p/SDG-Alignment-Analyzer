@@ -1706,6 +1706,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-04"
+    },
+    {
+      "id": "bug-106",
+      "timestamp": "2026-08-10",
+      "error_message": "Landing map choropleth did not change when clicking Year pills.",
+      "file": "frontend/src/pages/LandingPage.tsx",
+      "root_cause": "React StrictMode double-invokes the effect; the map builds in an async Promise.all().then(). Both invocations race to host.innerHTML='' + redraw SVG + rebind year-pill click handlers. When the first (torn-down) invocation's .then resolved last, the pills bound to a repaint() closure over an SVG already detached by the second invocation, so year clicks re-shaded a dead SVG. Live site is Vite-dev-served, so StrictMode is active in 'prod' too.",
+      "fix": "Added a `cancelled` flag: set true in the effect cleanup, checked at the top of the Promise.all .then so the torn-down invocation bails before drawing/rebinding.",
+      "tags": [
+        "landing",
+        "d3",
+        "strictmode",
+        "useEffect",
+        "map",
+        "race-condition"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-10"
     }
   ]
 }

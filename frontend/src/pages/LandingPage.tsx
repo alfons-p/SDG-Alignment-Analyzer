@@ -139,6 +139,11 @@ export function LandingPage() {
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
+    // React StrictMode double-invokes this effect in dev. The map is built in an
+    // async .then; without this guard both invocations race to draw/wipe the SVG
+    // and rebind the year pills, leaving them wired to a detached SVG's repaint
+    // (year clicks then re-shade nothing). Cancel the torn-down invocation.
+    let cancelled = false
     const page = root.querySelector<HTMLDivElement>('.page')!
     const tip = root.querySelector<HTMLDivElement>('#tip')!
 
@@ -464,6 +469,7 @@ export function LandingPage() {
       getPublicCoverage().catch(() => null),
       fetch('/data/lga2025.topo.json').then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]).then(([cov, topo]) => {
+      if (cancelled) return
       if (cov && Array.isArray(cov.councils) && cov.councils.length) {
         DATA = cov.councils as unknown as Rec[]; LIVE = true
         YEARS = (cov.years || []).slice().sort()
@@ -572,6 +578,7 @@ export function LandingPage() {
     page.addEventListener('click', onNav)
 
     return () => {
+      cancelled = true
       page.removeEventListener('click', onNav)
       page.removeEventListener('click', onGoto)
     }
